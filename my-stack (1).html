@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Aura Score — What's Your Stack? | FindMyAI</title>
+  <meta name="description" content="Find out your AI Aura Score in 30 seconds. Rate your AI tool stack and see if you're Galaxy Brain or 404 Coded. Free, no signup.">
+  <meta property="og:title" content="What's Your AI Aura Score?">
+  <meta property="og:description" content="6 questions. 30 seconds. Find out if your AI stack gives you aura or costs you aura.">
+  <meta property="og:image" content="https://findmyai.tech/og-image.png">
+  <meta property="og:url" content="https://findmyai.tech/my-stack.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://findmyai.tech/my-stack.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #06060e;
+      --bg2: #0a0a14;
+      --card: #0d0d1a;
+      --card2: #111122;
+      --border: rgba(255,255,255,0.07);
+      --border-hi: rgba(0,212,255,0.25);
+      --cyan: #00d4ff;
+      --cyan-dim: rgba(0,212,255,0.06);
+      --cyan-mid: rgba(0,212,255,0.12);
+      --violet: #7c3aed;
+      --violet-dim: rgba(124,58,237,0.08);
+      --green: #00ff88;
+      --red: #ff3b5c;
+      --text: #e8e8f4;
+      --text2: #a0a0c0;
+      --muted: #505070;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Space Grotesk', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── SCANLINE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+    }
+
+    /* ── CANVAS ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      background: rgba(6,6,14,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,212,255,0.08);
+    }
+
+    .logo {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      background: linear-gradient(90deg, var(--cyan), #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    nav a.back {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    nav a.back:hover { color: var(--cyan); }
+
+    /* ── WRAPPER ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 88px 28px 80px;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active {
+      display: block;
+      animation: fadeUp 0.5s cubic-bezier(0.23,1,0.32,1) both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── INTRO ── */
+    .sys-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--cyan);
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sys-label::before {
+      content: '▸';
+      font-size: 8px;
+      animation: blink 1.2s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .sys-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,212,255,0.4), transparent);
+    }
+
+    .intro h1 {
+      font-family: var(--sans);
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    .intro h1 .hi {
+      background: linear-gradient(135deg, var(--cyan) 0%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .intro-sub {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text2);
+      line-height: 1.75;
+      margin-bottom: 44px;
+      max-width: 440px;
+    }
+
+    .intro-sub strong { color: var(--text); font-weight: 500; }
+
+    /* stats row */
+    .intro-stats {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 44px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item { display: flex; flex-direction: column; gap: 4px; }
+
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .btn-start {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--cyan);
+      color: #06060e;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-start::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,212,255,0.3); }
+    .btn-start:hover::after { opacity: 1; }
+    .btn-start:active { transform: translateY(0); }
+
+    .intro-footnote {
+      margin-top: 16px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-wrap {
+      margin-bottom: 44px;
+    }
+
+    .progress-bar-outer {
+      height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 1px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), #a855f7);
+      border-radius: 1px;
+      transition: width 0.5s cubic-bezier(0.23,1,0.32,1);
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .p-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .p-dot.done { background: var(--cyan); }
+    .p-dot.active { background: var(--cyan); transform: scale(1.5); }
+
+    /* ── QUESTION ── */
+    .q-category {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 14px;
+      opacity: 0.7;
+    }
+
+    .q-text {
+      font-family: var(--sans);
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .q-sub {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      margin-bottom: 28px;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── OPTIONS ── */
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 0;
+      padding: 0;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      overflow: hidden;
+      transition: border-color 0.22s ease, transform 0.18s ease, box-shadow 0.22s ease;
+    }
+
+    .option:hover {
+      border-color: rgba(0,212,255,0.2);
+      transform: translateX(2px);
+      box-shadow: -2px 0 0 var(--cyan), 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .option.selected {
+      border-color: rgba(0,212,255,0.35);
+      box-shadow: -3px 0 0 var(--cyan), 0 4px 24px rgba(0,212,255,0.08);
+      background: linear-gradient(90deg, rgba(0,212,255,0.05), var(--card));
+    }
+
+    .opt-key {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,212,255,0.04);
+      border-right: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      transition: all 0.22s ease;
+      padding: 0;
+    }
+
+    .option:hover .opt-key { color: var(--cyan); background: rgba(0,212,255,0.08); }
+    .option.selected .opt-key { color: var(--cyan); background: rgba(0,212,255,0.1); border-right-color: rgba(0,212,255,0.2); }
+
+    .opt-content {
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .opt-name {
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+
+    .opt-desc {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+      line-height: 1.5;
+    }
+
+    /* ── NEXT BUTTON ── */
+    .btn-next {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      cursor: not-allowed;
+      transition: all 0.25s cubic-bezier(0.23,1,0.32,1);
+    }
+
+    .btn-next.ready {
+      background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(124,58,237,0.08));
+      border-color: rgba(0,212,255,0.3);
+      color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .btn-next.ready:hover {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      color: #06060e;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,212,255,0.25);
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .loading-terminal {
+      display: inline-block;
+      background: var(--card);
+      border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 8px;
+      padding: 24px 32px;
+      margin-bottom: 28px;
+      min-width: 280px;
+    }
+
+    .terminal-top {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .t-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+
+    .t-dot:nth-child(1) { background: #ff3b5c; }
+    .t-dot:nth-child(2) { background: #ffd60a; }
+    .t-dot:nth-child(3) { background: #00ff88; }
+
+    .terminal-line {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--cyan);
+      text-align: left;
+      margin-bottom: 6px;
+    }
+
+    .terminal-line.dim { color: var(--muted); }
+    .terminal-cursor { display: inline-block; width: 8px; height: 12px; background: var(--cyan); animation: blink 0.8s step-end infinite; vertical-align: bottom; }
+
+    .loading-text {
+      font-family: var(--sans);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text2);
+      letter-spacing: 0.01em;
+    }
+
+    /* ── RESULT ── */
+    .result-sys {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0.8;
+    }
+
+    .result-sys::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,212,255,0.3), transparent);
+    }
+
+    /* Score ring */
+    .score-ring-wrap {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 28px;
+      position: relative;
+    }
+
+    .score-ring-wrap svg {
+      width: 160px;
+      height: 160px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 1.5; }
+    .ring-track { fill: none; stroke: rgba(0,212,255,0.06); stroke-width: 1.5; }
+    .ring-fill {
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 440;
+      transition: stroke-dashoffset 1.8s cubic-bezier(0.23,1,0.32,1);
+    }
+
+    .score-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .score-num {
+      font-family: var(--mono);
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .score-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .result-header { text-align: center; margin-bottom: 36px; }
+
+    .result-tier {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .result-title {
+      font-family: var(--sans);
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .result-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text2);
+      line-height: 1.8;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* result card */
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 24px 20px;
+      margin-bottom: 14px;
+    }
+
+    .card-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .tool-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .tool-tag {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 11px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .tool-tag.active {
+      border-color: rgba(0,212,255,0.25);
+      color: var(--cyan);
+      background: rgba(0,212,255,0.05);
+    }
+
+    /* share */
+    .share-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .btn-sh {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 0.22s ease;
+    }
+
+    .btn-sh-x {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text);
+    }
+
+    .btn-sh-x:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.18); }
+
+    .btn-sh-copy {
+      background: transparent;
+      border: 1px solid rgba(0,212,255,0.3);
+      color: var(--cyan);
+    }
+
+    .btn-sh-copy:hover { background: var(--cyan); color: #06060e; }
+    .btn-sh-copy.copied { border-color: rgba(0,255,136,0.4); color: var(--green); }
+
+    .btn-retry {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.22s ease;
+    }
+
+    .btn-retry:hover { border-color: rgba(255,255,255,0.12); color: var(--text2); }
+
+    .cta-footer {
+      text-align: center;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cta-footer p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    .cta-footer a {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--cyan);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      border-bottom: 1px solid rgba(0,212,255,0.25);
+      padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+
+    .cta-footer a:hover { border-color: var(--cyan); }
+
+    @media (max-width:520px) {
+      .wrapper { padding: 76px 16px 60px; }
+      .share-grid { grid-template-columns: 1fr; }
+      .score-ring-wrap, .score-ring-wrap svg { width: 140px; height: 140px; }
+      .score-num { font-size: 2.8rem; }
+      .intro-stats { gap: 20px; }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      *, .ring-fill { animation: none !important; transition: none !important; }
+      .screen { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <a href="https://findmyai.tech" class="logo">FindMyAI</a>
+  <a href="https://findmyai.tech" class="back">← BACK TO TOOLS</a>
+</nav>
+
+<div class="wrapper">
+
+  <!-- INTRO -->
+  <div id="screen-intro" class="screen active">
+    <p class="sys-label">AURA_STACK.SYS · 2026</p>
+    <div class="intro">
+      <h1>What's your<br><span class="hi">AI Aura</span><br>Score?</h1>
+      <p class="intro-sub">
+        6 questions. 30 seconds.<br>
+        Find out if your AI stack makes you <strong>Galaxy Brain</strong> or leaves you <strong>404 Coded</strong>.
+      </p>
+      <div class="intro-stats">
+        <div class="stat-item">
+          <span class="stat-num">104</span>
+          <span class="stat-label">AI tools indexed</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">4</span>
+          <span class="stat-label">Aura tiers</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num">30s</span>
+          <span class="stat-label">To get your score</span>
+        </div>
+      </div>
+      <button class="btn-start" onclick="startQuiz()">
+        ⚡ Check my Aura Score
+      </button>
+      <p class="intro-footnote">// FREE · NO SIGNUP · FULLY ANONYMOUS</p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screen-quiz" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progress-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-meta">
+        <span class="progress-label" id="q-meta">01 / 06</span>
+        <div class="progress-dots" id="progress-dots"></div>
+      </div>
+    </div>
+    <p class="q-category" id="q-category">CATEGORY</p>
+    <h2 class="q-text" id="q-text"></h2>
+    <p class="q-sub" id="q-sub"></p>
+    <div class="options" id="options-container"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()" disabled>
+      <span id="btn-next-label">Select an option to continue</span>
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="screen-loading" class="screen">
+    <div class="loading">
+      <div class="loading-terminal">
+        <div class="terminal-top">
+          <div class="t-dot"></div>
+          <div class="t-dot"></div>
+          <div class="t-dot"></div>
+        </div>
+        <div class="terminal-line">$ analyzing_stack.py --mode=deep</div>
+        <div class="terminal-line dim">› scanning 104 AI tools...</div>
+        <div class="terminal-line dim" id="load-line">› computing aura score...<span class="terminal-cursor"></span></div>
+      </div>
+      <p class="loading-text" id="loading-text">Calibrating your intelligence</p>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="screen">
+
+    <div class="result-header">
+      <p class="result-sys">AURA_SCORE · COMPUTED</p>
+
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 160 160">
+          <circle class="ring-bg" cx="80" cy="80" r="70"/>
+          <circle class="ring-track" cx="80" cy="80" r="70"/>
+          <circle class="ring-fill" id="ring-fill" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="score-inner">
+          <span class="score-num" id="score-number">0</span>
+          <span class="score-label">/ 100</span>
+        </div>
+      </div>
+
+      <div class="result-tier" id="result-tier">TIER</div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-desc" id="result-desc"></p>
+    </div>
+
+    <div class="result-card">
+      <p class="card-label">// Your current stack</p>
+      <div class="tool-tags" id="result-tools"></div>
+    </div>
+
+    <div class="share-grid">
+      <a id="btn-twitter" class="btn-sh btn-sh-x" href="#" target="_blank">
+        Share on X ↗
+      </a>
+      <button class="btn-sh btn-sh-copy" id="btn-copy" onclick="copyScore()">
+        <span id="copy-label">Copy link</span>
+      </button>
+    </div>
+    <button class="btn-retry" onclick="retryQuiz()">↺ Retake the quiz</button>
+
+    <div class="cta-footer">
+      <p>Upgrade your stack — browse the full AI tool directory.</p>
+      <a href="https://findmyai.tech">Explore 104 AI tools on FindMyAI →</a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// PARTICLES
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, P = [];
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function rand(a,b){ return a + Math.random()*(b-a); }
+  function mkP(){
+    return {
+      x: rand(0,W), y: rand(0,H),
+      vx: rand(-0.08,0.08), vy: rand(-0.08,0.08),
+      r: rand(0.4,1.2),
+      alpha: rand(0.04,0.18),
+      color: Math.random() > 0.55 ? '0,212,255' : '124,58,237',
+      t: rand(0,Math.PI*2), ts: rand(0.004,0.01)
+    };
+  }
+  resize();
+  for(let i=0;i<50;i++) P.push(mkP());
+  window.addEventListener('resize', resize);
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // connections
+    for(let i=0;i<P.length;i++){
+      for(let j=i+1;j<P.length;j++){
+        const a=P[i],b=P[j];
+        const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<100){
+          ctx.beginPath();
+          ctx.strokeStyle=`rgba(0,212,255,${0.03*(1-d/100)})`;
+          ctx.lineWidth=0.4;
+          ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+    }
+
+    P.forEach(p=>{
+      p.t+=p.ts; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      const a = p.alpha*(0.6+0.4*Math.sin(p.t));
+      const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*5);
+      g.addColorStop(0,`rgba(${p.color},${a})`);
+      g.addColorStop(1,`rgba(${p.color},0)`);
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*5,0,Math.PI*2);
+      ctx.fillStyle=g; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// QUIZ DATA
+const questions = [
+  {
+    category: "WRITING & REASONING",
+    text: "Your primary AI for writing and thinking?",
+    sub: "Emails, essays, research, brainstorming...",
+    options: [
+      { k:"A", name:"Claude (Anthropic)", desc:"Best for nuanced, long-form reasoning", score:20, tools:["Claude"] },
+      { k:"B", name:"ChatGPT GPT-4o",     desc:"Industry standard, most widely adopted", score:19, tools:["ChatGPT"] },
+      { k:"C", name:"Gemini Advanced",     desc:"Connected to Google Search in real time", score:16, tools:["Gemini"] },
+      { k:"D", name:"DeepSeek or Mistral", desc:"Open source, privacy-first alternatives", score:14, tools:["DeepSeek"] },
+      { k:"E", name:"Microsoft Copilot",   desc:"Integrated into Office and Windows", score:10, tools:["Microsoft Copilot"] },
+      { k:"F", name:"Nothing — I write manually", desc:"You're leaving efficiency on the table", score:0, tools:[] },
+    ]
+  },
+  {
+    category: "IMAGE GENERATION",
+    text: "How do you generate images?",
+    sub: "Visuals, art direction, thumbnails, brand assets...",
+    options: [
+      { k:"A", name:"Midjourney v6",          desc:"The gold standard for visual quality", score:20, tools:["Midjourney"] },
+      { k:"B", name:"Adobe Firefly",           desc:"Commercial-safe, deep Photoshop integration", score:17, tools:["Adobe Firefly"] },
+      { k:"C", name:"DALL-E 3 via ChatGPT",   desc:"Accessible, fast, solid results", score:15, tools:["DALL-E 3"] },
+      { k:"D", name:"Leonardo.ai or Ideogram", desc:"Strong for creative and structured work", score:14, tools:["Leonardo.ai"] },
+      { k:"E", name:"Canva AI",                desc:"Easy to use, limited creative ceiling", score:9, tools:["Canva AI"] },
+      { k:"F", name:"No image AI yet",         desc:"A significant gap in your 2026 stack", score:0, tools:[] },
+    ]
+  },
+  {
+    category: "CODE & DEVELOPMENT",
+    text: "Your development and coding setup?",
+    sub: "Writing code, debugging, shipping apps...",
+    options: [
+      { k:"A", name:"Cursor + GitHub Copilot", desc:"The elite dual-stack for serious builders", score:20, tools:["Cursor","GitHub Copilot"] },
+      { k:"B", name:"Cursor only",              desc:"AI-native IDE — solid choice", score:17, tools:["Cursor"] },
+      { k:"C", name:"GitHub Copilot in VS Code",desc:"The standard developer companion", score:15, tools:["GitHub Copilot"] },
+      { k:"D", name:"Bolt.new or Replit Agent", desc:"Prompt-to-deploy, zero setup", score:14, tools:["Bolt.new"] },
+      { k:"E", name:"Codeium or Tabnine",       desc:"Free, privacy-focused alternatives", score:12, tools:["Codeium"] },
+      { k:"F", name:"I don't code",             desc:"Fair enough — this one's neutral", score:8, tools:[] },
+    ]
+  },
+  {
+    category: "RESEARCH & INFORMATION",
+    text: "How do you research and find information?",
+    sub: "Fact-checking, reading PDFs, live web data...",
+    options: [
+      { k:"A", name:"Perplexity AI",            desc:"Citations, sources, real-time accuracy", score:20, tools:["Perplexity"] },
+      { k:"B", name:"NotebookLM",               desc:"Deep document analysis and synthesis", score:18, tools:["NotebookLM"] },
+      { k:"C", name:"Elicit for academic papers",desc:"Literature reviews and research synthesis", score:17, tools:["Elicit"] },
+      { k:"D", name:"Gemini with Search",        desc:"Always up-to-date from Google", score:16, tools:["Gemini"] },
+      { k:"E", name:"ChatPDF or Claude for PDFs",desc:"Document reading and Q&A", score:14, tools:["Claude","ChatPDF"] },
+      { k:"F", name:"Regular Google search",     desc:"Reliable, but slow in 2026", score:3, tools:[] },
+    ]
+  },
+  {
+    category: "AUDIO & VOICE",
+    text: "What's your audio and voice setup?",
+    sub: "Voice cloning, text-to-speech, music generation...",
+    options: [
+      { k:"A", name:"ElevenLabs",        desc:"The benchmark for realistic AI voice", score:20, tools:["ElevenLabs"] },
+      { k:"B", name:"Suno or Udio",      desc:"Full song generation from a single prompt", score:18, tools:["Suno","Udio"] },
+      { k:"C", name:"Murf.ai or PlayHT", desc:"Professional voiceover production", score:15, tools:["Murf.ai"] },
+      { k:"D", name:"Speechify",         desc:"Converts articles and docs to audio", score:12, tools:["Speechify"] },
+      { k:"E", name:"VoiceMod",          desc:"Real-time voice modulation and effects", score:9, tools:["VoiceMod"] },
+      { k:"F", name:"No audio AI",       desc:"Untapped creative potential", score:0, tools:[] },
+    ]
+  },
+  {
+    category: "VIDEO & CONTENT",
+    text: "Your video and content creation stack?",
+    sub: "Video generation, editing, short-form...",
+    options: [
+      { k:"A", name:"Runway Gen-3 or Kling AI", desc:"Cinematic AI video at the highest level", score:20, tools:["Runway Gen-3","Kling AI"] },
+      { k:"B", name:"HeyGen or Synthesia",       desc:"AI avatars and talking head videos", score:18, tools:["HeyGen"] },
+      { k:"C", name:"CapCut AI + Opus Clip",     desc:"Short-form content and auto viral clips", score:16, tools:["CapCut AI","Opus Clip"] },
+      { k:"D", name:"Pika Art or Hailuo AI",     desc:"Quick creative animations from prompts", score:14, tools:["Pika Art"] },
+      { k:"E", name:"InVideo AI",                desc:"Script-to-video automation", score:12, tools:["InVideo AI"] },
+      { k:"F", name:"No video AI yet",           desc:"The fastest-growing category in 2026", score:0, tools:[] },
+    ]
+  }
+];
+
+const tiers = [
+  { min:88, tier:"GALAXY BRAIN · TOP 1%", title:"Galaxy Brain Stack", desc:"You are operating at a level most people don't know exists. Your AI toolkit is complete, deliberate, and optimized. You're not just using AI — you're building compounding leverage with it every day.", scoreColor:"#00d4ff", ringColor:"#00d4ff", tierBg:"rgba(0,212,255,0.08)", tierBorder:"rgba(0,212,255,0.25)", tierColor:"#00d4ff" },
+  { min:68, tier:"BASED · TOP 10%",       title:"Based AI Operator",  desc:"Your stack is strong. You've made smart choices and you're extracting real value from AI. A couple of targeted upgrades would push you into elite territory.", scoreColor:"#a855f7", ringColor:"#a855f7", tierBg:"rgba(168,85,247,0.08)", tierBorder:"rgba(168,85,247,0.25)", tierColor:"#a855f7" },
+  { min:44, tier:"INTERMEDIATE",          title:"Leveling Up",         desc:"You've started building your stack but there are real gaps. The tools that would fill them exist — most have free plans. You're closer to the next tier than you think.", scoreColor:"#ffd60a", ringColor:"#ffd60a", tierBg:"rgba(255,214,10,0.08)", tierBorder:"rgba(255,214,10,0.2)", tierColor:"#ffd60a" },
+  { min:0,  tier:"404 CODED",             title:"404 Coded",           desc:"Your AI stack needs serious work. Every tool that would transform your workflow has a free tier. Start with one. FindMyAI will show you exactly where to begin.", scoreColor:"#ff3b5c", ringColor:"#ff3b5c", tierBg:"rgba(255,59,92,0.08)", tierBorder:"rgba(255,59,92,0.2)", tierColor:"#ff3b5c" },
+];
+
+let currentQ=0, answers=[], totalScore=0, selectedTools=[];
+const TOTAL_Q = questions.length;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+function startQuiz(){
+  currentQ=0; answers=[]; totalScore=0; selectedTools=[];
+  showScreen('quiz'); renderProgress(); renderQuestion();
+}
+
+function renderProgress(){
+  const pct = (currentQ/TOTAL_Q)*100;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('q-meta').textContent = String(currentQ+1).padStart(2,'0')+' / '+String(TOTAL_Q).padStart(2,'0');
+  const dots = document.getElementById('progress-dots');
+  dots.innerHTML='';
+  for(let i=0;i<TOTAL_Q;i++){
+    const d=document.createElement('div');
+    d.className='p-dot'+(i<currentQ?' done':i===currentQ?' active':'');
+    dots.appendChild(d);
+  }
+}
+
+function renderQuestion(){
+  const q = questions[currentQ];
+  document.getElementById('q-category').textContent = q.category;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-sub').textContent = q.sub;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `
+      <span class="opt-key">${opt.k}</span>
+      <span class="opt-content">
+        <span class="opt-name">${opt.name}</span>
+        <span class="opt-desc">${opt.desc}</span>
+      </span>
+    `;
+    btn.onclick = ()=>selectOption(i,btn);
+    container.appendChild(btn);
+  });
+
+  const nb = document.getElementById('btn-next');
+  nb.classList.remove('ready'); nb.disabled=true;
+  document.getElementById('btn-next-label').textContent='Select an option to continue';
+  answers[currentQ]=null;
+}
+
+function selectOption(idx,btn){
+  document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[currentQ]=idx;
+  const nb=document.getElementById('btn-next');
+  nb.classList.add('ready'); nb.disabled=false;
+  const isLast=currentQ===TOTAL_Q-1;
+  document.getElementById('btn-next-label').textContent=isLast?'⚡ Reveal my Aura Score':'Continue →';
+}
+
+function nextQuestion(){
+  if(answers[currentQ]===null)return;
+  const ch=questions[currentQ].options[answers[currentQ]];
+  totalScore+=ch.score;
+  if(ch.tools)selectedTools.push(...ch.tools);
+  currentQ++;
+  if(currentQ<TOTAL_Q){ renderProgress(); renderQuestion(); }
+  else{ showLoading(); }
+}
+
+const loadLines=[
+  'analyzing_stack.py --mode=deep',
+  'cross_ref_database --tools=104',
+  'computing_aura_index --verbose',
+  'generating_result.json...'
+];
+
+function showLoading(){
+  showScreen('loading');
+  let i=0;
+  const ll=document.getElementById('load-line');
+  const lt=document.getElementById('loading-text');
+  const msgs=['Calibrating your intelligence','Analyzing toolkit depth','Cross-referencing 104 AI tools','Computing your Aura Score'];
+  const iv=setInterval(()=>{
+    i++;
+    if(i<loadLines.length){ ll.innerHTML=`› ${loadLines[i]}<span class="terminal-cursor"></span>`; }
+    lt.textContent=msgs[i%msgs.length];
+  },650);
+  setTimeout(()=>{ clearInterval(iv); showResult(); },2700);
+}
+
+function showResult(){
+  const maxP=questions.reduce((s,q)=>s+Math.max(...q.options.map(o=>o.score)),0);
+  const final=Math.min(100,Math.round((totalScore/maxP)*100));
+  const tier=tiers.find(t=>final>=t.min)||tiers[tiers.length-1];
+
+  // ring
+  const ring=document.getElementById('ring-fill');
+  ring.style.stroke=tier.ringColor;
+  const circ=2*Math.PI*70;
+  ring.style.strokeDasharray=circ;
+  ring.style.strokeDashoffset=circ;
+
+  // tier badge
+  const tierEl=document.getElementById('result-tier');
+  tierEl.textContent=tier.tier;
+  tierEl.style.background=tier.tierBg;
+  tierEl.style.border=`1px solid ${tier.tierBorder}`;
+  tierEl.style.color=tier.tierColor;
+
+  const scoreEl=document.getElementById('score-number');
+  scoreEl.style.color=tier.scoreColor;
+  scoreEl.textContent='0';
+
+  document.getElementById('result-title').textContent=tier.title;
+  document.getElementById('result-desc').textContent=tier.desc;
+
+  showScreen('result');
+
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      ring.style.strokeDashoffset=circ-(final/100)*circ;
+      let count=0; const step=Math.ceil(final/50);
+      const iv=setInterval(()=>{ count=Math.min(count+step,final); scoreEl.textContent=count; if(count>=final)clearInterval(iv); },32);
+    },100);
+  });
+
+  // tools
+  const toolsEl=document.getElementById('result-tools'); toolsEl.innerHTML='';
+  const unique=[...new Set(selectedTools)];
+  if(!unique.length){const c=document.createElement('span');c.className='tool-tag';c.textContent='No tools selected';toolsEl.appendChild(c);}
+  else{unique.forEach(t=>{const c=document.createElement('span');c.className='tool-tag active';c.textContent=t;toolsEl.appendChild(c);});}
+
+  const tweet=encodeURIComponent(`My AI Aura Score: ${final}/100 — ${tier.title}\n\nCheck yours 👇\nhttps://findmyai.tech/my-stack.html\n\n#AItools #aurafarming #findmyai`);
+  document.getElementById('btn-twitter').href=`https://twitter.com/intent/tweet?text=${tweet}`;
+}
+
+function copyScore(){
+  const score=document.getElementById('score-number').textContent;
+  const tier=document.getElementById('result-title').textContent;
+  const text=`My AI Aura Score: ${score}/100 — ${tier}\nhttps://findmyai.tech/my-stack.html #findmyai`;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('btn-copy');
+    btn.classList.add('copied');
+    document.getElementById('copy-label').textContent='Copied ✓';
+    setTimeout(()=>{ btn.classList.remove('copied'); document.getElementById('copy-label').textContent='Copy link'; },2500);
+  }).catch(()=>alert(text));
+}
+
+function retryQuiz(){ startQuiz(); }
+</script>
+</body>
+</html>
