@@ -3,50 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Best AI Tools for Developers in 2026 | FindMyAI</title>
-  <meta name="description" content="The AI tools that actually make a difference in your dev workflow in 2026, from code completion to terminal intelligence." />
-  <link rel="icon" href="/favicon.ico" />
+  <title>FindMyAI | Find the Best AI Tool for Any Task</title>
+  <meta name="description" content="Search 100+ AI tools and instantly find the right one for your task. Free, no signup required." />
+  <meta property="og:title" content="FindMyAI | Find the Best AI Tool for Any Task" />
+  <meta property="og:description" content="Search 100+ AI tools and instantly find the right one for your task. Free, no signup required." />
+  <meta property="og:url" content="https://findmyai.tech" />
+  <link rel="canonical" href="https://findmyai.tech/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0d0d14;
-      --surface: #13131f;
-      --border: #1e1e30;
+      --bg: #09090f;
+      --surface: #111118;
+      --border: #1c1c2e;
       --cyan: #00d4ff;
       --violet: #a855f7;
-      --cyan-dim: rgba(0, 212, 255, 0.08);
-      --violet-dim: rgba(168, 85, 247, 0.08);
       --text: #e8e8f0;
-      --muted: #7a7a9a;
-      --tag-bg: #1a1a2e;
+      --muted: #6b6b8a;
+      --soft: #2a2a3e;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Inter', sans-serif;
       font-size: 16px;
-      line-height: 1.75;
+      line-height: 1.7;
+      overflow-x: hidden;
     }
 
-    /* NAV */
+    /* ─── NAV ─── */
     nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 40px;
+      padding: 18px 48px;
+      background: rgba(9,9,15,0.85);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: rgba(13,13,20,0.92);
-      backdrop-filter: blur(10px);
-      z-index: 100;
     }
 
-    .wordmark {
+    .logo {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
       font-size: 20px;
@@ -56,249 +60,533 @@
       text-decoration: none;
     }
 
-    nav a.back {
-      font-size: 13px;
-      color: var(--muted);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.2s;
-    }
-    nav a.back:hover { color: var(--cyan); }
-
-    /* HERO */
-    .hero {
-      max-width: 720px;
-      margin: 64px auto 48px;
-      padding: 0 24px;
-    }
-
-    .eyebrow {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--cyan);
-      margin-bottom: 16px;
-    }
-
-    h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(28px, 5vw, 44px);
-      font-weight: 700;
-      line-height: 1.15;
-      margin-bottom: 20px;
-      color: #fff;
-    }
-
-    h1 span {
-      background: linear-gradient(90deg, var(--cyan), var(--violet));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .meta {
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, var(--cyan), var(--violet), transparent);
-      margin: 40px 0;
-      opacity: 0.3;
-    }
-
-    /* ARTICLE */
-    article {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 24px 80px;
-    }
-
-    .intro {
-      font-size: 17px;
-      color: #b0b0c8;
-      margin-bottom: 48px;
-      line-height: 1.8;
-    }
-
-    /* TOOL CARD */
-    .tool-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 32px;
-      margin-bottom: 20px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s;
-    }
-
-    .tool-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: linear-gradient(180deg, var(--cyan), var(--violet));
-      border-radius: 3px 0 0 3px;
-    }
-
-    .tool-card:hover {
-      border-color: rgba(0, 212, 255, 0.25);
-    }
-
-    .tool-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .tool-name {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .tool-tag {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: var(--cyan-dim);
-      color: var(--cyan);
-      border: 1px solid rgba(0, 212, 255, 0.15);
-    }
-
-    .tool-tag.violet {
-      background: var(--violet-dim);
-      color: #c084fc;
-      border-color: rgba(168, 85, 247, 0.15);
-    }
-
-    .tool-card p {
-      color: #9090b0;
-      font-size: 15px;
-      line-height: 1.75;
-    }
-
-    /* CONCLUSION */
-    .conclusion {
-      margin-top: 48px;
-      padding: 32px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(0,212,255,0.04), rgba(168,85,247,0.04));
-      text-align: center;
-    }
-
-    .conclusion p {
-      color: var(--muted);
-      font-size: 15px;
-      margin-bottom: 20px;
-    }
-
-    .cta-btn {
-      display: inline-block;
-      padding: 12px 28px;
+    .nav-cta {
+      padding: 9px 22px;
       border-radius: 8px;
       background: linear-gradient(90deg, var(--cyan), var(--violet));
-      color: #0d0d14;
+      color: #09090f;
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
       font-size: 14px;
       text-decoration: none;
       transition: opacity 0.2s;
     }
-    .cta-btn:hover { opacity: 0.85; }
+    .nav-cta:hover { opacity: 0.85; }
 
-    @media (max-width: 600px) {
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ambient glow */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 20%; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(0,212,255,0.08) 0%, rgba(168,85,247,0.06) 50%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      border: 1px solid rgba(0,212,255,0.2);
+      background: rgba(0,212,255,0.05);
+      font-size: 13px;
+      color: var(--cyan);
+      font-weight: 500;
+      margin-bottom: 32px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); display: inline-block; animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 800px;
+      margin-bottom: 24px;
+      color: #fff;
+    }
+
+    h1 .gradient {
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 44px;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 64px;
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      color: #09090f;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-secondary {
+      padding: 14px 32px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: border-color 0.2s;
+      background: transparent;
+    }
+    .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* stats row */
+    .stats {
+      display: flex;
+      gap: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 96px 24px; }
+
+    .container { max-width: 1080px; margin: 0 auto; }
+
+    .section-eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 540px;
+      margin: 0 auto 64px;
+    }
+
+    /* ─── PROBLEM ─── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .problem-card {
+      padding: 28px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .problem-icon { font-size: 28px; margin-bottom: 14px; }
+    .problem-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .problem-card p { color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+    /* ─── SOLUTION ─── */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .solution-card {
+      padding: 32px 28px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .solution-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+    }
+
+    .solution-card:hover { border-color: rgba(0,212,255,0.3); }
+
+    .solution-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .solution-card p { color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+    /* ─── HOW IT WORKS ─── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 32px; left: calc(16.66% + 16px); right: calc(16.66% + 16px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      opacity: 0.3;
+    }
+
+    .step { text-align: center; padding: 0 24px; }
+
+    .step-number {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(168,85,247,0.1));
+      border-color: rgba(0,212,255,0.2);
+      color: var(--cyan);
+    }
+
+    .step h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .step p { color: var(--muted); font-size: 14px; }
+
+    /* ─── TRUST ─── */
+    .trust-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      text-align: center;
+    }
+
+    .trust-item .trust-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .trust-item p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+    /* ─── CTA FINAL ─── */
+    .cta-section {
+      text-align: center;
+      padding: 96px 24px;
+    }
+
+    .cta-box {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 64px 48px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(0,212,255,0.04), rgba(168,85,247,0.06));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center top, rgba(0,212,255,0.06), transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-box h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+
+    .cta-box p {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 36px;
+    }
+
+    .cta-note {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    footer .logo { font-size: 16px; }
+    footer p { font-size: 13px; color: var(--muted); }
+    footer a { color: var(--muted); text-decoration: none; font-size: 13px; }
+    footer a:hover { color: var(--cyan); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
       nav { padding: 16px 20px; }
-      .tool-card { padding: 20px; }
+      .steps { grid-template-columns: 1fr; gap: 40px; }
+      .steps::before { display: none; }
+      .cta-box { padding: 40px 24px; }
+      footer { padding: 24px 20px; flex-direction: column; text-align: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
 <body>
 
+  <!-- NAV -->
   <nav>
-    <a href="/" class="wordmark">FindMyAI</a>
-    <a href="https://findmyai.tech" class="back">← Back to search</a>
+    <a href="https://findmyai.tech" class="logo">FindMyAI</a>
+    <a href="https://findmyai.tech" class="nav-cta">Try it free</a>
   </nav>
 
-  <div class="hero">
-    <div class="eyebrow">Blog / Developer Tools</div>
-    <h1>Best AI Tools for <span>Developers</span> in 2026</h1>
-    <div class="meta">
-      <span>June 2026</span>
-      <span>·</span>
-      <span>5 min read</span>
-      <span>·</span>
-      <span>FindMyAI</span>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span></span> 100+ AI tools indexed
     </div>
-  </div>
-
-  <article>
-    <div class="divider"></div>
-
-    <p class="intro">
-      If you're a developer in 2026 and you're not using AI in your workflow, you're probably spending twice as long on things that could take minutes. But with hundreds of tools out there, it's hard to know which ones are actually worth it. Here are the ones that make a real difference.
-    </p>
-
-    <div class="tool-card">
-      <div class="tool-header">
-        <span class="tool-name">GitHub Copilot</span>
-        <span class="tool-tag">Code completion</span>
+    <h1>Find the right AI tool<br><span class="gradient">in seconds</span></h1>
+    <p class="hero-sub">Stop wasting time comparing hundreds of AI tools. Search once, find the perfect match for your task.</p>
+    <div class="hero-actions">
+      <a href="https://findmyai.tech" class="btn-primary">Search AI tools free</a>
+      <a href="https://findmyai.tech/blog/best-ai-tools-for-developers.html" class="btn-secondary">Read the blog</a>
+    </div>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">100+</div>
+        <div class="stat-label">AI tools indexed</div>
       </div>
-      <p>Still the go-to for inline code completion. It lives inside your editor, understands context across your files, and saves a ridiculous amount of time on boilerplate. Not perfect, but nothing comes close for day-to-day coding.</p>
-    </div>
-
-    <div class="tool-card">
-      <div class="tool-header">
-        <span class="tool-name">Cursor</span>
-        <span class="tool-tag violet">AI IDE</span>
+      <div class="stat-item">
+        <div class="stat-number">18</div>
+        <div class="stat-label">Languages supported</div>
       </div>
-      <p>What happens when you build an entire IDE around AI. You can chat with your codebase, ask it to refactor functions, explain errors. It feels like pair programming with someone who never gets tired.</p>
-    </div>
-
-    <div class="tool-card">
-      <div class="tool-header">
-        <span class="tool-name">Claude</span>
-        <span class="tool-tag">Reasoning</span>
+      <div class="stat-item">
+        <div class="stat-number">Free</div>
+        <div class="stat-label">No signup needed</div>
       </div>
-      <p>The one developers reach for when they need to think through architecture, debug something tricky, or write documentation. Better at long reasoning tasks than most alternatives.</p>
     </div>
+  </section>
 
-    <div class="tool-card">
-      <div class="tool-header">
-        <span class="tool-name">Tabnine</span>
-        <span class="tool-tag violet">Privacy-first</span>
+  <!-- PROBLEM -->
+  <section>
+    <div class="container">
+      <div class="section-eyebrow">The problem</div>
+      <h2 class="section-title">Too many AI tools, not enough time</h2>
+      <p class="section-sub">New AI tools launch every day. Finding the right one has become a job in itself.</p>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-icon">😵</div>
+          <h3>Tool overload</h3>
+          <p>There are thousands of AI tools out there. No one has time to test them all before finding what works.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🔎</div>
+          <h3>Generic search results</h3>
+          <p>Google shows you listicles from 2023. You need something that actually understands your task.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">💸</div>
+          <h3>Wasted subscriptions</h3>
+          <p>Paying for tools that don't fit your workflow because discovery is broken.</p>
+        </div>
       </div>
-      <p>A solid Copilot alternative if you want something that runs locally and keeps your code private. Worth considering for professional or enterprise work.</p>
     </div>
+  </section>
 
-    <div class="tool-card">
-      <div class="tool-header">
-        <span class="tool-name">Warp</span>
-        <span class="tool-tag">Terminal</span>
+  <!-- SOLUTION -->
+  <section>
+    <div class="container">
+      <div class="section-eyebrow">The solution</div>
+      <h2 class="section-title">One search. The right tool.</h2>
+      <p class="section-sub">FindMyAI understands what you need and surfaces the tools that actually match.</p>
+      <div class="solution-grid">
+        <div class="solution-card">
+          <h3>Smart search</h3>
+          <p>Describe your task in plain language. FindMyAI figures out what you need, not just the keywords.</p>
+        </div>
+        <div class="solution-card">
+          <h3>Curated results</h3>
+          <p>100+ tools hand-picked and categorized. No spam, no outdated tools, no paid placements.</p>
+        </div>
+        <div class="solution-card">
+          <h3>Filter and compare</h3>
+          <p>Sort by rating, use case, or pricing model. Save your favorites and come back anytime.</p>
+        </div>
+        <div class="solution-card">
+          <h3>Always up to date</h3>
+          <p>New tools added regularly. Ratings reflect real usage, not marketing budgets.</p>
+        </div>
       </div>
-      <p>Turns your terminal into something almost intelligent: AI command suggestions, natural language search, built-in docs. If you spend a lot of time in the terminal, it's a no-brainer.</p>
     </div>
+  </section>
 
-    <div class="conclusion">
-      <p>These tools won't replace you, but they'll make you significantly faster. Search and compare all of them on FindMyAI.</p>
-      <a href="https://findmyai.tech" class="cta-btn">Find your AI tool →</a>
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="container">
+      <div class="section-eyebrow">How it works</div>
+      <h2 class="section-title">Three steps to your AI tool</h2>
+      <p class="section-sub">No account, no friction. Just results.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Describe your task</h3>
+          <p>Type what you want to do — "write emails faster", "generate images", "transcribe audio".</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Browse matches</h3>
+          <p>See ranked results with ratings, categories, and pricing at a glance.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Pick and start</h3>
+          <p>Click through to the tool directly. No middlemen, no affiliate walls.</p>
+        </div>
+      </div>
     </div>
+  </section>
 
-  </article>
+  <!-- TRUST -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="trust-number">100+</div>
+          <p>AI tools indexed across every category</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-number">18</div>
+          <p>Languages for the search engine</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-number">0€</div>
+          <p>Cost to use. Free forever, no signup.</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-number">1</div>
+          <p>Solo founder building this in the open</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2>Find your AI tool right now</h2>
+      <p>Takes 10 seconds. No account, no credit card, no spam.</p>
+      <a href="https://findmyai.tech" class="btn-primary">Search for free</a>
+      <p class="cta-note">Used by people in 30+ countries</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="https://findmyai.tech" class="logo">FindMyAI</a>
+    <p>Built by a solo founder. <a href="mailto:contactfindmyai@gmail.com">Contact</a></p>
+    <a href="https://findmyai.tech/blog/best-ai-tools-for-developers.html">Blog</a>
+  </footer>
 
 </body>
 </html>
