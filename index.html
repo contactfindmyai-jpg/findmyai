@@ -8,7 +8,7 @@
     <!-- SEO: Primary Meta Tags -->
     <title>FindMyAI | Find the Best AI Tool for Any Task - AI Search Engine</title>
     <meta name="description" content="FindMyAI helps you instantly find the best AI tool for any task. Search 100+ AI tools including ChatGPT, Midjourney, Claude, and more. Free AI recommendation engine, no signup required.">
-    <meta name="keywords" content="find AI tool, best AI tools, AI search engine, AI recommendation, ChatGPT alternatives, AI for images, AI for writing, AI for coding, AI tools 2026, artificial intelligence tools">
+    <meta name="keywords" content="find AI tool, best AI tools, AI search engine, AI tool finder, AI tool directory 2026, AI recommendation, ChatGPT alternatives, AI for images, AI for writing, AI for coding, AI tools 2026, best free AI tools, artificial intelligence tools">
     <meta name="author" content="FindMyAI">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://findmyai.tech/">
@@ -19,6 +19,10 @@
     <meta property="og:title" content="FindMyAI | Find the Best AI Tool for Any Task">
     <meta property="og:description" content="Search 100+ AI tools and instantly get personalized recommendations. Free, no signup. Find the perfect AI for images, writing, coding, video and more.">
     <meta property="og:site_name" content="FindMyAI">
+    <meta property="og:image" content="https://findmyai.tech/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="https://findmyai.tech/og-image.png">
 
     <!-- SEO: Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -69,17 +73,9 @@
     <!-- Google Fonts for premium tech aesthetics -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- 
-        ========================================================================
-        [GOOGLE ADSENSE HEADER CODE PLACEHOLDER]
-        Replace this comment with your global AdSense script:
-        
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
-             crossorigin="anonymous"></script>
-        ========================================================================
-    -->
+
 
     <style>
         /* --- DESIGN SYSTEM & CSS VARIABLES --- */
@@ -101,7 +97,7 @@
             --border-glow-focus: rgba(6, 182, 212, 0.5);
             
             --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-heading: 'Outfit', sans-serif;
+            --font-heading: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
         }
 
@@ -2073,6 +2069,93 @@
             padding: 0.3rem 0.75rem;
             border-radius: 20px;
         }
+
+        /* ── SCROLL TO TOP ── */
+        #scroll-top-btn {
+            position: fixed;
+            bottom: 110px;
+            right: 1.5rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        #scroll-top-btn:hover {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,212,255,0.3);
+        }
+        #scroll-top-btn.visible { display: flex; }
+
+        /* ── SHARE BUTTON ── */
+        .share-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            border-radius: 10px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 0.35rem 0.75rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: 0.5rem;
+            font-family: var(--font-body);
+        }
+        .share-btn:hover {
+            background: rgba(0,212,255,0.08);
+            border-color: rgba(0,212,255,0.25);
+            color: var(--accent-cyan);
+        }
+        .share-btn.copied {
+            background: rgba(48,209,88,0.1);
+            border-color: rgba(48,209,88,0.3);
+            color: #30d158;
+        }
+
+        /* ── PRICING BADGE ── */
+        .pricing-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.18rem 0.5rem;
+            border-radius: 6px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .pricing-free {
+            background: rgba(48,209,88,0.1);
+            border: 1px solid rgba(48,209,88,0.25);
+            color: #30d158;
+        }
+        .pricing-freemium {
+            background: rgba(0,212,255,0.08);
+            border: 1px solid rgba(0,212,255,0.2);
+            color: var(--accent-cyan);
+        }
+        .pricing-paid {
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.2);
+            color: var(--accent-gold);
+        }
+
     </style>
 </head>
 <body>
@@ -2127,7 +2210,7 @@
         <!-- Hero text -->
         <section class="hero" id="hero-section">
             <h1 id="hero-title">Find the best AI tool for <span>any task</span></h1>
-            <p id="hero-subtitle">Describe what you want to accomplish, and our intelligent algorithm will select and rank the best AI tools on the market.</p>
+            <p id="hero-subtitle">Describe what you want to accomplish, and our intelligent algorithm will select and rank the best AI tools of 2026.</p>
         </section>
 
         <!-- Search input box -->
@@ -2254,8 +2337,8 @@
             <div class="ad-content">
                 <div class="ad-promo-box">
                     <div class="ad-illustration-placeholder"></div>
-                    <h3 class="ad-title" id="ad-title-premium">FindMyAI Premium 👑</h3>
-                    <p class="ad-text" id="ad-desc-premium">Get rid of ads and get 10x faster recommendations by directly accessing our premium API.</p>
+                    <h3 class="ad-title" id="ad-title-premium">ElevenLabs — Clone Your Voice 🎙️</h3>
+                    <p class="ad-text" id="ad-desc-premium">The #1 AI voice generator. Realistic text-to-speech, voice cloning and dubbing in 30+ languages. Free plan available.</p>
                 </div>
                 <p style="font-size: 0.8rem; color: var(--text-muted);" id="ad-status-premium">Your search results are ready and will load after the ad.</p>
             </div>
@@ -2272,13 +2355,13 @@
         <div class="banner-ad-container">
             <span class="banner-ad-tag" id="ad-label-banner">Advertisement</span>
             <div class="banner-ad-info">
-                <span class="banner-ad-logo">🚀</span>
+                <span class="banner-ad-logo">🎙️</span>
                 <div>
-                    <h4 class="banner-ad-title" id="banner-ad-title-text">Deploy AI models on CloudGPU</h4>
-                    <p class="banner-ad-desc" id="banner-ad-desc-text">RTX 4090/A100 GPU servers starting at $0.15/hour. Get $50 free credit.</p>
+                    <h4 class="banner-ad-title" id="banner-ad-title-text">ElevenLabs — Best AI Voice Generator</h4>
+                    <p class="banner-ad-desc" id="banner-ad-desc-text">Clone your voice in seconds. 1M+ creators trust ElevenLabs. Free plan available.</p>
                 </div>
             </div>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="banner-ad-btn" id="banner-ad-btn-text">
+            <a href="https://elevenlabs.io/?via=findmyai" target="_blank" rel="noopener noreferrer" class="banner-ad-btn" id="banner-ad-btn-text">
                 Get Offer →
             </a>
         </div>
@@ -2316,14 +2399,14 @@
         <div class="blog-grid">
             <a class="blog-card" href="#" onclick="fillAndSearch('generate images'); document.getElementById('results-wrapper').scrollIntoView({behavior:'smooth'}); return false;">
                 <div class="blog-card-category">🎨 Image Generation</div>
-                <h3>Best AI Image Generators in 2025</h3>
+                <h3>Best AI Image Generators in 2026</h3>
                 <p>Midjourney, DALL-E 3, Ideogram, Leonardo — which one is right for your project? We break it down.</p>
                 <div class="blog-card-footer">
                     <span>5 tools compared</span>
                     <span class="blog-card-cta">Find the best →</span>
                 </div>
             </a>
-            <a class="blog-card" href="#" onclick="fillAndSearch('write code faster'); document.getElementById('results-wrapper').scrollIntoView({behavior:'smooth'}); return false;">
+            <a class="blog-card" href="/blog/best-ai-tools-for-developers.html" target="_blank">
                 <div class="blog-card-category">💻 Coding</div>
                 <h3>Top AI Coding Assistants for Developers</h3>
                 <p>GitHub Copilot vs Cursor vs Codeium — find the AI that fits your workflow and boosts your productivity.</p>
@@ -2343,7 +2426,7 @@
             </a>
             <a class="blog-card" href="#" onclick="fillAndSearch('clone my voice'); document.getElementById('results-wrapper').scrollIntoView({behavior:'smooth'}); return false;">
                 <div class="blog-card-category">🎙️ Voice & Audio</div>
-                <h3>Best AI Voice Cloning Tools in 2025</h3>
+                <h3>Best AI Voice Cloning Tools in 2026</h3>
                 <p>ElevenLabs, PlayHT, Murf.ai — create ultra-realistic voices for podcasts, videos, and apps.</p>
                 <div class="blog-card-footer">
                     <span>5 tools compared</span>
@@ -2375,7 +2458,7 @@
         <a href="#" class="footer-logo" onclick="resetSearch(event)">
             FindMyAI<span class="logo-dot"></span>
         </a>
-        <p id="footer-tagline">FindMyAI — Find the perfect AI for every task.</p>
+        <p id="footer-tagline">FindMyAI, the search engine for AI tools.</p>
         <div class="footer-links">
             <a onclick="openInfoModal('about')" id="footer-about-link">About</a>
             <a onclick="openInfoModal('privacy')" id="footer-privacy-link">Privacy Policy</a>
@@ -2413,6 +2496,10 @@
         <a id="download-sitemap" href="#"></a>
     </div>
 
+
+    <!-- Scroll to Top -->
+    <button id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
     <!-- Admin Floating Button (FIX 4) -->
     <button id="admin-seo-btn" class="admin-seo-btn" onclick="downloadSEOFiles()">
         ⬇ Download SEO Files
@@ -2423,7 +2510,7 @@
         /* --- 104 AI TOOLS STATIC DATABASE --- */
         const aiDatabase = [
             // Assistants & Chatbots
-            { name: "ChatGPT", emoji: "https://www.google.com/s2/favicons?domain=openai.com&sz=64", url: "https://chat.openai.com", description: "The industry-standard conversational AI by OpenAI. Ideal for drafting text, solving math, and writing code.", category: "Text & Chat", useCases: ["Text writing", "Coding assistant", "Translation", "Q&A"], keywords: ["chatgpt", "chat gpt", "chatgbt", "chat-gpt", "chatgtp", "chagtpt", "gpt4", "gpt-4", "gpt 4", "openai chat", "chatgpt4", "gpt", "chat", "conversation", "question", "repondre", "aide", "assistant", "texte", "rediger", "ecrire", "resume", "analyse", "code", "traduction", "expliquer", "cv", "lettre de motivation", "dissertation", "email", "rapport", "recette", "idees", "brainstorm", "plan", "strategie", "conseils", "aide devoirs", "cours", "apprendre", "expliquer comme a un enfant", "je veux apprendre", "aider mon fils ses devoirs", "quiz", "questions reponses", "recherche", "rediger email professionnel", "ecrire une lettre", "faire un plan", "trouver des idees", "resoudre probleme", "expliquer concept", "write for me", "help me write", "write an email", "draft message", "rephrase", "summarize", "translate", "explain", "homework help", "essay", "cover letter", "resume", "job application", "business plan", "travel itinerary", "gift ideas", "party planning", "study notes", "exam preparation", "language learning", "contract draft", "legal question", "medical question", "social media caption", "product description", "seo text", "blog post", "newsletter", "sales pitch", "wedding speech", "bedtime story", "recipe", "how to", "what is", "explain to me", "help me understand", "チャット", "質問", "회화", "محادثة", "बातचीत", "gespräch", "conversa", "conversacion", "ia conversationnelle", "assistant ia", "meilleure ia", "ia gratuite", "chatbot", "intelligence artificielle", "gpt5", "gpt-5", "ai for homework", "ai for work", "ai for study", "ai for writing", "ai for coding", "ai for business", "best ai chatbot", "ai assistant free", "ia pour travailler", "ia pour etudier", "ia pour ecrire", "ia pour coder", "ia meilleure gratuite", "meilleure ia gratuite", "ia pour tout", "ia polyvalente", "chatgpt gratuit", "gpt gratuit", "openai gratuit", "tell me about chatgpt", "how do i use chatgpt", "ia pour rediger mon cv", "ia pour ecrire ma lettre de motivation", "ia pour m aider au travail", "ia pour mes emails", "ia qui ecrit pour moi", "tool to write emails", "ai writing tool", "ai text generator", "ai content generator", "ai that writes for you", "herramienta para escribir", "herramienta ia escritura", "werkzeug zum schreiben", "strumento scrittura ia", "comment utiliser chatgpt", "ia pour rediger", "ia pour analyser", "كيفية استخدام الذكاء الاصطناعي", "أفضل ذكاء اصطناعي مجاني", "AIを使って文章を書く", "무료 AI 글쓰기", "免费AI写作工具", "free ai writing", "free ai chatbot", "free ai assistant", "best free ai", "best ai 2025", "most popular ai tool", "ai instead of google", "ia gagner du temps", "ia automatiser", "ia productivite"] },
+            { name: "ChatGPT", emoji: "https://www.google.com/s2/favicons?domain=openai.com&sz=64", url: "https://chat.openai.com", description: "The industry-standard conversational AI by OpenAI. Ideal for drafting text, solving math, and writing code.", category: "Text & Chat", useCases: ["Text writing", "Coding assistant", "Translation", "Q&A"], keywords: ["chatgpt", "chat gpt", "chatgbt", "chat-gpt", "chatgtp", "chagtpt", "gpt4", "gpt-4", "gpt 4", "openai chat", "chatgpt4", "gpt", "chat", "conversation", "question", "repondre", "aide", "assistant", "texte", "rediger", "ecrire", "resume", "analyse", "code", "traduction", "expliquer", "cv", "lettre de motivation", "dissertation", "email", "rapport", "recette", "idees", "brainstorm", "plan", "strategie", "conseils", "aide devoirs", "cours", "apprendre", "expliquer comme a un enfant", "je veux apprendre", "aider mon fils ses devoirs", "quiz", "questions reponses", "recherche", "rediger email professionnel", "ecrire une lettre", "faire un plan", "trouver des idees", "resoudre probleme", "expliquer concept", "write for me", "help me write", "write an email", "draft message", "rephrase", "summarize", "translate", "explain", "homework help", "essay", "cover letter", "resume", "job application", "business plan", "travel itinerary", "gift ideas", "party planning", "study notes", "exam preparation", "language learning", "contract draft", "legal question", "medical question", "social media caption", "product description", "seo text", "blog post", "newsletter", "sales pitch", "wedding speech", "bedtime story", "recipe", "how to", "what is", "explain to me", "help me understand", "チャット", "質問", "회화", "محادثة", "बातचीत", "gespräch", "conversa", "conversacion", "ia conversationnelle", "assistant ia", "meilleure ia", "ia gratuite", "chatbot", "intelligence artificielle", "gpt5", "gpt-5", "ai for homework", "ai for work", "ai for study", "ai for writing", "ai for coding", "ai for business", "best ai chatbot", "ai assistant free", "ia pour travailler", "ia pour etudier", "ia pour ecrire", "ia pour coder", "ia meilleure gratuite", "meilleure ia gratuite", "ia pour tout", "ia polyvalente", "chatgpt gratuit", "gpt gratuit", "openai gratuit", "tell me about chatgpt", "how do i use chatgpt", "ia pour rediger mon cv", "ia pour ecrire ma lettre de motivation", "ia pour m aider au travail", "ia pour mes emails", "ia qui ecrit pour moi", "tool to write emails", "ai writing tool", "ai text generator", "ai content generator", "ai that writes for you", "herramienta para escribir", "herramienta ia escritura", "werkzeug zum schreiben", "strumento scrittura ia", "comment utiliser chatgpt", "ia pour rediger", "ia pour analyser", "كيفية استخدام الذكاء الاصطناعي", "أفضل ذكاء اصطناعي مجاني", "AIを使って文章を書く", "무료 AI 글쓰기", "免费AI写作工具", "free ai writing", "free ai chatbot", "free ai assistant", "best free ai", "best ai 2026", "most popular ai tool", "ai instead of google", "ia gagner du temps", "ia automatiser", "ia productivite"] },
             { name: "Claude", emoji: "https://www.google.com/s2/favicons?domain=claude.ai&sz=64", url: "https://claude.ai", description: "Anthropic's safety-first chatbot. Highly regarded for long-form reading, PDF analysis, and clean programming capabilities.", category: "Text & Chat", useCases: ["Long texts", "PDF file analysis", "Clean coding", "Technical reasoning"], keywords: ["claude", "claud", "clode", "cloude", "claude ai", "anthropic claude", "claude 3", "claude 4", "claude sonnet", "claude opus", "anthropic", "long document", "document analysis", "legal review", "research paper", "scientific explanation", "ethical question", "philosophical discussion", "complex reasoning", "nuanced writing", "sensitive topic", "detailed summary", "book analysis", "contract review", "business strategy", "market analysis", "competitive research", "coding", "writing", "analysis", "ia ethique", "ia sure", "ia bienveillante", "alternative chatgpt", "meilleure ia pour ecrire", "ia pour analyser documents", "ia pour code", "long context", "100k context", "large context window", "safe ai", "helpful ai", "intelligent ai", "クロード", "클로드", "كلود", "क्लॉड", "analyser un long document", "ia pour lire un pdf", "ia pour contrats juridiques", "ia raisonnement complexe", "meilleure ia pour analyser", "ia pour theses", "analyze long text ai", "ai for legal documents", "ai for research papers", "ai for thesis", "ai that reads pdf", "chat with pdf ai", "ai for complex reasoning", "best ai for writing", "best ai for analysis", "ai for lawyers", "ia pour juristes", "ia pour consultants", "claude gratuit", "claude free", "claude vs chatgpt", "quelle ia choisir", "best ai for long context", "ia meilleure que chatgpt", "better than chatgpt", "alternative to chatgpt"] },
             { name: "Gemini", emoji: "https://www.google.com/s2/favicons?domain=gemini.google.com&sz=64", url: "https://gemini.google.com", description: "Google's multimodal assistant, connected to Google Search to access current facts and search results.", category: "Text & Chat", useCases: ["Real-time search", "Image analysis", "Google workspace tools", "Quick search answers"], keywords: ["gemini", "gemeny", "gemnii", "gemenii", "google gemini", "bard", "google bard", "google ai", "gemini ultra", "gemini pro", "gemini nano", "google assistant ai", "recherche google ia", "multimodal", "actualites", "news", "recherche web", "information recente", "google search ai", "youtube ia", "gmail ia", "docs ia", "google workspace ai", "google integration", "real time information", "current events", "latest news", "ia google", "recherche avancee", "gemini advanced", "google ia gratuit", "ia google gratuit", "google ai free", "ia connectee a internet", "ai with internet access", "ai real time search", "ia pour actualites", "ai for news", "gmail ai assistant", "google docs ai", "gemini gratuit", "gemini free", "google bard ia", "ia multimodale", "multimodal ai free", "ia voir des images", "ai that sees images", "ai image analysis", "谷歌AI", "구글 AI", "جوجل الذكاء الاصطناعي", "グーグルAI"] },
             { name: "DeepSeek", emoji: "https://www.google.com/s2/favicons?domain=deepseek.com&sz=64", url: "https://deepseek.com", description: "Ultra-fast and cost-effective reasoning AI, known for deep coding analysis and advanced logical math parsing.", category: "Text & Chat", useCases: ["Advanced reasoning", "Deep coding", "Logic & Math", "Fast generation"], keywords: ["deepseek", "raisonnement", "logique", "maths", "rapide", "code", "open source", "deep seek", "razonamiento", "codigo", "matematicas", "barato", "ia open source gratuit", "free open source ai", "ai chinois gratuit", "chinese ai free", "deepseek gratuit", "deepseek free", "ia pour mathematiques", "ai for math", "ai math solver", "ia raisonnement avance", "ai advanced reasoning", "ia moins chere que chatgpt", "ia coder gratuitement", "free coding ai", "meilleure ia open source", "best open source ai", "alternative gratuite chatgpt", "deepseek v3", "deepseek r1", "ia rapide gratuite", "ia sans censure"] },
@@ -2531,7 +2618,7 @@
             { name: "Khroma", emoji: "https://www.google.com/s2/favicons?domain=khroma.co&sz=64", url: "https://khroma.co", description: "An AI search engine that builds tailored color palettes by analyzing the user's favorite tones and layouts.", category: "Specialized", useCases: ["Custom branding palette", "UI UX layout colors", "Finding matching gradients", "Design style guides"], keywords: ["khroma", "khroma.co", "palette de couleur ia", "branding logo", "nuancier", "gradient css", "choisir couleurs", "diseñador", "color palette", "color generator", "brand colors", "ui colors", "design colors", "color scheme", "gradient generator", "complementary colors", "color harmony", "brand identity colors", "choisir mes couleurs", "palette pour mon site", "couleurs pour mon logo", "khroma gratuit", "khroma free", "ia palette couleurs gratuite"] },
             { name: "Fontjoy", emoji: "https://www.google.com/s2/favicons?domain=fontjoy.com&sz=64", url: "https://fontjoy.com", description: "Uses deep learning models to select clean, high-contrast font pairings for websites, apps, and print designs.", category: "Specialized", useCases: ["Option fonts pairing", "Editorial font matches", "Title body typography balance", "Design system layout"], keywords: ["fontjoy", "fontjoy.com", "font pairing", "polices ecriture", "typographie site", "association de polices", "diseño fuentes", "letras", "font combination", "typography", "font generator", "font matcher", "web fonts", "google fonts pairing", "headline font", "body font", "design typography", "associer polices", "trouver bonne police", "typographie pour mon site", "fontjoy gratuit", "fontjoy free", "ia choisir polices gratuitement"] },
 
-            // --- NEW TOOLS 2025 ---
+            // --- NEW TOOLS 2026 ---
             { name: "Grok", emoji: "https://www.google.com/s2/favicons?domain=x.ai&sz=64", url: "https://x.ai/grok", description: "xAI's real-time AI assistant by Elon Musk, integrated into X (Twitter) with live web access and image generation.", category: "Text & Chat", useCases: ["Real-time web search", "X/Twitter integration", "Image generation", "Unfiltered answers"], keywords: ["grok", "grok ai", "xai", "elon musk ai", "x ai", "twitter ai", "grok 2", "grok 3", "real time ai", "ia temps reel", "ia elon musk", "alternative chatgpt", "unfiltered ai", "grok image", "aurora image", "x twitter ia", "recherche temps reel", "ia sans censure", "ia actualites", "live ai search", "grok gratuit", "grok free", "ia x", "ia elon musk gratuit", "ia twitter gratuit", "grok 3 free", "ia temps reel twitter", "ia actualites instantanees", "grok vs chatgpt", "xai grok", "ia de x twitter"] },
             { name: "Character AI", emoji: "https://www.google.com/s2/favicons?domain=character.ai&sz=64", url: "https://character.ai", description: "Create and chat with custom AI characters and personas. The most searched AI platform for roleplay and entertainment.", category: "Text & Chat", useCases: ["AI character roleplay", "Custom persona creation", "Entertainment chat", "Creative storytelling"], keywords: ["character ai", "character.ai", "chai", "c.ai", "roleplay ia", "personnage ia", "chatbot personnage", "ia personnalisee", "creer personnage ia", "roleplay chatbot", "anime ai", "fictional character chat", "ai companion", "ai friend", "ai character", "custom ai character", "chat with character", "ai roleplay", "parler a un personnage", "ia ami virtuel", "companion ai", "virtual friend ai", "personaje ia", "charakter ki", "parler a un personnage ia gratuit", "free ai roleplay", "compagnon ia gratuit", "free ai companion", "ami virtuel ia gratuit", "character ai gratuit", "character ai free", "creer son personnage ia", "ia pour apprendre langue conversation", "キャラクターAI", "캐릭터 AI", "角色AI"] },
             { name: "Mistral AI", emoji: "https://www.google.com/s2/favicons?domain=mistral.ai&sz=64", url: "https://chat.mistral.ai", description: "European open-source AI leader offering powerful multilingual models with strong coding and reasoning capabilities.", category: "Text & Chat", useCases: ["Multilingual tasks", "Open source LLM", "Coding assistance", "European privacy-compliant AI"], keywords: ["mistral", "mistral ai", "mistral.ai", "le chat", "ia europeenne", "ia francaise", "open source llm", "mixtral", "mistral large", "mistral nemo", "ia rgpd", "ia europe", "ia francaise gratuite", "european ai", "french ai", "open source ai", "multilingual ai", "mistral chat", "le chat mistral", "ia conforme rgpd", "ia privee europe", "ia europeenne gratuite", "free european ai", "mistral gratuit", "mistral free", "le chat gratuit", "ia souveraine europeenne", "meilleure ia europeenne", "ia open source francaise", "mistral vs chatgpt"] },
@@ -2541,9 +2628,9 @@
             { name: "Perplexity Pages", emoji: "https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64", url: "https://perplexity.ai/page", description: "Create structured, shareable research articles from web sources with AI-powered citations and formatting.", category: "Research & Writing", useCases: ["Shareable research articles", "Cited web content", "AI-generated reports", "Knowledge pages"], keywords: ["perplexity pages", "perplexity article", "ia rapport", "article ia", "creer article ia", "rapport de recherche", "ai article generator", "research report ai", "cited ai content", "ai pages", "generate article", "ai report writer", "contenu cite", "article avec sources", "rapport sourced", "ecrire article ia", "ia creer article recherche gratuit", "perplexity pages free"] },
             { name: "Ideogram", emoji: "https://www.google.com/s2/favicons?domain=ideogram.ai&sz=64", url: "https://ideogram.ai", description: "AI image generator specialized in creating images with accurate readable text, logos, and typography inside images.", category: "Image & Design", useCases: ["Text in images", "Logo generation", "Typography design", "Poster with text"], keywords: ["ideogram", "ideogram ai", "ideogram.ai", "texte dans image", "generer logo ia", "affiche avec texte", "typographie ia", "image avec mot", "logo ia gratuit", "text in image ai", "ai text image", "logo generator ai", "poster generator", "ai typography", "readable text in image", "generate text image", "creer logo gratuit ia", "image avec texte lisible", "affiche ia", "carte ia", "banniere ia", "ia texte dans image gratuit", "free ai text in image", "ideogram gratuit", "ideogram free", "ia creer logo avec texte gratuit", "ia affiche avec texte lisible", "generer logo texte ia"] },
             { name: "Kling AI", emoji: "https://www.google.com/s2/favicons?domain=klingai.com&sz=64", url: "https://klingai.com", description: "Chinese AI video generator from Kuaishou that creates realistic 5-second to 2-minute videos from text or images.", category: "Video & Audio", useCases: ["Text to video", "Image to video", "Realistic video generation", "Cinematic AI video"], keywords: ["kling", "kling ai", "klingai", "kuaishou", "video ia", "text to video", "image to video", "video realiste ia", "generer video ia", "video cinematique ia", "ai video generator", "realistic video ai", "create video from text", "video from image ai", "chinese ai video", "alternative runway", "faire une video ia", "creer video depuis texte", "video ia gratuite", "video ia realiste", "ia video gratuite longue", "kling gratuit", "kling ai free", "ia video 2 minutes gratuite", "ia meilleure gratuite video", "alternative runway gratuit"] },
-            { name: "Luma Dream Machine", emoji: "https://www.google.com/s2/favicons?domain=lumalabs.ai&sz=64", url: "https://lumalabs.ai/dream-machine", description: "Luma AI's video generation model that creates smooth, physically realistic video clips from text and image inputs.", category: "Video & Audio", useCases: ["Smooth video generation", "Realistic motion AI", "Image to video", "Short film creation"], keywords: ["luma", "luma ai", "dream machine", "luma dream machine", "lumalabs", "video fluide ia", "mouvement realiste", "text to video", "image to video", "court metrage ia", "smooth ai video", "realistic motion video", "ai dream machine", "luma video", "generate smooth video", "creer video fluide", "video depuis image ia", "ia video cinematique", "best ai video", "video ia 2025", "luma gratuit", "luma ai free", "dream machine free", "ia video fluide gratuite", "ia court metrage gratuit"] },
+            { name: "Luma Dream Machine", emoji: "https://www.google.com/s2/favicons?domain=lumalabs.ai&sz=64", url: "https://lumalabs.ai/dream-machine", description: "Luma AI's video generation model that creates smooth, physically realistic video clips from text and image inputs.", category: "Video & Audio", useCases: ["Smooth video generation", "Realistic motion AI", "Image to video", "Short film creation"], keywords: ["luma", "luma ai", "dream machine", "luma dream machine", "lumalabs", "video fluide ia", "mouvement realiste", "text to video", "image to video", "court metrage ia", "smooth ai video", "realistic motion video", "ai dream machine", "luma video", "generate smooth video", "creer video fluide", "video depuis image ia", "ia video cinematique", "best ai video", "video ia 2026", "luma gratuit", "luma ai free", "dream machine free", "ia video fluide gratuite", "ia court metrage gratuit"] },
             { name: "Sora", emoji: "https://www.google.com/s2/favicons?domain=sora.com&sz=64", url: "https://sora.com", description: "OpenAI's revolutionary text-to-video model that generates photorealistic videos up to 1 minute from text prompts.", category: "Video & Audio", useCases: ["Photorealistic video generation", "Long video from text", "Cinematic AI video", "Creative video storytelling"], keywords: ["sora", "sora ai", "openai sora", "sora openai", "text to video openai", "video 1 minute ia", "video photoréaliste ia", "video ia openai", "sora video", "meilleure ia video", "openai video", "photorealistic video ai", "long video ai", "ai video openai", "generate video openai", "video revolution ia", "creer video photoréaliste", "ia video openai", "video cinématique ia", "sora gratuit", "sora openai free", "ia video 1 minute gratuite", "ia meilleure video openai", "ia video photoréaliste gratuite"] },
-            { name: "Hailuo AI", emoji: "https://www.google.com/s2/favicons?domain=hailuoai.video&sz=64", url: "https://hailuoai.video", description: "MiniMax's AI video generator producing high-quality, realistic videos with consistent character and scene control.", category: "Video & Audio", useCases: ["Consistent character videos", "Realistic scene generation", "Text to video", "Character-consistent AI video"], keywords: ["hailuo", "hailuo ai", "minimax video", "hailuoai", "video personnage ia", "ia video gratuite", "video coherente ia", "alternative sora", "video ia mini max", "hailuo video", "minimax ai", "consistent video ai", "character video ai", "realistic video generator", "free ai video", "video ia 2025", "generer video personnage", "video ia gratuit", "hailuo gratuit", "hailuo ai free", "ia video gratuite qualite", "meilleure ia video gratuite 2025"] },
+            { name: "Hailuo AI", emoji: "https://www.google.com/s2/favicons?domain=hailuoai.video&sz=64", url: "https://hailuoai.video", description: "MiniMax's AI video generator producing high-quality, realistic videos with consistent character and scene control.", category: "Video & Audio", useCases: ["Consistent character videos", "Realistic scene generation", "Text to video", "Character-consistent AI video"], keywords: ["hailuo", "hailuo ai", "minimax video", "hailuoai", "video personnage ia", "ia video gratuite", "video coherente ia", "alternative sora", "video ia mini max", "hailuo video", "minimax ai", "consistent video ai", "character video ai", "realistic video generator", "free ai video", "video ia 2026", "generer video personnage", "video ia gratuit", "hailuo gratuit", "hailuo ai free", "ia video gratuite qualite", "meilleure ia video gratuite 2026"] },
             { name: "Napkin AI", emoji: "https://www.google.com/s2/favicons?domain=napkin.ai&sz=64", url: "https://napkin.ai", description: "Transforms your text and ideas into professional diagrams, charts, and visual concepts automatically.", category: "Productivity", useCases: ["Text to diagram", "Concept visualization", "Business diagrams", "Presentation visuals"], keywords: ["napkin", "napkin ai", "napkin.ai", "texte en diagramme", "diagramme ia", "schema ia", "visualiser idee", "diagram generator", "text to diagram", "concept diagram", "business diagram ai", "ai diagram maker", "visual ai", "idea visualization", "schéma automatique", "creer diagramme ia", "transformer texte en schema", "mindmap ia", "flow chart ia", "ia transformer texte en schema gratuit", "free ai diagram generator", "ia generer diagramme", "napkin gratuit", "napkin ai free", "ia mindmap automatique", "ia flowchart gratuit"] },
             { name: "Consensus", emoji: "https://www.google.com/s2/favicons?domain=consensus.app&sz=64", url: "https://consensus.app", description: "AI-powered academic search engine that finds and summarizes scientific research papers with evidence-based answers.", category: "Research & Writing", useCases: ["Scientific paper search", "Evidence-based answers", "Academic research", "Medical research AI"], keywords: ["consensus", "consensus app", "consensus.app", "recherche scientifique ia", "articles scientifiques", "etudes medicales", "evidence based", "recherche academique ia", "scientific search ai", "academic ai", "research paper ai", "find studies ai", "evidence ai", "medical research ai", "science ai", "trouve etude scientifique", "chercher etude", "ia pour recherche scientifique", "pubmed ia", "article academique ia", "ia recherche scientifique gratuite", "free scientific research ai", "consensus gratuit", "consensus free", "ia pour these medicale", "ia evidence based medicine", "ia pour medecins"] },
             { name: "Gamma", emoji: "https://www.google.com/s2/favicons?domain=gamma.app&sz=64", url: "https://gamma.app", description: "AI presentation maker that generates complete, beautifully designed slides, documents and webpages from a text prompt.", category: "Productivity", useCases: ["AI presentation generation", "Slide deck creation", "Document design", "One-prompt deck"], keywords: ["gamma", "gamma app", "gamma.app", "presentation ia", "diaporama ia", "creer slides ia", "powerpoint ia", "alternative powerpoint", "deck ia", "slides automatiques", "ai presentation", "ai slides", "presentation generator", "slide deck ai", "powerpoint alternative ai", "create presentation ai", "beautiful slides ai", "one prompt presentation", "faire une presentation ia", "creer un diaporama ia", "slides ia gratuit", "presentation depuis texte", "deck depuis texte ia", "gamma ai gratuit", "ia creer presentation automatique", "ia powerpoint gratuit", "free ai powerpoint", "ia pitch deck startup", "gamma gratuit", "gamma free", "ia alternative powerpoint", "ia pour pitch investisseurs", "creer presentation en secondes", "ia beautiful presentation"] }
@@ -2580,7 +2667,7 @@
                 nativeAdDesc: "Reach thousands of AI enthusiasts daily. Contact us at contactfindmyai@gmail.com to feature your tool.",
                 nativeAdBtn: "Contact us →",
                 nativeAdTag: "Sponsored",
-                tagline: "FindMyAI — Find the perfect AI for every task.",
+                tagline: "FindMyAI, the search engine for AI tools.",
                 about: "About",
                 privacy: "Privacy Policy",
                 terms: "Terms of Use",
@@ -5671,20 +5758,114 @@
 
     <!-- SEO Content Section — visible to Google, discreet for users -->
     <section style="max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;color:#64748b;font-size:0.82rem;line-height:1.7;border-top:1px solid rgba(255,255,255,0.04);">
-        <h2 style="font-size:1rem;color:#94a3b8;margin-bottom:1rem;font-family:'Outfit',sans-serif;">What is FindMyAI?</h2>
-        <p>FindMyAI is a free AI tool search engine and recommendation platform. Whether you're looking for the best AI image generator, an AI writing assistant, a coding AI, or a video generation tool — FindMyAI analyzes your needs and recommends the most relevant artificial intelligence tools available in 2025.</p>
+        <h2 style="font-size:1rem;color:#94a3b8;margin-bottom:1rem;font-family:'Space Grotesk',sans-serif;">What is FindMyAI?</h2>
+        <p>FindMyAI is a free AI tool search engine and recommendation platform. Whether you're looking for the best AI image generator, an AI writing assistant, a coding AI, or a video generation tool — FindMyAI analyzes your needs and recommends the most relevant artificial intelligence tools available in 2026.</p>
 
-        <h2 style="font-size:1rem;color:#94a3b8;margin:1.5rem 0 1rem;font-family:'Outfit',sans-serif;">Popular AI Tool Categories</h2>
+        <h2 style="font-size:1rem;color:#94a3b8;margin:1.5rem 0 1rem;font-family:'Space Grotesk',sans-serif;">Popular AI Tool Categories</h2>
         <p><strong style="color:#94a3b8;">AI Image Generators:</strong> Tools like Midjourney, DALL-E 3, Adobe Firefly, and Stable Diffusion help you create stunning images from text prompts. Perfect for designers, marketers, and creatives.</p>
         <p><strong style="color:#94a3b8;">AI Writing Assistants:</strong> ChatGPT, Claude, Jasper, and Grammarly help you write emails, essays, blog posts, and marketing copy faster and better.</p>
         <p><strong style="color:#94a3b8;">AI Coding Tools:</strong> GitHub Copilot, Cursor, and Tabnine accelerate software development by autocompleting code, fixing bugs, and explaining complex functions.</p>
         <p><strong style="color:#94a3b8;">AI Video Generators:</strong> Runway Gen-3, HeyGen, and Synthesia create professional videos, avatars, and cinematic clips from text descriptions.</p>
         <p><strong style="color:#94a3b8;">AI Research Tools:</strong> Perplexity AI and Gemini search the web in real-time to answer complex questions with sourced, up-to-date information.</p>
 
-        <h2 style="font-size:1rem;color:#94a3b8;margin:1.5rem 0 1rem;font-family:'Outfit',sans-serif;">How FindMyAI Works</h2>
+        <h2 style="font-size:1rem;color:#94a3b8;margin:1.5rem 0 1rem;font-family:'Space Grotesk',sans-serif;">How FindMyAI Works</h2>
         <p>Simply type what you want to do — for example "generate a realistic portrait", "write a cover letter", or "summarize a PDF" — and FindMyAI's NLP engine matches your intent with the most relevant AI tools from our database of 100+ tools. Results are ranked by relevance score, with contextual examples showing exactly how each tool handles your specific task.</p>
 
         <p style="margin-top:1rem;">FindMyAI supports 18 languages and is completely free to use. No account required. Find your perfect AI tool in seconds at <strong style="color:#94a3b8;">findmyai.tech</strong>.</p>
     </section>
+
+    <script>
+    // ── SCROLL TO TOP ──
+    (function(){
+        const btn = document.getElementById('scroll-top-btn');
+        window.addEventListener('scroll', function(){
+            btn.classList.toggle('visible', window.scrollY > 400);
+        }, {passive: true});
+    })();
+
+    // ── SHARE BUTTON ──
+    function shareResult(toolName, toolUrl) {
+        const text = `Check out ${toolName} on FindMyAI — the AI tool search engine: https://findmyai.tech`;
+        if (navigator.share) {
+            navigator.share({ title: toolName, text: text, url: 'https://findmyai.tech' }).catch(()=>{});
+        } else {
+            navigator.clipboard.writeText(text).then(function(){
+                const btn = document.querySelector('.share-btn.active-share');
+                if (btn) {
+                    btn.classList.add('copied');
+                    btn.textContent = '✓ Copied!';
+                    setTimeout(()=>{ btn.classList.remove('copied'); btn.innerHTML = '🔗 Share'; }, 2000);
+                }
+            }).catch(()=>{});
+        }
+    }
+
+    // ── PRICING BADGE HELPER ──
+    const FREE_TOOLS_FULL = ['ChatGPT','Claude','Gemini','Grok','DeepSeek','Mistral AI','Character AI',
+        'Microsoft Copilot','Poe','Perplexity','NotebookLM','Groq','Ollama','LM Studio','Hugging Face',
+        'Pinokio','Blackbox AI','Codeium','Phind','Remove.bg','Canva AI','Lexica','Civitai','Khroma',
+        'Fontjoy','Ideogram','ChatPDF','PDF.ai','QuillBot','Rytr','Grammarly','DeepL Translator',
+        'WolframAlpha','Elicit','Consensus','Kling AI','Hailuo AI','Luma Dream Machine','CapCut AI',
+        'Captions','Suno','Udio','VoiceMod','Napkin AI','Gamma','Taskade','Replit Agent','v0 by Vercel','Julius AI'];
+
+    const FREEMIUM_TOOLS = ['ElevenLabs','HeyGen','Synthesia','Jasper AI','Copy.ai','Notion AI',
+        'Otter.ai','Fathom','Runway Gen-3','Pika Art','Midjourney','Adobe Firefly','Leonardo.ai',
+        'Photoroom','Murf.ai','PlayHT','Speechify','Tome','Beautiful.ai','GitHub Copilot','Cursor',
+        'Tabnine','Invideo AI','Descript','Zapier AI','Fireflies.ai','Taskade','Opus Clip'];
+
+    function getPricingBadge(toolName) {
+        if (FREE_TOOLS_FULL.includes(toolName)) {
+            return '<span class="pricing-badge pricing-free">🆓 Free</span>';
+        } else if (FREEMIUM_TOOLS.includes(toolName)) {
+            return '<span class="pricing-badge pricing-freemium">✦ Freemium</span>';
+        } else {
+            return '<span class="pricing-badge pricing-paid">💳 Paid</span>';
+        }
+    }
+
+    // ── PATCH displayResults to inject pricing + share ──
+    const _origDisplayResults = typeof displayResults === 'function' ? displayResults : null;
+
+    document.addEventListener('DOMContentLoaded', function(){
+        // Override renderCard to add pricing + share after cards are built
+        const observer = new MutationObserver(function(mutations){
+            mutations.forEach(function(m){
+                m.addedNodes.forEach(function(node){
+                    if (node.nodeType === 1 && node.classList && node.classList.contains('ai-card')) {
+                        // Add pricing badge
+                        const nameEl = node.querySelector('.ai-name');
+                        if (nameEl && !node.querySelector('.pricing-badge')) {
+                            const toolName = nameEl.textContent.trim();
+                            const badge = document.createElement('span');
+                            badge.innerHTML = getPricingBadge(toolName);
+                            const titleRow = node.querySelector('.ai-title-row');
+                            if (titleRow) titleRow.appendChild(badge.firstChild);
+                        }
+                        // Add share button
+                        if (!node.querySelector('.share-btn')) {
+                            const visitLink = node.querySelector('.visit-link');
+                            if (visitLink) {
+                                const nameEl2 = node.querySelector('.ai-name');
+                                const toolName2 = nameEl2 ? nameEl2.textContent.trim() : '';
+                                const toolUrl2 = visitLink.href || '';
+                                const shareBtn = document.createElement('button');
+                                shareBtn.className = 'share-btn';
+                                shareBtn.innerHTML = '🔗 Share';
+                                shareBtn.onclick = function(){
+                                    this.classList.add('active-share');
+                                    shareResult(toolName2, toolUrl2);
+                                };
+                                visitLink.parentNode.insertBefore(shareBtn, visitLink.nextSibling);
+                            }
+                        }
+                    }
+                });
+            });
+        });
+        const grid = document.getElementById('results-grid');
+        if (grid) observer.observe(grid, { childList: true, subtree: false });
+    });
+    </script>
+
 </body>
 </html>
