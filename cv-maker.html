@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Online CV Maker | FindMyAI</title>
+  <meta name="description" content="Create a professional CV for free, directly in your browser. Three design templates, live preview and PDF download, no sign-up required." />
+  <meta name="keywords" content="free cv maker, create cv online, free resume builder, cv template, cv pdf free, online resume maker" />
+  <link rel="canonical" href="https://findmyai.tech/cv-maker.html" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- html2pdf.js (all versions up to 0.14.0) bundles an outdated html2canvas that
+       silently produces a blank canvas on current Chrome versions. We load html2canvas
+       and jsPDF directly instead and drive the capture ourselves (see downloadPDF()). -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d0d14;
+      --surface: #13131f;
+      --border: #1e1e30;
+      --cyan: #00d4ff;
+      --violet: #a855f7;
+      --cyan-dim: rgba(0, 212, 255, 0.08);
+      --violet-dim: rgba(168, 85, 247, 0.08);
+      --text: #e8e8f0;
+      --muted: #7a7a9a;
+      --tag-bg: #1a1a2e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(13,13,20,0.92);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .wordmark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    nav a.back {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    nav a.back:hover { color: var(--cyan); }
+
+    /* LANGUAGE SWITCHER */
+    .lang-switcher { position: relative; }
+
+    .lang-select-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .lang-select-btn:hover { border-color: rgba(0, 212, 255, 0.35); }
+
+    .lang-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 160px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      z-index: 200;
+    }
+    .lang-dropdown.open { display: block; }
+
+    .lang-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .lang-option:hover { background: var(--cyan-dim); }
+    .lang-option.active { color: var(--cyan); font-weight: 600; }
+
+    /* HERO */
+    .hero {
+      max-width: 1200px;
+      margin: 56px auto 32px;
+      padding: 0 24px;
+    }
+
+    .eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: #b0b0c8;
+      font-size: 16px;
+      max-width: 640px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet), transparent);
+      margin: 32px 0;
+      opacity: 0.3;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* LAYOUT */
+    .builder {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+      display: grid;
+      grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .builder { grid-template-columns: 1fr; }
+    }
+
+    /* PANEL / CARD SHARED STYLE */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 26px;
+    }
+
+    .panel + .panel { margin-top: 20px; }
+
+    .panel h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      padding-left: 12px;
+      border-left: 3px solid var(--cyan);
+    }
+
+    .panel .panel-hint {
+      color: var(--muted);
+      font-size: 12.5px;
+      margin: 6px 0 18px 15px;
+    }
+
+    /* FORM ELEMENTS */
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #9090b0;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .field { margin-bottom: 16px; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="month"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: rgba(0, 212, 255, 0.45);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+      line-height: 1.5;
+    }
+
+    ::placeholder { color: #55556e; }
+
+    /* REPEATABLE ENTRY BLOCK */
+    .entry-block {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 16px 4px;
+      margin-bottom: 14px;
+      position: relative;
+      background: rgba(255,255,255,0.015);
+    }
+
+    .entry-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .entry-block-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .remove-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      width: 24px;
+      height: 24px;
+      font-size: 13px;
+      cursor: pointer;
+      line-height: 1;
+      transition: all 0.2s;
+    }
+    .remove-btn:hover {
+      color: #ff6b6b;
+      border-color: rgba(255,107,107,0.4);
+    }
+
+    .add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--cyan-dim);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+      color: var(--cyan);
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 4px;
+    }
+    .add-btn:hover {
+      background: rgba(0, 212, 255, 0.16);
+    }
+
+    /* PHOTO UPLOAD */
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .photo-upload-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .photo-preview {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--tag-bg);
+      flex-shrink: 0;
+      display: none;
+    }
+    .photo-preview.has-photo { display: block; }
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .remove-photo-btn {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--border);
+      color: #ff6b6b;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .remove-photo-btn.visible { display: inline-flex; }
+    .remove-photo-btn:hover {
+      background: rgba(255, 107, 107, 0.1);
+      border-color: rgba(255, 107, 107, 0.4);
+    }
+
+    /* TEMPLATE SELECTOR */
+    .template-select {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .template-option {
+      flex: 1;
+      min-width: 110px;
+      border: 1px solid var(--border);
+      background: var(--tag-bg);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .template-option:hover { border-color: rgba(0,212,255,0.3); }
+
+    .template-option.active {
+      border-color: var(--cyan);
+      background: var(--cyan-dim);
+    }
+
+    .template-option .swatch {
+      width: 100%;
+      height: 34px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .swatch.classic { background: linear-gradient(180deg, #2c3e50, #34495e); }
+    .swatch.modern { background: linear-gradient(120deg, var(--cyan), var(--violet)); }
+    .swatch.minimal { background: linear-gradient(180deg, #dddddd, #ffffff); }
+
+    .template-option span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* DOWNLOAD BAR */
+    .download-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      color: #0d0d14;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .cta-btn:hover { opacity: 0.85; }
+    .cta-btn:disabled { opacity: 0.6; cursor: default; }
+
+    .privacy-note {
+      color: var(--muted);
+      font-size: 12px;
+      max-width: 340px;
+      line-height: 1.5;
+    }
+
+    /* PREVIEW COLUMN */
+    .preview-col {
+      position: sticky;
+      top: 90px;
+    }
+
+    .preview-frame {
+      background: #1a1a2a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .preview-scroll {
+      max-height: 78vh;
+      overflow-y: auto;
+      border-radius: 6px;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* CV DOCUMENT — printed/exported look, always light paper regardless of site theme */
+    .cv-doc {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      color: #1a1a2a;
+      padding: 16mm 14mm;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 0 30px rgba(0,0,0,0.35);
+      transform-origin: top center;
+    }
+
+    @media (max-width: 700px) {
+      .cv-doc { transform: scale(0.62); margin: -55mm -40mm; }
+    }
+    @media (min-width: 701px) and (max-width: 980px) {
+      .cv-doc { transform: scale(0.85); margin: -22mm -16mm; }
+    }
+
+    .cv-doc .cv-head-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+    .cv-doc .cv-head-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .cv-doc .cv-photo {
+      width: 22mm;
+      height: 22mm;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 2px solid #eee;
+    }
+    .cv-doc.tpl-modern .cv-photo {
+      width: 26mm;
+      height: 26mm;
+      border: 3px solid rgba(255,255,255,0.85);
+    }
+    .cv-doc .cv-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      color: #111;
+      margin: 0 0 2px;
+    }
+    .cv-doc .cv-title {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .cv-doc .cv-contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      font-size: 11.5px;
+      color: #444;
+      margin-bottom: 18px;
+    }
+    .cv-doc .cv-section {
+      margin-bottom: 16px;
+    }
+    .cv-doc .cv-section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .cv-doc .cv-summary {
+      font-size: 12.5px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .cv-doc .cv-item { margin-bottom: 11px; }
+    .cv-doc .cv-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cv-doc .cv-item-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #161616;
+    }
+    .cv-doc .cv-item-sub {
+      font-size: 11.5px;
+      color: #555;
+      font-style: italic;
+    }
+    .cv-doc .cv-item-date {
+      font-size: 11px;
+      color: #777;
+      white-space: nowrap;
+    }
+    .cv-doc .cv-item-desc {
+      font-size: 11.5px;
+      color: #3a3a3a;
+      margin-top: 3px;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+    .cv-doc .cv-skills, .cv-doc .cv-languages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .cv-doc .cv-pill {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #eee;
+      color: #333;
+    }
+
+    /* ---- TEMPLATE: CLASSIC ---- */
+    .cv-doc.tpl-classic {
+      border-top: 6px solid #2c3e50;
+    }
+    .cv-doc.tpl-classic .cv-name { color: #2c3e50; }
+    .cv-doc.tpl-classic .cv-section-title {
+      color: #2c3e50;
+      border-bottom: 1.5px solid #2c3e50;
+      padding-bottom: 4px;
+    }
+    .cv-doc.tpl-classic .cv-pill { background: #eef1f4; color: #2c3e50; }
+
+    /* ---- TEMPLATE: MODERN ---- */
+    .cv-doc.tpl-modern {
+      padding: 0;
+      overflow: hidden;
+    }
+    .cv-doc.tpl-modern .cv-head {
+      background: linear-gradient(120deg, #00b8d9, #8b3ef2);
+      color: #fff;
+      padding: 20mm 14mm 14mm;
+    }
+    .cv-doc.tpl-modern .cv-body {
+      padding: 12mm 14mm 16mm;
+    }
+    .cv-doc.tpl-modern .cv-name { color: #fff; }
+    .cv-doc.tpl-modern .cv-title { color: rgba(255,255,255,0.9); }
+    .cv-doc.tpl-modern .cv-contacts { color: rgba(255,255,255,0.9); margin-bottom: 0; }
+    .cv-doc.tpl-modern .cv-section-title {
+      color: #fff;
+      display: inline-block;
+      background: linear-gradient(120deg, #00b8d9, #8b3ef2);
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+    .cv-doc.tpl-modern .cv-pill {
+      background: linear-gradient(120deg, rgba(0,184,217,0.12), rgba(139,62,242,0.12));
+      color: #333;
+      border: 1px solid rgba(139,62,242,0.2);
+    }
+
+    /* ---- TEMPLATE: MINIMAL ---- */
+    .cv-doc.tpl-minimal .cv-name {
+      color: #111;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .cv-doc.tpl-minimal .cv-title {
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: #888;
+    }
+    .cv-doc.tpl-minimal .cv-section-title {
+      color: #111;
+      font-weight: 600;
+      border: none;
+      padding-bottom: 0;
+      letter-spacing: 0.1em;
+    }
+    .cv-doc.tpl-minimal .cv-section {
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+    }
+    .cv-doc.tpl-minimal .cv-pill {
+      background: transparent;
+      border: 1px solid #ddd;
+      color: #333;
+      border-radius: 3px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .footer-wordmark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    footer p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .hero { margin: 40px auto 24px; }
+      .panel { padding: 18px 16px; }
+      .field-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="wordmark">FindMyAI</a>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button type="button" class="lang-select-btn" onclick="toggleLangDropdown(event)">
+          <span id="current-lang-flag">🇬🇧</span> <span id="current-lang-name">English</span> ▾
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <button type="button" class="lang-option" data-lang="en" onclick="changeLanguage('en')">🇬🇧 English</button>
+          <button type="button" class="lang-option" data-lang="fr" onclick="changeLanguage('fr')">🇫🇷 Français</button>
+          <button type="button" class="lang-option" data-lang="es" onclick="changeLanguage('es')">🇪🇸 Español</button>
+          <button type="button" class="lang-option" data-lang="pt" onclick="changeLanguage('pt')">🇵🇹 Português</button>
+          <button type="button" class="lang-option" data-lang="de" onclick="changeLanguage('de')">🇩🇪 Deutsch</button>
+        </div>
+      </div>
+      <a href="https://findmyai.tech" class="back" data-i18n="nav_back">← Back to home</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="eyebrow" data-i18n="eyebrow">Free Tool / CV Maker</div>
+    <h1 data-i18n="heroTitle">Build your CV <span>for free</span> in 5 minutes</h1>
+    <p data-i18n="heroSubtitle">Fill in the form, pick a template and download your CV as a PDF. Everything happens in your browser — no data is ever sent to a server.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="builder">
+
+    <!-- FORM COLUMN -->
+    <div class="form-col">
+
+      <div class="panel">
+        <h2 data-i18n="panelTemplateTitle">CV Template</h2>
+        <p class="panel-hint" data-i18n="panelTemplateHint">Choose a style, the preview updates instantly.</p>
+        <div class="template-select">
+          <div class="template-option active" data-template="classic" onclick="selectTemplate('classic')">
+            <div class="swatch classic"></div>
+            <span data-i18n="tplClassic">Classic</span>
+          </div>
+          <div class="template-option" data-template="modern" onclick="selectTemplate('modern')">
+            <div class="swatch modern"></div>
+            <span data-i18n="tplModern">Modern</span>
+          </div>
+          <div class="template-option" data-template="minimal" onclick="selectTemplate('minimal')">
+            <div class="swatch minimal"></div>
+            <span data-i18n="tplMinimal">Minimal</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="panelPersonalTitle">Personal Information</h2>
+        <p class="panel-hint" data-i18n="panelPersonalHint">Your identity and contact details.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label data-i18n="labelFullName">Full name</label>
+            <input type="text" id="full-name" data-i18n-placeholder="phFullName" placeholder="Jane Doe" oninput="renderCV()" />
+          </div>
+          <div class="field">
+            <label data-i18n="labelJobTitle">Target job title</label>
+            <input type="text" id="job-title" data-i18n-placeholder="phJobTitle" placeholder="Front-End Developer" oninput="renderCV()" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelPhoto">Profile photo</label>
+          <div class="photo-upload-row">
+            <div class="photo-preview" id="photo-preview">
+              <img id="photo-preview-img" src="" alt="" />
+            </div>
+            <input type="file" id="photo-input" accept="image/*" class="visually-hidden" onchange="handlePhotoUpload(event)" />
+            <button type="button" class="add-btn" onclick="document.getElementById('photo-input').click()" data-i18n="addPhotoBtn">+ Add photo</button>
+            <button type="button" class="remove-photo-btn" id="remove-photo-btn" onclick="removePhoto()" data-i18n="removePhotoBtn">Remove photo</button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label data-i18n="labelEmail">Email</label>
+            <input type="email" id="email" data-i18n-placeholder="phEmail" placeholder="jane.doe@email.com" oninput="renderCV()" />
+          </div>
+          <div class="field">
+            <label data-i18n="labelPhone">Phone</label>
+            <input type="tel" id="phone" data-i18n-placeholder="phPhone" placeholder="+1 555 123 4567" oninput="renderCV()" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label data-i18n="labelLocation">City / Country</label>
+            <input type="text" id="location" data-i18n-placeholder="phLocation" placeholder="New York, USA" oninput="renderCV()" />
+          </div>
+          <div class="field">
+            <label data-i18n="labelWebsite">Website / LinkedIn</label>
+            <input type="url" id="website" data-i18n-placeholder="phWebsite" placeholder="linkedin.com/in/janedoe" oninput="renderCV()" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelSummary">Personal summary</label>
+          <textarea id="summary" data-i18n-placeholder="phSummary" placeholder="Describe your profile, strengths and career goals in 2-3 sentences." oninput="renderCV()"></textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="panelExpTitle">Work Experience</h2>
+        <p class="panel-hint" data-i18n="panelExpHint">Add your previous roles, most recent first.</p>
+        <div id="experience-list"></div>
+        <button type="button" class="add-btn" data-i18n="addExpBtn" onclick="addExperience()">+ Add experience</button>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="panelEduTitle">Education</h2>
+        <p class="panel-hint" data-i18n="panelEduHint">Degrees, schools and certifications.</p>
+        <div id="education-list"></div>
+        <button type="button" class="add-btn" data-i18n="addEduBtn" onclick="addEducation()">+ Add education</button>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="panelSkillsTitle">Skills</h2>
+        <p class="panel-hint" data-i18n="panelSkillsHint">Separate each skill with a comma.</p>
+        <div class="field">
+          <input type="text" id="skills" data-i18n-placeholder="phSkills" placeholder="JavaScript, Project Management, Photoshop, Fluent English" oninput="renderCV()" />
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="panelLangTitle">Languages</h2>
+        <p class="panel-hint" data-i18n="panelLangHint">Add a language and its level.</p>
+        <div id="languages-list"></div>
+        <button type="button" class="add-btn" data-i18n="addLangBtn" onclick="addLanguage()">+ Add language</button>
+      </div>
+
+      <div class="panel">
+        <div class="download-bar">
+          <button type="button" class="cta-btn" id="download-btn" data-i18n="downloadBtn" onclick="downloadPDF(this)">⬇ Download as PDF</button>
+          <p class="privacy-note" data-i18n="privacyNote">The PDF is generated directly in your browser. No data is ever sent to or stored on a server.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PREVIEW COLUMN -->
+    <div class="preview-col">
+      <div class="panel" style="margin-bottom:12px;">
+        <h2 style="margin-bottom:0;" data-i18n="previewTitle">Live Preview</h2>
+      </div>
+      <div class="preview-frame">
+        <div class="preview-scroll">
+          <div id="cv-preview" class="cv-doc tpl-classic">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="footer-wordmark">FindMyAI</span>
+    <p data-i18n="footerTagline">FindMyAI's free CV maker, the search engine for AI tools.</p>
+    <div class="footer-links">
+      <a href="https://findmyai.tech" data-i18n="footerHome">Home</a>
+      <a href="https://findmyai.tech/blog/meilleurs-outils-ia-gratuits-2026.html" data-i18n="footerBlog">Blog</a>
+      <a href="https://findmyai.tech" data-i18n="footerFindTool">Find an AI tool</a>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================
+       TRANSLATIONS
+       Same key/value approach as the language system in index.html:
+       one flat object of strings per language code, applied to the
+       DOM through data-i18n / data-i18n-placeholder attributes.
+       ========================================================= */
+    const translations = {
+      en: {
+        pageTitle: "Free Online CV Maker | FindMyAI",
+        metaDescription: "Create a professional CV for free, directly in your browser. Three design templates, live preview and PDF download, no sign-up required.",
+        nav_back: "← Back to home",
+        eyebrow: "Free Tool / CV Maker",
+        heroTitle: "Build your CV <span>for free</span> in 5 minutes",
+        heroSubtitle: "Fill in the form, pick a template and download your CV as a PDF. Everything happens in your browser — no data is ever sent to a server.",
+        panelTemplateTitle: "CV Template",
+        panelTemplateHint: "Choose a style, the preview updates instantly.",
+        tplClassic: "Classic",
+        tplModern: "Modern",
+        tplMinimal: "Minimal",
+        panelPersonalTitle: "Personal Information",
+        panelPersonalHint: "Your identity and contact details.",
+        labelFullName: "Full name",
+        phFullName: "Jane Doe",
+        labelJobTitle: "Target job title",
+        phJobTitle: "Front-End Developer",
+        labelPhoto: "Profile photo",
+        addPhotoBtn: "+ Add photo",
+        removePhotoBtn: "Remove photo",
+        labelEmail: "Email",
+        phEmail: "jane.doe@email.com",
+        labelPhone: "Phone",
+        phPhone: "+1 555 123 4567",
+        labelLocation: "City / Country",
+        phLocation: "New York, USA",
+        labelWebsite: "Website / LinkedIn",
+        phWebsite: "linkedin.com/in/janedoe",
+        labelSummary: "Personal summary",
+        phSummary: "Describe your profile, strengths and career goals in 2-3 sentences.",
+        panelExpTitle: "Work Experience",
+        panelExpHint: "Add your previous roles, most recent first.",
+        addExpBtn: "+ Add experience",
+        expBlockTitle: "Experience",
+        labelRole: "Job title",
+        phRole: "Front-End Developer",
+        labelCompany: "Company",
+        phCompany: "Company name",
+        labelStartDate: "Start date",
+        labelEndDate: "End date",
+        phEndDatePresent: "Present",
+        labelDescription: "Description",
+        phExpDesc: "Your main responsibilities and achievements.",
+        panelEduTitle: "Education",
+        panelEduHint: "Degrees, schools and certifications.",
+        addEduBtn: "+ Add education",
+        eduBlockTitle: "Education",
+        labelDegree: "Degree",
+        phDegree: "Master's in Computer Science",
+        labelSchool: "School",
+        phSchool: "School name",
+        phEduEndYear: "2023",
+        panelSkillsTitle: "Skills",
+        panelSkillsHint: "Separate each skill with a comma.",
+        phSkills: "JavaScript, Project Management, Photoshop, Fluent English",
+        panelLangTitle: "Languages",
+        panelLangHint: "Add a language and its level.",
+        addLangBtn: "+ Add language",
+        langBlockTitle: "Language",
+        labelLangName: "Language",
+        phLangName: "English",
+        labelLevel: "Level",
+        levelBeginner: "Beginner",
+        levelIntermediate: "Intermediate",
+        levelFluent: "Fluent",
+        levelBilingual: "Bilingual",
+        levelNative: "Native",
+        downloadBtn: "⬇ Download as PDF",
+        downloadBtnLoading: "⏳ Generating...",
+        privacyNote: "The PDF is generated directly in your browser. No data is ever sent to or stored on a server.",
+        pdfError: "Something went wrong while generating the PDF. Please try again.",
+        previewTitle: "Live Preview",
+        footerTagline: "FindMyAI's free CV maker, the search engine for AI tools.",
+        footerHome: "Home",
+        footerBlog: "Blog",
+        footerFindTool: "Find an AI tool",
+        cvDefaultName: "Your Name",
+        cvDefaultTitle: "Target job title",
+        cvSectionProfile: "Profile",
+        cvSectionExperience: "Work Experience",
+        cvSectionEducation: "Education",
+        cvSectionSkills: "Skills",
+        cvSectionLanguages: "Languages",
+        cvDefaultRole: "Position",
+        cvDefaultDegree: "Degree",
+        cvPresent: "Present",
+        filenameBase: "CV",
+        months: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+      },
+      fr: {
+        pageTitle: "Créateur de CV gratuit en ligne | FindMyAI",
+        metaDescription: "Créez un CV professionnel gratuitement, directement dans votre navigateur. Trois modèles de design, aperçu en direct et téléchargement en PDF, sans inscription.",
+        nav_back: "← Retour à l'accueil",
+        eyebrow: "Outil Gratuit / CV Maker",
+        heroTitle: "Créez votre CV <span>gratuitement</span>, en 5 minutes",
+        heroSubtitle: "Remplissez le formulaire, choisissez un modèle et téléchargez votre CV en PDF. Tout se passe dans votre navigateur : aucune donnée n'est envoyée à un serveur.",
+        panelTemplateTitle: "Modèle de CV",
+        panelTemplateHint: "Choisissez un style, l'aperçu se met à jour instantanément.",
+        tplClassic: "Classique",
+        tplModern: "Moderne",
+        tplMinimal: "Minimaliste",
+        panelPersonalTitle: "Informations personnelles",
+        panelPersonalHint: "Votre identité et vos coordonnées.",
+        labelFullName: "Nom complet",
+        phFullName: "Jeanne Dupont",
+        labelJobTitle: "Titre du poste visé",
+        phJobTitle: "Développeuse Front-End",
+        labelPhoto: "Photo de profil",
+        addPhotoBtn: "+ Ajouter une photo",
+        removePhotoBtn: "Retirer la photo",
+        labelEmail: "Email",
+        phEmail: "jeanne.dupont@email.com",
+        labelPhone: "Téléphone",
+        phPhone: "+33 6 12 34 56 78",
+        labelLocation: "Ville / Pays",
+        phLocation: "Paris, France",
+        labelWebsite: "Site web / LinkedIn",
+        phWebsite: "linkedin.com/in/jeannedupont",
+        labelSummary: "Résumé personnel",
+        phSummary: "Décrivez en 2-3 phrases votre profil, vos points forts et vos objectifs professionnels.",
+        panelExpTitle: "Expériences professionnelles",
+        panelExpHint: "Ajoutez vos postes précédents, du plus récent au plus ancien.",
+        addExpBtn: "+ Ajouter une expérience",
+        expBlockTitle: "Expérience",
+        labelRole: "Intitulé du poste",
+        phRole: "Développeuse Front-End",
+        labelCompany: "Entreprise",
+        phCompany: "Nom de l'entreprise",
+        labelStartDate: "Date de début",
+        labelEndDate: "Date de fin",
+        phEndDatePresent: "Présent",
+        labelDescription: "Description",
+        phExpDesc: "Vos missions et réalisations principales.",
+        panelEduTitle: "Formations",
+        panelEduHint: "Diplômes, écoles et certifications.",
+        addEduBtn: "+ Ajouter une formation",
+        eduBlockTitle: "Formation",
+        labelDegree: "Diplôme",
+        phDegree: "Master Informatique",
+        labelSchool: "Établissement",
+        phSchool: "Nom de l'école",
+        phEduEndYear: "2023",
+        panelSkillsTitle: "Compétences",
+        panelSkillsHint: "Séparez chaque compétence par une virgule.",
+        phSkills: "JavaScript, Gestion de projet, Photoshop, Anglais courant",
+        panelLangTitle: "Langues",
+        panelLangHint: "Ajoutez une langue et son niveau.",
+        addLangBtn: "+ Ajouter une langue",
+        langBlockTitle: "Langue",
+        labelLangName: "Langue",
+        phLangName: "Anglais",
+        labelLevel: "Niveau",
+        levelBeginner: "Débutant",
+        levelIntermediate: "Intermédiaire",
+        levelFluent: "Courant",
+        levelBilingual: "Bilingue",
+        levelNative: "Langue maternelle",
+        downloadBtn: "⬇ Télécharger en PDF",
+        downloadBtnLoading: "⏳ Génération...",
+        privacyNote: "Le PDF est généré directement dans votre navigateur. Aucune donnée n'est envoyée ni stockée sur un serveur.",
+        pdfError: "Une erreur est survenue lors de la génération du PDF. Merci de réessayer.",
+        previewTitle: "Aperçu en direct",
+        footerTagline: "Le créateur de CV gratuit de FindMyAI, le moteur de recherche pour outils IA.",
+        footerHome: "Accueil",
+        footerBlog: "Blog",
+        footerFindTool: "Trouver un outil IA",
+        cvDefaultName: "Votre nom",
+        cvDefaultTitle: "Titre du poste visé",
+        cvSectionProfile: "Profil",
+        cvSectionExperience: "Expérience professionnelle",
+        cvSectionEducation: "Formation",
+        cvSectionSkills: "Compétences",
+        cvSectionLanguages: "Langues",
+        cvDefaultRole: "Poste",
+        cvDefaultDegree: "Diplôme",
+        cvPresent: "Présent",
+        filenameBase: "CV",
+        months: ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"]
+      },
+      es: {
+        pageTitle: "Creador de CV gratis en línea | FindMyAI",
+        metaDescription: "Crea un CV profesional gratis, directamente en tu navegador. Tres plantillas de diseño, vista previa en directo y descarga en PDF, sin registro.",
+        nav_back: "← Volver al inicio",
+        eyebrow: "Herramienta Gratis / Creador de CV",
+        heroTitle: "Crea tu CV <span>gratis</span> en 5 minutos",
+        heroSubtitle: "Completa el formulario, elige una plantilla y descarga tu CV en PDF. Todo ocurre en tu navegador: ningún dato se envía a un servidor.",
+        panelTemplateTitle: "Plantilla de CV",
+        panelTemplateHint: "Elige un estilo, la vista previa se actualiza al instante.",
+        tplClassic: "Clásico",
+        tplModern: "Moderno",
+        tplMinimal: "Minimalista",
+        panelPersonalTitle: "Información personal",
+        panelPersonalHint: "Tu identidad y tus datos de contacto.",
+        labelFullName: "Nombre completo",
+        phFullName: "Juana Pérez",
+        labelJobTitle: "Puesto al que aspiras",
+        phJobTitle: "Desarrolladora Front-End",
+        labelPhoto: "Foto de perfil",
+        addPhotoBtn: "+ Añadir foto",
+        removePhotoBtn: "Quitar foto",
+        labelEmail: "Correo electrónico",
+        phEmail: "juana.perez@email.com",
+        labelPhone: "Teléfono",
+        phPhone: "+34 612 34 56 78",
+        labelLocation: "Ciudad / País",
+        phLocation: "Madrid, España",
+        labelWebsite: "Sitio web / LinkedIn",
+        phWebsite: "linkedin.com/in/juanaperez",
+        labelSummary: "Resumen personal",
+        phSummary: "Describe en 2-3 frases tu perfil, tus puntos fuertes y tus objetivos profesionales.",
+        panelExpTitle: "Experiencia profesional",
+        panelExpHint: "Añade tus puestos anteriores, del más reciente al más antiguo.",
+        addExpBtn: "+ Añadir experiencia",
+        expBlockTitle: "Experiencia",
+        labelRole: "Puesto",
+        phRole: "Desarrolladora Front-End",
+        labelCompany: "Empresa",
+        phCompany: "Nombre de la empresa",
+        labelStartDate: "Fecha de inicio",
+        labelEndDate: "Fecha de fin",
+        phEndDatePresent: "Actualidad",
+        labelDescription: "Descripción",
+        phExpDesc: "Tus principales funciones y logros.",
+        panelEduTitle: "Formación académica",
+        panelEduHint: "Títulos, escuelas y certificaciones.",
+        addEduBtn: "+ Añadir formación",
+        eduBlockTitle: "Formación",
+        labelDegree: "Título",
+        phDegree: "Máster en Informática",
+        labelSchool: "Centro de estudios",
+        phSchool: "Nombre del centro",
+        phEduEndYear: "2023",
+        panelSkillsTitle: "Habilidades",
+        panelSkillsHint: "Separa cada habilidad con una coma.",
+        phSkills: "JavaScript, Gestión de proyectos, Photoshop, Inglés fluido",
+        panelLangTitle: "Idiomas",
+        panelLangHint: "Añade un idioma y su nivel.",
+        addLangBtn: "+ Añadir idioma",
+        langBlockTitle: "Idioma",
+        labelLangName: "Idioma",
+        phLangName: "Inglés",
+        labelLevel: "Nivel",
+        levelBeginner: "Básico",
+        levelIntermediate: "Intermedio",
+        levelFluent: "Fluido",
+        levelBilingual: "Bilingüe",
+        levelNative: "Nativo",
+        downloadBtn: "⬇ Descargar en PDF",
+        downloadBtnLoading: "⏳ Generando...",
+        privacyNote: "El PDF se genera directamente en tu navegador. Ningún dato se envía ni se almacena en un servidor.",
+        pdfError: "Se produjo un error al generar el PDF. Inténtalo de nuevo.",
+        previewTitle: "Vista previa en directo",
+        footerTagline: "El creador de CV gratuito de FindMyAI, el buscador de herramientas de IA.",
+        footerHome: "Inicio",
+        footerBlog: "Blog",
+        footerFindTool: "Buscar una herramienta de IA",
+        cvDefaultName: "Tu nombre",
+        cvDefaultTitle: "Puesto al que aspiras",
+        cvSectionProfile: "Perfil",
+        cvSectionExperience: "Experiencia profesional",
+        cvSectionEducation: "Formación académica",
+        cvSectionSkills: "Habilidades",
+        cvSectionLanguages: "Idiomas",
+        cvDefaultRole: "Puesto",
+        cvDefaultDegree: "Título",
+        cvPresent: "Actualidad",
+        filenameBase: "CV",
+        months: ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
+      },
+      pt: {
+        pageTitle: "Criador de currículo gratuito online | FindMyAI",
+        metaDescription: "Crie um currículo profissional gratuitamente, direto no seu navegador. Três modelos de design, pré-visualização ao vivo e download em PDF, sem cadastro.",
+        nav_back: "← Voltar ao início",
+        eyebrow: "Ferramenta Gratuita / Criador de CV",
+        heroTitle: "Crie seu currículo <span>de graça</span> em 5 minutos",
+        heroSubtitle: "Preencha o formulário, escolha um modelo e baixe seu currículo em PDF. Tudo acontece no seu navegador: nenhum dado é enviado a um servidor.",
+        panelTemplateTitle: "Modelo de currículo",
+        panelTemplateHint: "Escolha um estilo, a pré-visualização é atualizada na hora.",
+        tplClassic: "Clássico",
+        tplModern: "Moderno",
+        tplMinimal: "Minimalista",
+        panelPersonalTitle: "Informações pessoais",
+        panelPersonalHint: "Sua identidade e seus dados de contato.",
+        labelFullName: "Nome completo",
+        phFullName: "Joana Silva",
+        labelJobTitle: "Cargo pretendido",
+        phJobTitle: "Desenvolvedora Front-End",
+        labelPhoto: "Foto de perfil",
+        addPhotoBtn: "+ Adicionar foto",
+        removePhotoBtn: "Remover foto",
+        labelEmail: "E-mail",
+        phEmail: "joana.silva@email.com",
+        labelPhone: "Telefone",
+        phPhone: "+55 11 91234-5678",
+        labelLocation: "Cidade / País",
+        phLocation: "São Paulo, Brasil",
+        labelWebsite: "Site / LinkedIn",
+        phWebsite: "linkedin.com/in/joanasilva",
+        labelSummary: "Resumo pessoal",
+        phSummary: "Descreva em 2-3 frases seu perfil, seus pontos fortes e seus objetivos profissionais.",
+        panelExpTitle: "Experiência profissional",
+        panelExpHint: "Adicione seus cargos anteriores, do mais recente ao mais antigo.",
+        addExpBtn: "+ Adicionar experiência",
+        expBlockTitle: "Experiência",
+        labelRole: "Cargo",
+        phRole: "Desenvolvedora Front-End",
+        labelCompany: "Empresa",
+        phCompany: "Nome da empresa",
+        labelStartDate: "Data de início",
+        labelEndDate: "Data de término",
+        phEndDatePresent: "Atual",
+        labelDescription: "Descrição",
+        phExpDesc: "Suas principais funções e conquistas.",
+        panelEduTitle: "Formação acadêmica",
+        panelEduHint: "Diplomas, instituições e certificações.",
+        addEduBtn: "+ Adicionar formação",
+        eduBlockTitle: "Formação",
+        labelDegree: "Diploma",
+        phDegree: "Mestrado em Ciência da Computação",
+        labelSchool: "Instituição",
+        phSchool: "Nome da instituição",
+        phEduEndYear: "2023",
+        panelSkillsTitle: "Habilidades",
+        panelSkillsHint: "Separe cada habilidade com uma vírgula.",
+        phSkills: "JavaScript, Gestão de projetos, Photoshop, Inglês fluente",
+        panelLangTitle: "Idiomas",
+        panelLangHint: "Adicione um idioma e seu nível.",
+        addLangBtn: "+ Adicionar idioma",
+        langBlockTitle: "Idioma",
+        labelLangName: "Idioma",
+        phLangName: "Inglês",
+        labelLevel: "Nível",
+        levelBeginner: "Básico",
+        levelIntermediate: "Intermediário",
+        levelFluent: "Fluente",
+        levelBilingual: "Bilíngue",
+        levelNative: "Nativo",
+        downloadBtn: "⬇ Baixar em PDF",
+        downloadBtnLoading: "⏳ Gerando...",
+        privacyNote: "O PDF é gerado diretamente no seu navegador. Nenhum dado é enviado ou armazenado em um servidor.",
+        pdfError: "Ocorreu um erro ao gerar o PDF. Tente novamente.",
+        previewTitle: "Pré-visualização ao vivo",
+        footerTagline: "O criador de currículo gratuito da FindMyAI, o mecanismo de busca de ferramentas de IA.",
+        footerHome: "Início",
+        footerBlog: "Blog",
+        footerFindTool: "Encontrar uma ferramenta de IA",
+        cvDefaultName: "Seu nome",
+        cvDefaultTitle: "Cargo pretendido",
+        cvSectionProfile: "Perfil",
+        cvSectionExperience: "Experiência profissional",
+        cvSectionEducation: "Formação acadêmica",
+        cvSectionSkills: "Habilidades",
+        cvSectionLanguages: "Idiomas",
+        cvDefaultRole: "Cargo",
+        cvDefaultDegree: "Diploma",
+        cvPresent: "Atual",
+        filenameBase: "CV",
+        months: ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]
+      },
+      de: {
+        pageTitle: "Kostenloser Lebenslauf-Ersteller Online | FindMyAI",
+        metaDescription: "Erstellen Sie kostenlos einen professionellen Lebenslauf direkt in Ihrem Browser. Drei Design-Vorlagen, Live-Vorschau und PDF-Download, ohne Anmeldung.",
+        nav_back: "← Zurück zur Startseite",
+        eyebrow: "Kostenloses Tool / Lebenslauf-Ersteller",
+        heroTitle: "Erstellen Sie Ihren Lebenslauf <span>kostenlos</span> in 5 Minuten",
+        heroSubtitle: "Füllen Sie das Formular aus, wählen Sie eine Vorlage und laden Sie Ihren Lebenslauf als PDF herunter. Alles läuft in Ihrem Browser – es werden keine Daten an einen Server gesendet.",
+        panelTemplateTitle: "Lebenslauf-Vorlage",
+        panelTemplateHint: "Wählen Sie einen Stil, die Vorschau wird sofort aktualisiert.",
+        tplClassic: "Klassisch",
+        tplModern: "Modern",
+        tplMinimal: "Minimalistisch",
+        panelPersonalTitle: "Persönliche Angaben",
+        panelPersonalHint: "Ihre Identität und Kontaktdaten.",
+        labelFullName: "Vollständiger Name",
+        phFullName: "Johanna Müller",
+        labelJobTitle: "Angestrebte Position",
+        phJobTitle: "Frontend-Entwicklerin",
+        labelPhoto: "Profilfoto",
+        addPhotoBtn: "+ Foto hinzufügen",
+        removePhotoBtn: "Foto entfernen",
+        labelEmail: "E-Mail",
+        phEmail: "johanna.mueller@email.com",
+        labelPhone: "Telefon",
+        phPhone: "+49 176 12345678",
+        labelLocation: "Stadt / Land",
+        phLocation: "Berlin, Deutschland",
+        labelWebsite: "Website / LinkedIn",
+        phWebsite: "linkedin.com/in/johannamueller",
+        labelSummary: "Persönliches Profil",
+        phSummary: "Beschreiben Sie in 2-3 Sätzen Ihr Profil, Ihre Stärken und Ihre beruflichen Ziele.",
+        panelExpTitle: "Berufserfahrung",
+        panelExpHint: "Fügen Sie Ihre bisherigen Positionen hinzu, beginnend mit der aktuellsten.",
+        addExpBtn: "+ Berufserfahrung hinzufügen",
+        expBlockTitle: "Berufserfahrung",
+        labelRole: "Position",
+        phRole: "Frontend-Entwicklerin",
+        labelCompany: "Unternehmen",
+        phCompany: "Name des Unternehmens",
+        labelStartDate: "Startdatum",
+        labelEndDate: "Enddatum",
+        phEndDatePresent: "Heute",
+        labelDescription: "Beschreibung",
+        phExpDesc: "Ihre wichtigsten Aufgaben und Erfolge.",
+        panelEduTitle: "Ausbildung",
+        panelEduHint: "Abschlüsse, Schulen und Zertifikate.",
+        addEduBtn: "+ Ausbildung hinzufügen",
+        eduBlockTitle: "Ausbildung",
+        labelDegree: "Abschluss",
+        phDegree: "Master in Informatik",
+        labelSchool: "Bildungseinrichtung",
+        phSchool: "Name der Einrichtung",
+        phEduEndYear: "2023",
+        panelSkillsTitle: "Fähigkeiten",
+        panelSkillsHint: "Trennen Sie jede Fähigkeit mit einem Komma.",
+        phSkills: "JavaScript, Projektmanagement, Photoshop, Fließend Englisch",
+        panelLangTitle: "Sprachen",
+        panelLangHint: "Fügen Sie eine Sprache und ihr Niveau hinzu.",
+        addLangBtn: "+ Sprache hinzufügen",
+        langBlockTitle: "Sprache",
+        labelLangName: "Sprache",
+        phLangName: "Englisch",
+        labelLevel: "Niveau",
+        levelBeginner: "Anfänger",
+        levelIntermediate: "Mittelstufe",
+        levelFluent: "Fließend",
+        levelBilingual: "Zweisprachig",
+        levelNative: "Muttersprache",
+        downloadBtn: "⬇ Als PDF herunterladen",
+        downloadBtnLoading: "⏳ Wird erstellt...",
+        privacyNote: "Das PDF wird direkt in Ihrem Browser erstellt. Es werden keine Daten an einen Server gesendet oder dort gespeichert.",
+        pdfError: "Beim Erstellen des PDFs ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+        previewTitle: "Live-Vorschau",
+        footerTagline: "Der kostenlose Lebenslauf-Ersteller von FindMyAI, der Suchmaschine für KI-Tools.",
+        footerHome: "Startseite",
+        footerBlog: "Blog",
+        footerFindTool: "KI-Tool finden",
+        cvDefaultName: "Ihr Name",
+        cvDefaultTitle: "Angestrebte Position",
+        cvSectionProfile: "Profil",
+        cvSectionExperience: "Berufserfahrung",
+        cvSectionEducation: "Ausbildung",
+        cvSectionSkills: "Fähigkeiten",
+        cvSectionLanguages: "Sprachen",
+        cvDefaultRole: "Position",
+        cvDefaultDegree: "Abschluss",
+        cvPresent: "Heute",
+        filenameBase: "Lebenslauf",
+        months: ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"]
+      }
+    };
+
+    const LANGS = [
+      { code: 'en', flag: '🇬🇧', name: 'English' },
+      { code: 'fr', flag: '🇫🇷', name: 'Français' },
+      { code: 'es', flag: '🇪🇸', name: 'Español' },
+      { code: 'pt', flag: '🇵🇹', name: 'Português' },
+      { code: 'de', flag: '🇩🇪', name: 'Deutsch' }
+    ];
+
+    const LEVELS = ['beginner', 'intermediate', 'fluent', 'bilingual', 'native'];
+    const levelKeyMap = {
+      beginner: 'levelBeginner',
+      intermediate: 'levelIntermediate',
+      fluent: 'levelFluent',
+      bilingual: 'levelBilingual',
+      native: 'levelNative'
+    };
+
+    let currentLang = 'en';
+
+    function t(key) {
+      const dict = translations[currentLang] || translations.en;
+      if (dict && dict[key] !== undefined) return dict[key];
+      return translations.en[key] !== undefined ? translations.en[key] : key;
+    }
+
+    function toggleLangDropdown(event) {
+      event.stopPropagation();
+      document.getElementById('lang-dropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function () {
+      const dd = document.getElementById('lang-dropdown');
+      if (dd) dd.classList.remove('open');
+    });
+
+    function changeLanguage(lang) {
+      if (!translations[lang]) lang = 'en';
+      currentLang = lang;
+      try { localStorage.setItem('findmyai_lang', lang); } catch (e) { /* storage unavailable */ }
+
+      const meta = LANGS.find(function (l) { return l.code === lang; }) || LANGS[0];
+      document.getElementById('current-lang-flag').textContent = meta.flag;
+      document.getElementById('current-lang-name').textContent = meta.name;
+      document.querySelectorAll('.lang-option').forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === lang);
+      });
+
+      updateUITranslations();
+    }
+
+    function populateLevelOptions(select, selectedValue) {
+      select.innerHTML = LEVELS.map(function (code) {
+        return '<option value="' + code + '"' + (code === selectedValue ? ' selected' : '') + '>' + t(levelKeyMap[code]) + '</option>';
+      }).join('');
+    }
+
+    function updateUITranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        el.innerHTML = t(el.getAttribute('data-i18n'));
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+      });
+      document.querySelectorAll('.lang-level').forEach(function (select) {
+        populateLevelOptions(select, select.value || 'fluent');
+      });
+
+      document.title = t('pageTitle');
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', t('metaDescription'));
+      document.documentElement.lang = currentLang;
+
+      renderCV();
+    }
+
+    /* =========================================================
+       BUILDER STATE
+       ========================================================= */
+    let currentTemplate = 'classic';
+    let experienceCount = 0;
+    let educationCount = 0;
+    let languageCount = 0;
+    let currentPhoto = null;
+
+    /* =========================================================
+       PROFILE PHOTO
+       Downscaled to a max 400px edge and re-encoded as JPEG before
+       being stored as a base64 data URL. Keeping it small matters
+       twice over: a data URL never taints the canvas (no CORS issue
+       for html2canvas, unlike a remote image URL would), and a small
+       image keeps the capture fast — a slow capture is what silently
+       broke the PDF download earlier (see downloadPDF()).
+       ========================================================= */
+    function handlePhotoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const maxEdge = 400;
+          let w = img.width;
+          let h = img.height;
+          if (w > h && w > maxEdge) {
+            h = Math.round(h * (maxEdge / w));
+            w = maxEdge;
+          } else if (h >= w && h > maxEdge) {
+            w = Math.round(w * (maxEdge / h));
+            h = maxEdge;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          currentPhoto = canvas.toDataURL('image/jpeg', 0.9);
+          updatePhotoUI();
+          renderCV();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePhoto() {
+      currentPhoto = null;
+      document.getElementById('photo-input').value = '';
+      updatePhotoUI();
+      renderCV();
+    }
+
+    function updatePhotoUI() {
+      const preview = document.getElementById('photo-preview');
+      const previewImg = document.getElementById('photo-preview-img');
+      const removeBtn = document.getElementById('remove-photo-btn');
+      if (currentPhoto) {
+        previewImg.src = currentPhoto;
+        preview.classList.add('has-photo');
+        removeBtn.classList.add('visible');
+      } else {
+        previewImg.src = '';
+        preview.classList.remove('has-photo');
+        removeBtn.classList.remove('visible');
+      }
+    }
+
+    function selectTemplate(name) {
+      currentTemplate = name;
+      document.querySelectorAll('.template-option').forEach(function (el) {
+        el.classList.toggle('active', el.dataset.template === name);
+      });
+      renderCV();
+    }
+
+    function addExperience() {
+      experienceCount++;
+      const id = 'exp-' + experienceCount;
+      const wrap = document.createElement('div');
+      wrap.className = 'entry-block';
+      wrap.id = id;
+      wrap.innerHTML =
+        '<div class="entry-block-header">' +
+          '<span class="entry-block-title" data-i18n="expBlockTitle">' + t('expBlockTitle') + '</span>' +
+          '<button type="button" class="remove-btn" onclick="removeEntry(\'' + id + '\')">✕</button>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label data-i18n="labelRole">' + t('labelRole') + '</label><input type="text" class="exp-role" data-i18n-placeholder="phRole" placeholder="' + t('phRole') + '" oninput="renderCV()" /></div>' +
+          '<div class="field"><label data-i18n="labelCompany">' + t('labelCompany') + '</label><input type="text" class="exp-company" data-i18n-placeholder="phCompany" placeholder="' + t('phCompany') + '" oninput="renderCV()" /></div>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label data-i18n="labelStartDate">' + t('labelStartDate') + '</label><input type="month" class="exp-start" oninput="renderCV()" /></div>' +
+          '<div class="field"><label data-i18n="labelEndDate">' + t('labelEndDate') + '</label><input type="text" class="exp-end" data-i18n-placeholder="phEndDatePresent" placeholder="' + t('phEndDatePresent') + '" oninput="renderCV()" /></div>' +
+        '</div>' +
+        '<div class="field"><label data-i18n="labelDescription">' + t('labelDescription') + '</label><textarea class="exp-desc" data-i18n-placeholder="phExpDesc" placeholder="' + t('phExpDesc') + '" oninput="renderCV()"></textarea></div>';
+      document.getElementById('experience-list').appendChild(wrap);
+      renderCV();
+    }
+
+    function addEducation() {
+      educationCount++;
+      const id = 'edu-' + educationCount;
+      const wrap = document.createElement('div');
+      wrap.className = 'entry-block';
+      wrap.id = id;
+      wrap.innerHTML =
+        '<div class="entry-block-header">' +
+          '<span class="entry-block-title" data-i18n="eduBlockTitle">' + t('eduBlockTitle') + '</span>' +
+          '<button type="button" class="remove-btn" onclick="removeEntry(\'' + id + '\')">✕</button>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label data-i18n="labelDegree">' + t('labelDegree') + '</label><input type="text" class="edu-degree" data-i18n-placeholder="phDegree" placeholder="' + t('phDegree') + '" oninput="renderCV()" /></div>' +
+          '<div class="field"><label data-i18n="labelSchool">' + t('labelSchool') + '</label><input type="text" class="edu-school" data-i18n-placeholder="phSchool" placeholder="' + t('phSchool') + '" oninput="renderCV()" /></div>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label data-i18n="labelStartDate">' + t('labelStartDate') + '</label><input type="month" class="edu-start" oninput="renderCV()" /></div>' +
+          '<div class="field"><label data-i18n="labelEndDate">' + t('labelEndDate') + '</label><input type="text" class="edu-end" data-i18n-placeholder="phEduEndYear" placeholder="' + t('phEduEndYear') + '" oninput="renderCV()" /></div>' +
+        '</div>';
+      document.getElementById('education-list').appendChild(wrap);
+      renderCV();
+    }
+
+    function addLanguage() {
+      languageCount++;
+      const id = 'lang-' + languageCount;
+      const wrap = document.createElement('div');
+      wrap.className = 'entry-block';
+      wrap.id = id;
+      wrap.innerHTML =
+        '<div class="entry-block-header">' +
+          '<span class="entry-block-title" data-i18n="langBlockTitle">' + t('langBlockTitle') + '</span>' +
+          '<button type="button" class="remove-btn" onclick="removeEntry(\'' + id + '\')">✕</button>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label data-i18n="labelLangName">' + t('labelLangName') + '</label><input type="text" class="lang-name" data-i18n-placeholder="phLangName" placeholder="' + t('phLangName') + '" oninput="renderCV()" /></div>' +
+          '<div class="field"><label data-i18n="labelLevel">' + t('labelLevel') + '</label><select class="lang-level" onchange="renderCV()"></select></div>' +
+        '</div>';
+      document.getElementById('languages-list').appendChild(wrap);
+      populateLevelOptions(wrap.querySelector('.lang-level'), 'fluent');
+      renderCV();
+    }
+
+    function removeEntry(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+      renderCV();
+    }
+
+    function escapeHTML(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function monthLabel(value) {
+      if (!value) return '';
+      const parts = value.split('-');
+      if (parts.length !== 2) return escapeHTML(value);
+      const months = t('months');
+      const idx = parseInt(parts[1], 10) - 1;
+      const label = months[idx] !== undefined ? months[idx] : parts[1];
+      return label + ' ' + parts[0];
+    }
+
+    function formatDateRange(start, end) {
+      if (!start && !end) return '';
+      const startFormatted = start ? monthLabel(start) : '';
+      const endFormatted = end || (start ? t('cvPresent') : '');
+      if (startFormatted && endFormatted) return startFormatted + ' — ' + escapeHTML(endFormatted);
+      return startFormatted || escapeHTML(endFormatted);
+    }
+
+    function renderCV() {
+      const name = document.getElementById('full-name').value.trim();
+      const jobTitle = document.getElementById('job-title').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const location = document.getElementById('location').value.trim();
+      const website = document.getElementById('website').value.trim();
+      const summary = document.getElementById('summary').value.trim();
+      const skillsRaw = document.getElementById('skills').value.trim();
+
+      const contacts = [email, phone, location, website].filter(Boolean).map(escapeHTML);
+      const contactsHTML = contacts.length
+        ? '<div class="cv-contacts">' + contacts.map(function (c) { return '<span>' + c + '</span>'; }).join('') + '</div>'
+        : '';
+
+      const headTextHTML =
+        '<div class="cv-name">' + (escapeHTML(name) || t('cvDefaultName')) + '</div>' +
+        '<div class="cv-title">' + (escapeHTML(jobTitle) || t('cvDefaultTitle')) + '</div>' +
+        contactsHTML;
+
+      const headHTML = currentPhoto
+        ? '<div class="cv-head-row"><img class="cv-photo" src="' + currentPhoto + '" alt="" />' +
+          '<div class="cv-head-text">' + headTextHTML + '</div></div>'
+        : headTextHTML;
+
+      let summaryHTML = '';
+      if (summary) {
+        summaryHTML =
+          '<div class="cv-section">' +
+            '<div class="cv-section-title">' + t('cvSectionProfile') + '</div>' +
+            '<div class="cv-summary">' + escapeHTML(summary).replace(/\n/g, '<br>') + '</div>' +
+          '</div>';
+      }
+
+      const experienceBlocks = Array.from(document.querySelectorAll('#experience-list .entry-block')).map(function (block) {
+        const role = block.querySelector('.exp-role').value.trim();
+        const company = block.querySelector('.exp-company').value.trim();
+        const start = block.querySelector('.exp-start').value;
+        const end = block.querySelector('.exp-end').value.trim();
+        const desc = block.querySelector('.exp-desc').value.trim();
+        if (!role && !company && !desc) return '';
+        const dateRange = formatDateRange(start, end);
+        return (
+          '<div class="cv-item">' +
+            '<div class="cv-item-header">' +
+              '<span class="cv-item-title">' + (escapeHTML(role) || t('cvDefaultRole')) + (company ? ' — ' + escapeHTML(company) : '') + '</span>' +
+              (dateRange ? '<span class="cv-item-date">' + dateRange + '</span>' : '') +
+            '</div>' +
+            (desc ? '<div class="cv-item-desc">' + escapeHTML(desc) + '</div>' : '') +
+          '</div>'
+        );
+      }).filter(Boolean).join('');
+
+      let experienceHTML = '';
+      if (experienceBlocks) {
+        experienceHTML =
+          '<div class="cv-section">' +
+            '<div class="cv-section-title">' + t('cvSectionExperience') + '</div>' +
+            experienceBlocks +
+          '</div>';
+      }
+
+      const educationBlocks = Array.from(document.querySelectorAll('#education-list .entry-block')).map(function (block) {
+        const degree = block.querySelector('.edu-degree').value.trim();
+        const school = block.querySelector('.edu-school').value.trim();
+        const start = block.querySelector('.edu-start').value;
+        const end = block.querySelector('.edu-end').value.trim();
+        if (!degree && !school) return '';
+        const dateRange = formatDateRange(start, end);
+        return (
+          '<div class="cv-item">' +
+            '<div class="cv-item-header">' +
+              '<span class="cv-item-title">' + (escapeHTML(degree) || t('cvDefaultDegree')) + '</span>' +
+              (dateRange ? '<span class="cv-item-date">' + dateRange + '</span>' : '') +
+            '</div>' +
+            (school ? '<div class="cv-item-sub">' + escapeHTML(school) + '</div>' : '') +
+          '</div>'
+        );
+      }).filter(Boolean).join('');
+
+      let educationHTML = '';
+      if (educationBlocks) {
+        educationHTML =
+          '<div class="cv-section">' +
+            '<div class="cv-section-title">' + t('cvSectionEducation') + '</div>' +
+            educationBlocks +
+          '</div>';
+      }
+
+      let skillsHTML = '';
+      if (skillsRaw) {
+        const skills = skillsRaw.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+        if (skills.length) {
+          skillsHTML =
+            '<div class="cv-section">' +
+              '<div class="cv-section-title">' + t('cvSectionSkills') + '</div>' +
+              '<div class="cv-skills">' + skills.map(function (s) { return '<span class="cv-pill">' + escapeHTML(s) + '</span>'; }).join('') + '</div>' +
+            '</div>';
+        }
+      }
+
+      const languageBlocks = Array.from(document.querySelectorAll('#languages-list .entry-block')).map(function (block) {
+        const langName = block.querySelector('.lang-name').value.trim();
+        const levelSelect = block.querySelector('.lang-level');
+        const levelKey = levelKeyMap[levelSelect.value] || 'levelFluent';
+        if (!langName) return '';
+        return '<span class="cv-pill">' + escapeHTML(langName) + ' — ' + t(levelKey) + '</span>';
+      }).filter(Boolean).join('');
+
+      let languagesHTML = '';
+      if (languageBlocks) {
+        languagesHTML =
+          '<div class="cv-section">' +
+            '<div class="cv-section-title">' + t('cvSectionLanguages') + '</div>' +
+            '<div class="cv-languages">' + languageBlocks + '</div>' +
+          '</div>';
+      }
+
+      const bodySections = summaryHTML + experienceHTML + educationHTML + skillsHTML + languagesHTML;
+      const preview = document.getElementById('cv-preview');
+      preview.className = 'cv-doc tpl-' + currentTemplate;
+
+      if (currentTemplate === 'modern') {
+        preview.innerHTML =
+          '<div class="cv-head">' + headHTML + '</div>' +
+          '<div class="cv-body">' + bodySections + '</div>';
+      } else {
+        preview.innerHTML = headHTML + bodySections;
+      }
+    }
+
+    /* =========================================================
+       PDF EXPORT
+       Fix for the "blank page" bug: the real root cause was neither
+       the clone-and-offset trick nor the sticky/transform/overflow
+       styling tried before — it was that html2pdf.js (every published
+       version, up to and including 0.14.0) bundles an old html2canvas
+       build that silently produces a blank white canvas on current
+       Chrome versions (confirmed by capturing a plain, unstyled test
+       element: blank via html2pdf.js, correct via html2canvas 1.4.1
+       loaded directly). So we no longer use html2pdf.js at all — we
+       call html2canvas + jsPDF directly (loaded as separate scripts,
+       see <head>) and assemble the PDF ourselves, slicing the capture
+       across multiple A4 pages when the CV is longer than one page.
+       We still temporarily neutralize the styles that would otherwise
+       distort the capture:
+       - CSS transform:scale() applied to .cv-doc on smaller viewports
+       - position:sticky on the preview column
+       - flex-shrink on .cv-doc: .preview-scroll is a flex container,
+         so at most desktop widths the ~700-730px preview column is
+         narrower than a real A4 page, and the browser silently shrinks
+         .cv-doc to fit. That's fine for the on-screen preview, but it
+         distorts the aspect ratio html2canvas captures, which threw
+         off the PDF's page-height math and produced a spurious extra
+         blank page even for a one-page CV. Setting flex-shrink:0 only
+         for the capture (not in the stylesheet) fixes the export
+         without changing how the live preview normally looks.
+       We deliberately do NOT touch the scroll/frame wrappers' overflow
+       or max-height: html2canvas locates and captures the target node
+       correctly even while it sits inside a clipped, scrollable
+       ancestor, and lifting that clipping made the whole page (and
+       therefore the document html2canvas has to clone) far taller —
+       which slowed the capture down enough that by the time the PDF
+       was ready to save, Chrome no longer treated it as triggered by
+       the original button click and silently dropped the download.
+       Keeping the DOM small and the capture fast is what makes the
+       save actually go through.
+       Original inline styles are saved and restored afterwards, so
+       the visible page is unaffected once the PDF has been generated.
+       We also build + trigger the download ourselves via a Blob and
+       a plain <a download> click (rather than jsPDF's own .save()),
+       since that is the most broadly-compatible download mechanism.
+       ========================================================= */
+    function downloadPDF(btn) {
+      const source = document.getElementById('cv-preview');
+      const previewCol = document.querySelector('.preview-col');
+      const name = document.getElementById('full-name').value.trim();
+      const filename = (name ? name.replace(/\s+/g, '_') : t('filenameBase')) + '_FindMyAI.pdf';
+
+      const originalLabel = t('downloadBtn');
+      btn.innerHTML = t('downloadBtnLoading');
+      btn.disabled = true;
+
+      const saved = {
+        source: source.getAttribute('style') || '',
+        previewCol: previewCol.getAttribute('style') || ''
+      };
+
+      source.style.transform = 'none';
+      source.style.margin = '0';
+      source.style.flexShrink = '0';
+      previewCol.style.position = 'static';
+
+      const restore = function () {
+        source.setAttribute('style', saved.source);
+        previewCol.setAttribute('style', saved.previewCol);
+        btn.innerHTML = originalLabel;
+        btn.disabled = false;
+      };
+
+      const PAGE_W = 210;
+      const PAGE_H = 297;
+
+      const runExport = function () {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            window.html2canvas(source, { scale: 2, useCORS: true, backgroundColor: '#ffffff' })
+              .then(function (canvas) {
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                const imgWidth = PAGE_W;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+                // A sub-millimeter tolerance absorbs the rounding noise
+                // that comes from converting the canvas's pixel aspect
+                // ratio back to mm (e.g. a one-page CV computing out to
+                // 297.01mm instead of exactly 297mm) — without it, that
+                // noise alone was enough to trigger a spurious, near-
+                // blank trailing page on every export.
+                const PAGE_TOLERANCE = 1;
+                let heightLeft = imgHeight;
+                let position = 0;
+                pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                heightLeft -= PAGE_H;
+
+                while (heightLeft > PAGE_TOLERANCE) {
+                  position = heightLeft - imgHeight;
+                  pdf.addPage();
+                  pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+                  heightLeft -= PAGE_H;
+                }
+
+                const blob = pdf.output('blob');
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+
+                restore();
+              })
+              .catch(function () {
+                restore();
+                alert(t('pdfError'));
+              });
+          });
+        });
+      };
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(runExport).catch(runExport);
+      } else {
+        runExport();
+      }
+    }
+
+    /* =========================================================
+       INIT
+       ========================================================= */
+    (function init() {
+      let storedLang = null;
+      try { storedLang = localStorage.getItem('findmyai_lang'); } catch (e) { /* storage unavailable */ }
+      currentLang = translations[storedLang] ? storedLang : 'en';
+
+      const meta = LANGS.find(function (l) { return l.code === currentLang; }) || LANGS[0];
+      document.getElementById('current-lang-flag').textContent = meta.flag;
+      document.getElementById('current-lang-name').textContent = meta.name;
+      document.querySelectorAll('.lang-option').forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === currentLang);
+      });
+
+      addExperience();
+      addEducation();
+      addLanguage();
+      updateUITranslations();
+    })();
+  </script>
+
+</body>
+</html>
