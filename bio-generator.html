@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Bio Generator | FindMyAI</title>
+  <meta name="description" content="Generate the perfect bio for LinkedIn, Twitter/X, Instagram or TikTok in seconds, directly in your browser. No sign up, no data sent to a server." />
+  <meta name="keywords" content="free bio generator, instagram bio generator, twitter bio generator, linkedin bio generator, tiktok bio generator, ai bio generator free" />
+  <link rel="canonical" href="https://findmyai.tech/bio-generator.html" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d14;
+      --surface: #13131f;
+      --border: #1e1e30;
+      --cyan: #00d4ff;
+      --violet: #a855f7;
+      --cyan-dim: rgba(0, 212, 255, 0.08);
+      --violet-dim: rgba(168, 85, 247, 0.08);
+      --text: #e8e8f0;
+      --muted: #7a7a9a;
+      --tag-bg: #1a1a2e;
+      --danger: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(13,13,20,0.92);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .wordmark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    nav a.back {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    nav a.back:hover { color: var(--cyan); }
+
+    /* LANGUAGE SWITCHER */
+    .lang-switcher { position: relative; }
+
+    .lang-select-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .lang-select-btn:hover { border-color: rgba(0, 212, 255, 0.35); }
+
+    .lang-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 160px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      z-index: 200;
+    }
+    .lang-dropdown.open { display: block; }
+
+    .lang-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .lang-option:hover { background: var(--cyan-dim); }
+    .lang-option.active { color: var(--cyan); font-weight: 600; }
+
+    /* HERO */
+    .hero {
+      max-width: 1200px;
+      margin: 56px auto 32px;
+      padding: 0 24px;
+    }
+
+    .eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: #b0b0c8;
+      font-size: 16px;
+      max-width: 640px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet), transparent);
+      margin: 32px 0;
+      opacity: 0.3;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* LAYOUT */
+    .builder {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+      display: grid;
+      grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .builder { grid-template-columns: 1fr; }
+    }
+
+    /* PANEL */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 26px;
+    }
+
+    .panel + .panel { margin-top: 20px; }
+
+    .panel h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      padding-left: 12px;
+      border-left: 3px solid var(--cyan);
+    }
+
+    .panel .panel-hint {
+      color: var(--muted);
+      font-size: 12.5px;
+      margin: 6px 0 18px 15px;
+    }
+
+    /* FORM ELEMENTS */
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #9090b0;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .field { margin-bottom: 16px; }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: rgba(0, 212, 255, 0.45);
+    }
+
+    ::placeholder { color: #55556e; }
+
+    /* PLATFORM GRID */
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+    .platform-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: var(--tag-bg);
+      border-radius: 10px;
+      padding: 16px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      min-height: 100px;
+    }
+    .platform-option:hover { border-color: rgba(0, 212, 255, 0.3); }
+    .platform-option.active {
+      border-color: var(--cyan);
+      background: var(--cyan-dim);
+    }
+    .platform-icon { font-size: 24px; line-height: 1; }
+    .platform-label { font-size: 13px; font-weight: 700; line-height: 1.3; }
+    .platform-desc { font-size: 11px; color: var(--muted); line-height: 1.3; }
+
+    /* TONE SELECT */
+    .tone-select {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tone-option {
+      flex: 1;
+      min-width: 100px;
+      border: 1px solid var(--border);
+      background: var(--tag-bg);
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tone-option:hover { border-color: rgba(0, 212, 255, 0.3); }
+    .tone-option.active {
+      border-color: var(--cyan);
+      background: var(--cyan-dim);
+      color: var(--cyan);
+    }
+
+    /* PREVIEW HEADER */
+    .preview-head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ACTION BAR */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      color: #0d0d14;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .cta-btn:hover { opacity: 0.85; }
+    .cta-btn:disabled { opacity: 0.55; cursor: default; }
+
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 13px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .secondary-btn:hover {
+      border-color: rgba(0, 212, 255, 0.35);
+      color: var(--cyan);
+    }
+    .secondary-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .secondary-btn.small {
+      padding: 7px 14px;
+      font-size: 12.5px;
+    }
+
+    .privacy-note {
+      color: var(--muted);
+      font-size: 12px;
+      max-width: 340px;
+      line-height: 1.5;
+    }
+
+    /* PREVIEW COLUMN */
+    .preview-col {
+      position: sticky;
+      top: 90px;
+    }
+
+    .preview-frame {
+      background: #1a1a2a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .bio-card {
+      background: #ffffff;
+      color: #1a1a2a;
+      border-radius: 10px;
+      padding: 24px 26px;
+      min-height: 220px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.35);
+    }
+
+    .bio-text {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #262636;
+      white-space: pre-wrap;
+      min-height: 140px;
+    }
+    .bio-text[contenteditable="true"] {
+      cursor: text;
+      border-radius: 4px;
+      transition: box-shadow 0.15s;
+    }
+    .bio-text[contenteditable="true"]:hover {
+      box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.18);
+    }
+    .bio-text[contenteditable="true"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.55);
+    }
+
+    .bio-empty-state {
+      color: #999;
+      font-size: 13.5px;
+      text-align: center;
+      padding: 70px 20px;
+      line-height: 1.6;
+    }
+
+    /* CHAR COUNTER */
+    .char-counter-wrap {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 12.5px;
+      color: var(--muted);
+      display: none;
+    }
+    .char-counter-wrap .count.over { color: var(--danger); font-weight: 700; }
+    .char-warning {
+      color: var(--danger);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .footer-wordmark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    footer p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .hero { margin: 40px auto 24px; }
+      .panel { padding: 18px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="wordmark">FindMyAI</a>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button type="button" class="lang-select-btn" onclick="toggleLangDropdown(event)">
+          <span id="current-lang-flag">🇬🇧</span> <span id="current-lang-name">English</span> ▾
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <button type="button" class="lang-option" data-lang="en" onclick="changeLanguage('en')">🇬🇧 English</button>
+          <button type="button" class="lang-option" data-lang="fr" onclick="changeLanguage('fr')">🇫🇷 Français</button>
+          <button type="button" class="lang-option" data-lang="es" onclick="changeLanguage('es')">🇪🇸 Español</button>
+          <button type="button" class="lang-option" data-lang="pt" onclick="changeLanguage('pt')">🇵🇹 Português</button>
+          <button type="button" class="lang-option" data-lang="de" onclick="changeLanguage('de')">🇩🇪 Deutsch</button>
+        </div>
+      </div>
+      <a href="https://findmyai.tech" class="back" data-i18n="nav_back">← Back to home</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="eyebrow" data-i18n="eyebrow">Free Tool / Bio Generator</div>
+    <h1 data-i18n="heroTitle">Write your perfect bio <span>in seconds</span></h1>
+    <p data-i18n="heroSubtitle">Pick a platform, fill in a few details and get a bio that fits perfectly. Everything happens in your browser, no data is ever sent to a server.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="builder">
+
+    <!-- FORM COLUMN -->
+    <div class="form-col">
+
+      <div class="panel">
+        <h2 data-i18n="panelPlatformTitle">1. Choose a platform</h2>
+        <p class="panel-hint" data-i18n="panelPlatformHint">Pick where this bio will be used, the style adapts automatically.</p>
+        <div class="platform-grid" id="platform-grid"></div>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="panelDetailsTitle">2. Add your details</h2>
+        <p class="panel-hint" data-i18n="panelDetailsHint">Fill in a few details, the bio updates instantly.</p>
+
+        <div class="field">
+          <label data-i18n="labelName">Name or username</label>
+          <input type="text" id="name-input" data-i18n-placeholder="phName" placeholder="e.g. Sarah Bennett" oninput="renderBio()" />
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelJob">Job or activity</label>
+          <input type="text" id="job-input" data-i18n-placeholder="phJob" placeholder="e.g. UX Designer" oninput="renderBio()" />
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelInterests">Interests or specialties</label>
+          <input type="text" id="interests-input" data-i18n-placeholder="phInterests" placeholder="e.g. travel, coffee, design" oninput="renderBio()" />
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelTone">Tone</label>
+          <div class="tone-select" id="tone-select"></div>
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label data-i18n="labelLink">Link (optional)</label>
+          <input type="text" id="link-input" data-i18n-placeholder="phLink" placeholder="e.g. yourwebsite.com" oninput="renderBio()" />
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="action-bar">
+          <div class="action-buttons">
+            <button type="button" class="cta-btn" id="copy-btn" data-i18n="copyBtn" onclick="copyBio(this)" disabled>📋 Copy bio</button>
+            <button type="button" class="secondary-btn" data-i18n="resetBtn" onclick="resetForm()">Reset</button>
+          </div>
+          <p class="privacy-note" data-i18n="privacyNote">The bio is generated directly in your browser. No data is ever sent to or stored on a server.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PREVIEW COLUMN -->
+    <div class="preview-col">
+      <div class="panel" style="margin-bottom:12px;">
+        <div class="preview-head-row">
+          <h2 style="margin-bottom:0;" data-i18n="previewTitle">Your Bio</h2>
+          <button type="button" class="secondary-btn small" id="reformulate-btn" onclick="reformulate()" data-i18n="reformulateBtn" disabled>🔀 Rephrase</button>
+        </div>
+        <p class="panel-hint" style="margin:8px 0 0;" data-i18n="previewEditHint">Click directly in the bio to edit it.</p>
+      </div>
+      <div class="preview-frame">
+        <div class="bio-card" id="bio-card">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="char-counter-wrap" id="char-counter-wrap">
+          <span class="count" id="char-count-text"></span>
+          <div class="char-warning" id="char-warning" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="footer-wordmark">FindMyAI</span>
+    <p data-i18n="footerTagline">FindMyAI's free bio generator, the search engine for AI tools.</p>
+    <div class="footer-links">
+      <a href="https://findmyai.tech" data-i18n="footerHome">Home</a>
+      <a href="https://findmyai.tech/blog/meilleurs-outils-ia-gratuits-2026.html" data-i18n="footerBlog">Blog</a>
+      <a href="https://findmyai.tech" data-i18n="footerFindTool">Find an AI tool</a>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================
+       TRANSLATIONS
+       Same key/value approach as the language system used across
+       the rest of the site (see cv-maker.html / email-writer.html):
+       one flat object of strings per language, applied through
+       data-i18n / data-i18n-placeholder attributes. Each language
+       also carries a "platforms" object (icon, label, desc) and,
+       per platform, a "tones" object holding 3 pre-written bio
+       variants per tone, plus a "fallback" object used when a
+       field is left empty.
+       ========================================================= */
+    const translations = {
+  "en": {
+    "pageTitle": "Free Bio Generator | FindMyAI",
+    "metaDescription": "Generate the perfect bio for LinkedIn, Twitter/X, Instagram or TikTok in seconds, directly in your browser. No sign up, no data sent to a server.",
+    "nav_back": "← Back to home",
+    "eyebrow": "Free Tool / Bio Generator",
+    "heroTitle": "Write your perfect bio <span>in seconds</span>",
+    "heroSubtitle": "Pick a platform, fill in a few details and get a bio that fits perfectly. Everything happens in your browser, no data is ever sent to a server.",
+    "panelPlatformTitle": "1. Choose a platform",
+    "panelPlatformHint": "Pick where this bio will be used, the style adapts automatically.",
+    "panelDetailsTitle": "2. Add your details",
+    "panelDetailsHint": "Fill in a few details, the bio updates instantly.",
+    "labelName": "Name or username",
+    "phName": "e.g. Sarah Bennett",
+    "labelJob": "Job or activity",
+    "phJob": "e.g. UX Designer",
+    "labelInterests": "Interests or specialties",
+    "phInterests": "e.g. travel, coffee, design",
+    "labelTone": "Tone",
+    "toneProfessional": "Professional",
+    "toneCreative": "Creative",
+    "toneFunny": "Funny",
+    "toneInspiring": "Inspiring",
+    "labelLink": "Link (optional)",
+    "phLink": "e.g. yourwebsite.com",
+    "platformLinkedin": "LinkedIn",
+    "platformTwitter": "Twitter / X",
+    "platformInstagram": "Instagram",
+    "platformTiktok": "TikTok",
+    "platformLinkedinDesc": "Professional & detailed",
+    "platformTwitterDesc": "Short & punchy",
+    "platformInstagramDesc": "Light & visual",
+    "platformTiktokDesc": "Fun & catchy",
+    "reformulateBtn": "🔀 Rephrase",
+    "previewTitle": "Your Bio",
+    "previewEditHint": "Click directly in the bio to edit it.",
+    "copyBtn": "📋 Copy bio",
+    "copiedBtn": "✓ Copied!",
+    "resetBtn": "Reset",
+    "privacyNote": "The bio is generated directly in your browser. No data is ever sent to or stored on a server.",
+    "noPlatformNotice": "Choose a platform above to generate your bio.",
+    "charCounter": "{count} / {limit} characters",
+    "charOverLimit": "This exceeds the {platform} limit.",
+    "footerTagline": "FindMyAI's free bio generator, the search engine for AI tools.",
+    "footerHome": "Home",
+    "footerBlog": "Blog",
+    "footerFindTool": "Find an AI tool",
+    "fallback": { "name": "This creator", "job": "creative professional", "interests": "a lot of things" },
+    "platforms": {
+      "linkedin": {
+        "tones": {
+          "professional": [
+            "{name}, {job}. Focused on delivering measurable results and building long term value. Passionate about {interests}, and always eager to take on new challenges that drive real impact.",
+            "{name} is a dedicated {job} with a strong focus on excellence and collaboration. Deeply passionate about {interests}, and committed to continuous growth in every project.",
+            "With a background as {job}, {name} brings dedication, reliability and a results driven mindset to every project. Passionate about {interests}, and always open to new professional opportunities."
+          ],
+          "creative": [
+            "{name} is {job}, driven by imagination and a genuine love for {interests}. Always exploring new ideas and unconventional ways to bring creative projects to life.",
+            "Creativity meets purpose in the work of {name}, {job}. A true passion for {interests} fuels every project, always searching for fresh and original ideas.",
+            "{name}, {job}, believes great ideas come from curiosity and bold thinking. Endlessly inspired by {interests}, and always chasing the next creative spark."
+          ],
+          "funny": [
+            "{name}, {job} by profession, professional overthinker by nature. Passionate about {interests}, coffee, and pretending to have a perfectly organized calendar.",
+            "{job}. Probably thinking about {interests} right now. {name} brings a good dose of humor to every project, along with genuine dedication.",
+            "{name} is {job}, allergic to boring meetings and big fan of {interests}. Serious about the work, less serious about everything else."
+          ],
+          "inspiring": [
+            "{name}, {job}, believes every challenge is an opportunity to grow. Deeply passionate about {interests}, and committed to making a positive impact, one step at a time.",
+            "Guided by purpose, {name} works as {job} with the goal of inspiring others through {interests}. Every project is a chance to learn, grow and create real change.",
+            "{name} is {job} on a mission to turn passion into purpose. Fueled by {interests}, and driven by the belief that consistent effort leads to meaningful growth."
+          ]
+        }
+      },
+      "twitter": {
+        "tones": {
+          "professional": [
+            "{job} 🚀 Building things I'm proud of. Into {interests}.",
+            "{name} · {job}. Sharing thoughts on {interests}, one post at a time.",
+            "{job} by day, always curious. Talking about {interests} here 👋"
+          ],
+          "creative": [
+            "{job} 🎨 dreaming up new ideas around {interests} daily.",
+            "{name} · {job}. Turning {interests} into something worth sharing 🌈",
+            "Creative mind, {job} at heart. Obsessed with {interests} ✨"
+          ],
+          "funny": [
+            "{job} 😅 mostly here for {interests} and snacks.",
+            "{name} · {job}. Professionally chaotic, passionate about {interests} 🙃",
+            "{job} by title, {interests} enthusiast by heart. Send memes."
+          ],
+          "inspiring": [
+            "{job} ✨ turning {interests} into purpose, one day at a time.",
+            "{name} · {job}. Here to inspire through {interests} 🌱",
+            "{job} with a mission: sharing {interests} to help others grow 💫"
+          ]
+        }
+      },
+      "instagram": {
+        "tones": {
+          "professional": [
+            "✨ {name}\n{job}\n💭 Into {interests}\n📍 Always creating something new",
+            "👋 Hi, I'm {name}\n{job}\n🌿 Passionate about {interests}",
+            "{name} · {job} ✨\nSharing my journey and everything about {interests} 🌱"
+          ],
+          "creative": [
+            "🎨 {name}\n{job}\n🌈 In love with {interests}\n✨ Creating something new every day",
+            "✨ {job}\n🖌️ Exploring {interests}\n💫 Welcome to my world, {name}",
+            "{name} · creative soul 🎨\n{job} passionate about {interests} 🌈"
+          ],
+          "funny": [
+            "😅 {name}\n{job}\nObsessed with {interests}\n🍕 Also obsessed with snacks",
+            "{job} 🙃\nHere for {interests} and good vibes only\nHi, I'm {name} 👋",
+            "{name} · professional {job}, amateur comedian 🎤\nBig fan of {interests} 😄"
+          ],
+          "inspiring": [
+            "✨ {name}\n{job}\n🌱 Growing through {interests}\n💫 Here to inspire and be inspired",
+            "🌟 {job}\nOn a journey through {interests}\nWelcome, I'm {name} 💫",
+            "{name} · {job} ✨\nBelieving in growth, powered by {interests} 🌱"
+          ]
+        }
+      },
+      "tiktok": {
+        "tones": {
+          "professional": [
+            "{job} 🎬 obsessed with {interests} 🔥",
+            "{name} here 👋 {job} sharing all things {interests} ✨",
+            "{job} by day 🌞 {interests} lover always 🎉"
+          ],
+          "creative": [
+            "{job} 🎨 living for {interests} ✨🔥",
+            "{name} bringing {interests} to life 🎬✨ {job} vibes only",
+            "Creative {job} 🌈 obsessed with {interests} 💫"
+          ],
+          "funny": [
+            "{job} by day 😂 chaos gremlin by night. {interests} obsessed 🔥",
+            "{name} here 👋 {job} who talks way too much about {interests} 😅",
+            "{job} 🙃 warning: will talk about {interests} for hours 🎤"
+          ],
+          "inspiring": [
+            "{job} 🌟 here to inspire through {interests} ✨",
+            "{name} on a mission 💫 {job} sharing {interests} to lift others up 🌱",
+            "{job} ✨ small steps, big dreams. All about {interests} 🚀"
+          ]
+        }
+      }
+    }
+  },
+  "fr": {
+    "pageTitle": "Générateur de Bio Gratuit | FindMyAI",
+    "metaDescription": "Générez la bio parfaite pour LinkedIn, Twitter/X, Instagram ou TikTok en quelques secondes, directement dans votre navigateur. Aucune inscription, aucune donnée envoyée à un serveur.",
+    "nav_back": "← Retour à l'accueil",
+    "eyebrow": "Outil gratuit / Générateur de bio",
+    "heroTitle": "Créez votre bio parfaite <span>en quelques secondes</span>",
+    "heroSubtitle": "Choisissez une plateforme, remplissez quelques détails et obtenez une bio parfaitement adaptée. Tout se passe dans votre navigateur, aucune donnée n'est jamais envoyée à un serveur.",
+    "panelPlatformTitle": "1. Choisissez une plateforme",
+    "panelPlatformHint": "Sélectionnez où cette bio sera utilisée, le style s'adapte automatiquement.",
+    "panelDetailsTitle": "2. Ajoutez vos informations",
+    "panelDetailsHint": "Remplissez quelques détails, la bio se met à jour instantanément.",
+    "labelName": "Nom ou pseudo",
+    "phName": "ex. Sarah Bennett",
+    "labelJob": "Métier ou activité",
+    "phJob": "ex. Designer UX",
+    "labelInterests": "Centres d'intérêt ou spécialités",
+    "phInterests": "ex. voyages, café, design",
+    "labelTone": "Ton",
+    "toneProfessional": "Professionnel",
+    "toneCreative": "Créatif",
+    "toneFunny": "Drôle",
+    "toneInspiring": "Inspirant",
+    "labelLink": "Lien (facultatif)",
+    "phLink": "ex. votresite.com",
+    "platformLinkedin": "LinkedIn",
+    "platformTwitter": "Twitter / X",
+    "platformInstagram": "Instagram",
+    "platformTiktok": "TikTok",
+    "platformLinkedinDesc": "Pro et développé",
+    "platformTwitterDesc": "Court et percutant",
+    "platformInstagramDesc": "Léger et visuel",
+    "platformTiktokDesc": "Fun et accrocheur",
+    "reformulateBtn": "🔀 Reformuler",
+    "previewTitle": "Votre bio",
+    "previewEditHint": "Cliquez directement dans la bio pour la modifier.",
+    "copyBtn": "📋 Copier la bio",
+    "copiedBtn": "✓ Copié !",
+    "resetBtn": "Réinitialiser",
+    "privacyNote": "La bio est générée directement dans votre navigateur. Aucune donnée n'est jamais envoyée ni stockée sur un serveur.",
+    "noPlatformNotice": "Choisissez une plateforme pour générer votre bio.",
+    "charCounter": "{count} / {limit} caractères",
+    "charOverLimit": "Cela dépasse la limite de {platform}.",
+    "footerTagline": "Le générateur de bio gratuit de FindMyAI, le moteur de recherche des outils IA.",
+    "footerHome": "Accueil",
+    "footerBlog": "Blog",
+    "footerFindTool": "Trouver un outil IA",
+    "fallback": { "name": "Cette personne", "job": "professionnel créatif", "interests": "plein de choses" },
+    "platforms": {
+      "linkedin": {
+        "tones": {
+          "professional": [
+            "{name}, {job}. Concentré(e) sur des résultats concrets et une création de valeur durable. Passionné(e) par {interests}, toujours prêt(e) à relever de nouveaux défis à fort impact.",
+            "{name} est {job}, avec une vraie exigence d'excellence et de collaboration. Profondément passionné(e) par {interests}, et engagé(e) dans une progression continue sur chaque projet.",
+            "Fort(e) d'une expérience en tant que {job}, {name} apporte rigueur, fiabilité et un état d'esprit tourné vers les résultats. Passionné(e) par {interests}, toujours ouvert(e) à de nouvelles opportunités professionnelles."
+          ],
+          "creative": [
+            "{name} est {job}, porté(e) par l'imagination et une vraie passion pour {interests}. Toujours à la recherche de nouvelles idées et de façons originales de donner vie à des projets créatifs.",
+            "La créativité rencontre le sens du détail dans le travail de {name}, {job}. Une passion sincère pour {interests} nourrit chaque projet, avec toujours l'envie de trouver des idées fraîches.",
+            "{name}, {job}, pense que les meilleures idées naissent de la curiosité et de l'audace. Sans cesse inspiré(e) par {interests}, toujours à la poursuite de la prochaine étincelle créative."
+          ],
+          "funny": [
+            "{name}, {job} de métier, expert(e) en réflexion excessive par nature. Passionné(e) par {interests}, le café, et l'art de faire semblant d'avoir un agenda parfaitement organisé.",
+            "{job}. Probablement en train de penser à {interests} en ce moment même. {name} apporte une bonne dose d'humour à chaque projet, avec un vrai engagement derrière.",
+            "{name} est {job}, allergique aux réunions interminables et grand(e) fan de {interests}. Sérieux(se) dans le travail, un peu moins pour le reste."
+          ],
+          "inspiring": [
+            "{name}, {job}, pense que chaque défi est une occasion de grandir. Profondément passionné(e) par {interests}, et engagé(e) à avoir un impact positif, un pas à la fois.",
+            "Guidé(e) par le sens, {name} exerce en tant que {job} avec l'envie d'inspirer les autres à travers {interests}. Chaque projet est une occasion d'apprendre et de créer un vrai changement.",
+            "{name} est {job}, avec pour mission de transformer la passion en objectif. Porté(e) par {interests}, avec la conviction qu'un effort constant mène à une progression durable."
+          ]
+        }
+      },
+      "twitter": {
+        "tones": {
+          "professional": [
+            "{job} 🚀 Je construis des choses dont je suis fier(ère). Passionné(e) par {interests}.",
+            "{name} · {job}. Je partage mes réflexions sur {interests}, un post à la fois.",
+            "{job} le jour, toujours curieux(se). Je parle de {interests} ici 👋"
+          ],
+          "creative": [
+            "{job} 🎨 j'imagine chaque jour de nouvelles idées autour de {interests}.",
+            "{name} · {job}. Je transforme {interests} en quelque chose qui vaut le partage 🌈",
+            "Esprit créatif, {job} dans l'âme. Passionné(e) par {interests} ✨"
+          ],
+          "funny": [
+            "{job} 😅 surtout là pour {interests} et les snacks.",
+            "{name} · {job}. Professionnellement chaotique, passionné(e) par {interests} 🙃",
+            "{job} sur le papier, fan de {interests} dans l'âme. Envoyez des memes."
+          ],
+          "inspiring": [
+            "{job} ✨ je transforme {interests} en une vraie mission, jour après jour.",
+            "{name} · {job}. Ici pour inspirer à travers {interests} 🌱",
+            "{job} avec une mission, partager {interests} pour aider les autres à grandir 💫"
+          ]
+        }
+      },
+      "instagram": {
+        "tones": {
+          "professional": [
+            "✨ {name}\n{job}\n💭 Passionné(e) par {interests}\n📍 Toujours en train de créer quelque chose de nouveau",
+            "👋 Salut, je suis {name}\n{job}\n🌿 Passionné(e) par {interests}",
+            "{name} · {job} ✨\nJe partage mon parcours et tout ce qui touche à {interests} 🌱"
+          ],
+          "creative": [
+            "🎨 {name}\n{job}\n🌈 Amoureux(se) de {interests}\n✨ Je crée quelque chose de nouveau chaque jour",
+            "✨ {job}\n🖌️ J'explore {interests}\n💫 Bienvenue dans mon univers, je suis {name}",
+            "{name} · âme créative 🎨\n{job} passionné(e) par {interests} 🌈"
+          ],
+          "funny": [
+            "😅 {name}\n{job}\nObsédé(e) par {interests}\n🍕 Obsédé(e) par les snacks aussi",
+            "{job} 🙃\nJe suis là pour {interests} et la bonne humeur uniquement\nSalut, je suis {name} 👋",
+            "{name} · {job} professionnel(le), humoriste amateur 🎤\nGrand(e) fan de {interests} 😄"
+          ],
+          "inspiring": [
+            "✨ {name}\n{job}\n🌱 Je grandis grâce à {interests}\n💫 Ici pour inspirer et être inspiré(e)",
+            "🌟 {job}\nEn plein voyage à travers {interests}\nBienvenue, je suis {name} 💫",
+            "{name} · {job} ✨\nCroire en la progression, portée par {interests} 🌱"
+          ]
+        }
+      },
+      "tiktok": {
+        "tones": {
+          "professional": [
+            "{job} 🎬 fan absolu(e) de {interests} 🔥",
+            "{name} ici 👋 {job} qui partage tout sur {interests} ✨",
+            "{job} le jour 🌞 fan de {interests} toujours 🎉"
+          ],
+          "creative": [
+            "{job} 🎨 je vis pour {interests} ✨🔥",
+            "{name} donne vie à {interests} 🎬✨ ambiance {job} uniquement",
+            "{job} créatif(ve) 🌈 fan absolu(e) de {interests} 💫"
+          ],
+          "funny": [
+            "{job} le jour 😂 chaos total la nuit. Fan de {interests} 🔥",
+            "{name} ici 👋 {job} qui parle bien trop de {interests} 😅",
+            "{job} 🙃 attention, je peux parler de {interests} pendant des heures 🎤"
+          ],
+          "inspiring": [
+            "{job} 🌟 ici pour inspirer à travers {interests} ✨",
+            "{name} en pleine mission 💫 {job} qui partage {interests} pour motiver les autres 🌱",
+            "{job} ✨ petits pas, grands rêves. Tout tourne autour de {interests} 🚀"
+          ]
+        }
+      }
+    }
+  },
+  "es": {
+    "pageTitle": "Generador de Bio Gratis | FindMyAI",
+    "metaDescription": "Genera la bio perfecta para LinkedIn, Twitter/X, Instagram o TikTok en segundos, directamente en tu navegador. Sin registro, sin datos enviados a un servidor.",
+    "nav_back": "← Volver al inicio",
+    "eyebrow": "Herramienta gratuita / Generador de bio",
+    "heroTitle": "Crea tu bio perfecta <span>en segundos</span>",
+    "heroSubtitle": "Elige una plataforma, completa algunos detalles y obtén una bio perfectamente adaptada. Todo ocurre en tu navegador, ningún dato se envía nunca a un servidor.",
+    "panelPlatformTitle": "1. Elige una plataforma",
+    "panelPlatformHint": "Elige dónde se usará esta bio, el estilo se adapta automáticamente.",
+    "panelDetailsTitle": "2. Añade tus datos",
+    "panelDetailsHint": "Completa algunos datos, la bio se actualiza al instante.",
+    "labelName": "Nombre o usuario",
+    "phName": "ej. Sarah Bennett",
+    "labelJob": "Profesión o actividad",
+    "phJob": "ej. Diseñadora UX",
+    "labelInterests": "Intereses o especialidades",
+    "phInterests": "ej. viajes, café, diseño",
+    "labelTone": "Tono",
+    "toneProfessional": "Profesional",
+    "toneCreative": "Creativo",
+    "toneFunny": "Divertido",
+    "toneInspiring": "Inspirador",
+    "labelLink": "Enlace (opcional)",
+    "phLink": "ej. tusitio.com",
+    "platformLinkedin": "LinkedIn",
+    "platformTwitter": "Twitter / X",
+    "platformInstagram": "Instagram",
+    "platformTiktok": "TikTok",
+    "platformLinkedinDesc": "Profesional y detallado",
+    "platformTwitterDesc": "Corto y directo",
+    "platformInstagramDesc": "Ligero y visual",
+    "platformTiktokDesc": "Divertido y pegadizo",
+    "reformulateBtn": "🔀 Reformular",
+    "previewTitle": "Tu bio",
+    "previewEditHint": "Haz clic directamente en la bio para editarla.",
+    "copyBtn": "📋 Copiar bio",
+    "copiedBtn": "✓ ¡Copiado!",
+    "resetBtn": "Reiniciar",
+    "privacyNote": "La bio se genera directamente en tu navegador. Ningún dato se envía ni se almacena nunca en un servidor.",
+    "noPlatformNotice": "Elige una plataforma arriba para generar tu bio.",
+    "charCounter": "{count} / {limit} caracteres",
+    "charOverLimit": "Esto supera el límite de {platform}.",
+    "footerTagline": "El generador de bio gratis de FindMyAI, el buscador de herramientas de IA.",
+    "footerHome": "Inicio",
+    "footerBlog": "Blog",
+    "footerFindTool": "Buscar una herramienta de IA",
+    "fallback": { "name": "Esta persona", "job": "profesional creativo", "interests": "muchas cosas" },
+    "platforms": {
+      "linkedin": {
+        "tones": {
+          "professional": [
+            "{name}, {job}. Centrado en resultados concretos y en crear valor duradero. Apasionado por {interests}, siempre listo para asumir nuevos retos con impacto real.",
+            "{name} es {job}, con un fuerte enfoque en la excelencia y la colaboración. Profundamente apasionado por {interests}, y comprometido con el crecimiento continuo en cada proyecto.",
+            "Con experiencia como {job}, {name} aporta dedicación, confianza y una mentalidad orientada a resultados. Apasionado por {interests}, siempre abierto a nuevas oportunidades profesionales."
+          ],
+          "creative": [
+            "{name} es {job}, guiado por la imaginación y un amor genuino por {interests}. Siempre explorando nuevas ideas y formas originales de dar vida a proyectos creativos.",
+            "La creatividad se une al propósito en el trabajo de {name}, {job}. Una pasión sincera por {interests} impulsa cada proyecto, siempre buscando ideas frescas y originales.",
+            "{name}, {job}, cree que las mejores ideas nacen de la curiosidad y la audacia. Constantemente inspirado por {interests}, siempre persiguiendo la próxima chispa creativa."
+          ],
+          "funny": [
+            "{name}, {job} de profesión, experto en pensar demasiado por naturaleza. Apasionado por {interests}, el café, y fingir tener una agenda perfectamente organizada.",
+            "{job}. Probablemente pensando en {interests} ahora mismo. {name} aporta una buena dosis de humor a cada proyecto, junto con un compromiso genuino.",
+            "{name} es {job}, alérgico a las reuniones eternas y gran fan de {interests}. Serio en el trabajo, un poco menos en todo lo demás."
+          ],
+          "inspiring": [
+            "{name}, {job}, cree que cada reto es una oportunidad para crecer. Profundamente apasionado por {interests}, y comprometido con generar un impacto positivo, paso a paso.",
+            "Guiado por un propósito, {name} trabaja como {job} con el objetivo de inspirar a otros a través de {interests}. Cada proyecto es una oportunidad para aprender y crear un cambio real.",
+            "{name} es {job} con la misión de convertir la pasión en propósito. Impulsado por {interests}, y con la convicción de que el esfuerzo constante lleva a un crecimiento real."
+          ]
+        }
+      },
+      "twitter": {
+        "tones": {
+          "professional": [
+            "{job} 🚀 Construyendo cosas de las que me siento orgulloso. Apasionado por {interests}.",
+            "{name} · {job}. Compartiendo ideas sobre {interests}, una publicación a la vez.",
+            "{job} de día, siempre curioso. Hablando de {interests} por aquí 👋"
+          ],
+          "creative": [
+            "{job} 🎨 imaginando cada día nuevas ideas sobre {interests}.",
+            "{name} · {job}. Convirtiendo {interests} en algo que vale la pena compartir 🌈",
+            "Mente creativa, {job} de corazón. Obsesionado con {interests} ✨"
+          ],
+          "funny": [
+            "{job} 😅 sobre todo aquí por {interests} y por los snacks.",
+            "{name} · {job}. Profesionalmente caótico, apasionado por {interests} 🙃",
+            "{job} de título, fan de {interests} de corazón. Envía memes."
+          ],
+          "inspiring": [
+            "{job} ✨ convirtiendo {interests} en un propósito, día a día.",
+            "{name} · {job}. Aquí para inspirar a través de {interests} 🌱",
+            "{job} con una misión, compartir {interests} para ayudar a otros a crecer 💫"
+          ]
+        }
+      },
+      "instagram": {
+        "tones": {
+          "professional": [
+            "✨ {name}\n{job}\n💭 Apasionado por {interests}\n📍 Siempre creando algo nuevo",
+            "👋 Hola, soy {name}\n{job}\n🌿 Apasionado por {interests}",
+            "{name} · {job} ✨\nCompartiendo mi camino y todo sobre {interests} 🌱"
+          ],
+          "creative": [
+            "🎨 {name}\n{job}\n🌈 Enamorado de {interests}\n✨ Creando algo nuevo cada día",
+            "✨ {job}\n🖌️ Explorando {interests}\n💫 Bienvenido a mi mundo, soy {name}",
+            "{name} · alma creativa 🎨\n{job} apasionado por {interests} 🌈"
+          ],
+          "funny": [
+            "😅 {name}\n{job}\nObsesionado con {interests}\n🍕 También obsesionado con los snacks",
+            "{job} 🙃\nAquí solo por {interests} y buena onda\nHola, soy {name} 👋",
+            "{name} · {job} profesional, comediante amateur 🎤\nGran fan de {interests} 😄"
+          ],
+          "inspiring": [
+            "✨ {name}\n{job}\n🌱 Creciendo a través de {interests}\n💫 Aquí para inspirar e inspirarme",
+            "🌟 {job}\nEn un viaje a través de {interests}\nBienvenido, soy {name} 💫",
+            "{name} · {job} ✨\nCreyendo en el crecimiento, impulsado por {interests} 🌱"
+          ]
+        }
+      },
+      "tiktok": {
+        "tones": {
+          "professional": [
+            "{job} 🎬 obsesionado con {interests} 🔥",
+            "{name} por aquí 👋 {job} compartiendo todo sobre {interests} ✨",
+            "{job} de día 🌞 fan de {interests} siempre 🎉"
+          ],
+          "creative": [
+            "{job} 🎨 viviendo para {interests} ✨🔥",
+            "{name} dando vida a {interests} 🎬✨ solo ambiente {job}",
+            "{job} creativo 🌈 obsesionado con {interests} 💫"
+          ],
+          "funny": [
+            "{job} de día 😂 caos total de noche. Obsesionado con {interests} 🔥",
+            "{name} por aquí 👋 {job} que habla demasiado de {interests} 😅",
+            "{job} 🙃 aviso, puedo hablar de {interests} durante horas 🎤"
+          ],
+          "inspiring": [
+            "{job} 🌟 aquí para inspirar a través de {interests} ✨",
+            "{name} en una misión 💫 {job} compartiendo {interests} para motivar a otros 🌱",
+            "{job} ✨ pasos pequeños, grandes sueños. Todo gira en torno a {interests} 🚀"
+          ]
+        }
+      }
+    }
+  },
+  "pt": {
+    "pageTitle": "Gerador de Bio Grátis | FindMyAI",
+    "metaDescription": "Gere a bio perfeita para LinkedIn, Twitter/X, Instagram ou TikTok em segundos, direto no seu navegador. Sem cadastro, sem dados enviados a um servidor.",
+    "nav_back": "← Voltar ao início",
+    "eyebrow": "Ferramenta gratuita / Gerador de bio",
+    "heroTitle": "Crie sua bio perfeita <span>em segundos</span>",
+    "heroSubtitle": "Escolha uma plataforma, preencha alguns detalhes e obtenha uma bio perfeitamente adaptada. Tudo acontece no seu navegador, nenhum dado é enviado a um servidor.",
+    "panelPlatformTitle": "1. Escolha uma plataforma",
+    "panelPlatformHint": "Escolha onde essa bio será usada, o estilo se adapta automaticamente.",
+    "panelDetailsTitle": "2. Adicione seus dados",
+    "panelDetailsHint": "Preencha alguns dados, a bio é atualizada instantaneamente.",
+    "labelName": "Nome ou usuário",
+    "phName": "ex. Sarah Bennett",
+    "labelJob": "Profissão ou atividade",
+    "phJob": "ex. Designer UX",
+    "labelInterests": "Interesses ou especialidades",
+    "phInterests": "ex. viagens, café, design",
+    "labelTone": "Tom",
+    "toneProfessional": "Profissional",
+    "toneCreative": "Criativo",
+    "toneFunny": "Engraçado",
+    "toneInspiring": "Inspirador",
+    "labelLink": "Link (opcional)",
+    "phLink": "ex. seusite.com",
+    "platformLinkedin": "LinkedIn",
+    "platformTwitter": "Twitter / X",
+    "platformInstagram": "Instagram",
+    "platformTiktok": "TikTok",
+    "platformLinkedinDesc": "Profissional e detalhado",
+    "platformTwitterDesc": "Curto e direto",
+    "platformInstagramDesc": "Leve e visual",
+    "platformTiktokDesc": "Divertido e chamativo",
+    "reformulateBtn": "🔀 Reformular",
+    "previewTitle": "Sua bio",
+    "previewEditHint": "Clique diretamente na bio para editar.",
+    "copyBtn": "📋 Copiar bio",
+    "copiedBtn": "✓ Copiado!",
+    "resetBtn": "Redefinir",
+    "privacyNote": "A bio é gerada diretamente no seu navegador. Nenhum dado é enviado ou armazenado em um servidor.",
+    "noPlatformNotice": "Escolha uma plataforma acima para gerar sua bio.",
+    "charCounter": "{count} / {limit} caracteres",
+    "charOverLimit": "Isso ultrapassa o limite do {platform}.",
+    "footerTagline": "O gerador de bio grátis da FindMyAI, o buscador de ferramentas de IA.",
+    "footerHome": "Início",
+    "footerBlog": "Blog",
+    "footerFindTool": "Encontrar uma ferramenta de IA",
+    "fallback": { "name": "Esta pessoa", "job": "profissional criativo", "interests": "muitas coisas" },
+    "platforms": {
+      "linkedin": {
+        "tones": {
+          "professional": [
+            "{name}, {job}. Focado em resultados concretos e na criação de valor duradouro. Apaixonado por {interests}, sempre pronto para novos desafios com impacto real.",
+            "{name} é {job}, com um forte foco em excelência e colaboração. Profundamente apaixonado por {interests}, e comprometido com o crescimento contínuo em cada projeto.",
+            "Com experiência como {job}, {name} traz dedicação, confiança e uma mentalidade orientada a resultados. Apaixonado por {interests}, sempre aberto a novas oportunidades profissionais."
+          ],
+          "creative": [
+            "{name} é {job}, guiado pela imaginação e um amor genuíno por {interests}. Sempre explorando novas ideias e formas originais de dar vida a projetos criativos.",
+            "A criatividade encontra propósito no trabalho de {name}, {job}. Uma paixão sincera por {interests} move cada projeto, sempre em busca de ideias frescas e originais.",
+            "{name}, {job}, acredita que as melhores ideias nascem da curiosidade e da ousadia. Constantemente inspirado por {interests}, sempre em busca da próxima faísca criativa."
+          ],
+          "funny": [
+            "{name}, {job} de profissão, especialista em pensar demais por natureza. Apaixonado por {interests}, café, e fingir ter uma agenda perfeitamente organizada.",
+            "{job}. Provavelmente pensando em {interests} agora mesmo. {name} traz uma boa dose de humor para cada projeto, junto com dedicação de verdade.",
+            "{name} é {job}, alérgico a reuniões intermináveis e grande fã de {interests}. Sério no trabalho, um pouco menos no resto."
+          ],
+          "inspiring": [
+            "{name}, {job}, acredita que cada desafio é uma oportunidade de crescer. Profundamente apaixonado por {interests}, e comprometido em gerar um impacto positivo, um passo de cada vez.",
+            "Guiado por um propósito, {name} atua como {job} com o objetivo de inspirar outras pessoas através de {interests}. Cada projeto é uma chance de aprender e criar uma mudança real.",
+            "{name} é {job} com a missão de transformar paixão em propósito. Movido por {interests}, e com a convicção de que o esforço constante leva a um crescimento real."
+          ]
+        }
+      },
+      "twitter": {
+        "tones": {
+          "professional": [
+            "{job} 🚀 Construindo coisas das quais me orgulho. Apaixonado por {interests}.",
+            "{name} · {job}. Compartilhando ideias sobre {interests}, um post de cada vez.",
+            "{job} de dia, sempre curioso. Falando sobre {interests} por aqui 👋"
+          ],
+          "creative": [
+            "{job} 🎨 imaginando novas ideias sobre {interests} todos os dias.",
+            "{name} · {job}. Transformando {interests} em algo que vale a pena compartilhar 🌈",
+            "Mente criativa, {job} de coração. Obcecado por {interests} ✨"
+          ],
+          "funny": [
+            "{job} 😅 principalmente aqui por {interests} e por lanches.",
+            "{name} · {job}. Profissionalmente caótico, apaixonado por {interests} 🙃",
+            "{job} no papel, fã de {interests} de coração. Manda memes."
+          ],
+          "inspiring": [
+            "{job} ✨ transformando {interests} em propósito, dia após dia.",
+            "{name} · {job}. Aqui para inspirar através de {interests} 🌱",
+            "{job} com uma missão, compartilhar {interests} para ajudar outros a crescer 💫"
+          ]
+        }
+      },
+      "instagram": {
+        "tones": {
+          "professional": [
+            "✨ {name}\n{job}\n💭 Apaixonado por {interests}\n📍 Sempre criando algo novo",
+            "👋 Oi, eu sou {name}\n{job}\n🌿 Apaixonado por {interests}",
+            "{name} · {job} ✨\nCompartilhando minha jornada e tudo sobre {interests} 🌱"
+          ],
+          "creative": [
+            "🎨 {name}\n{job}\n🌈 Apaixonado por {interests}\n✨ Criando algo novo todos os dias",
+            "✨ {job}\n🖌️ Explorando {interests}\n💫 Bem vindo ao meu mundo, eu sou {name}",
+            "{name} · alma criativa 🎨\n{job} apaixonado por {interests} 🌈"
+          ],
+          "funny": [
+            "😅 {name}\n{job}\nObcecado por {interests}\n🍕 Obcecado por lanches também",
+            "{job} 🙃\nAqui só por {interests} e boas vibrações\nOi, eu sou {name} 👋",
+            "{name} · {job} profissional, comediante amador 🎤\nGrande fã de {interests} 😄"
+          ],
+          "inspiring": [
+            "✨ {name}\n{job}\n🌱 Crescendo através de {interests}\n💫 Aqui para inspirar e me inspirar",
+            "🌟 {job}\nEm uma jornada através de {interests}\nBem vindo, eu sou {name} 💫",
+            "{name} · {job} ✨\nAcreditando no crescimento, movido por {interests} 🌱"
+          ]
+        }
+      },
+      "tiktok": {
+        "tones": {
+          "professional": [
+            "{job} 🎬 obcecado por {interests} 🔥",
+            "{name} por aqui 👋 {job} compartilhando tudo sobre {interests} ✨",
+            "{job} de dia 🌞 fã de {interests} sempre 🎉"
+          ],
+          "creative": [
+            "{job} 🎨 vivendo para {interests} ✨🔥",
+            "{name} dando vida a {interests} 🎬✨ só clima {job}",
+            "{job} criativo 🌈 obcecado por {interests} 💫"
+          ],
+          "funny": [
+            "{job} de dia 😂 caos total à noite. Obcecado por {interests} 🔥",
+            "{name} por aqui 👋 {job} que fala demais sobre {interests} 😅",
+            "{job} 🙃 aviso, posso falar sobre {interests} por horas 🎤"
+          ],
+          "inspiring": [
+            "{job} 🌟 aqui para inspirar através de {interests} ✨",
+            "{name} em missão 💫 {job} compartilhando {interests} para motivar outros 🌱",
+            "{job} ✨ passos pequenos, grandes sonhos. Tudo gira em torno de {interests} 🚀"
+          ]
+        }
+      }
+    }
+  },
+  "de": {
+    "pageTitle": "Kostenloser Bio Generator | FindMyAI",
+    "metaDescription": "Erstelle die perfekte Bio für LinkedIn, Twitter/X, Instagram oder TikTok in Sekunden, direkt in deinem Browser. Keine Anmeldung, keine Daten werden an einen Server gesendet.",
+    "nav_back": "← Zurück zur Startseite",
+    "eyebrow": "Kostenloses Tool / Bio Generator",
+    "heroTitle": "Erstelle deine perfekte Bio <span>in Sekunden</span>",
+    "heroSubtitle": "Wähle eine Plattform, fülle ein paar Angaben aus und erhalte eine perfekt passende Bio. Alles geschieht in deinem Browser, es werden nie Daten an einen Server gesendet.",
+    "panelPlatformTitle": "1. Plattform wählen",
+    "panelPlatformHint": "Wähle aus, wo diese Bio verwendet wird, der Stil passt sich automatisch an.",
+    "panelDetailsTitle": "2. Deine Angaben",
+    "panelDetailsHint": "Fülle ein paar Angaben aus, die Bio aktualisiert sich sofort.",
+    "labelName": "Name oder Nutzername",
+    "phName": "z. B. Sarah Bennett",
+    "labelJob": "Beruf oder Tätigkeit",
+    "phJob": "z. B. UX Designerin",
+    "labelInterests": "Interessen oder Spezialgebiete",
+    "phInterests": "z. B. Reisen, Kaffee, Design",
+    "labelTone": "Ton",
+    "toneProfessional": "Professionell",
+    "toneCreative": "Kreativ",
+    "toneFunny": "Witzig",
+    "toneInspiring": "Inspirierend",
+    "labelLink": "Link (optional)",
+    "phLink": "z. B. deinewebsite.com",
+    "platformLinkedin": "LinkedIn",
+    "platformTwitter": "Twitter / X",
+    "platformInstagram": "Instagram",
+    "platformTiktok": "TikTok",
+    "platformLinkedinDesc": "Professionell und ausführlich",
+    "platformTwitterDesc": "Kurz und knackig",
+    "platformInstagramDesc": "Locker und visuell",
+    "platformTiktokDesc": "Witzig und einprägsam",
+    "reformulateBtn": "🔀 Umformulieren",
+    "previewTitle": "Deine Bio",
+    "previewEditHint": "Klicke direkt in die Bio, um sie zu bearbeiten.",
+    "copyBtn": "📋 Bio kopieren",
+    "copiedBtn": "✓ Kopiert!",
+    "resetBtn": "Zurücksetzen",
+    "privacyNote": "Die Bio wird direkt in deinem Browser erstellt. Es werden nie Daten an einen Server gesendet oder dort gespeichert.",
+    "noPlatformNotice": "Wähle oben eine Plattform, um deine Bio zu erstellen.",
+    "charCounter": "{count} / {limit} Zeichen",
+    "charOverLimit": "Das überschreitet das Limit von {platform}.",
+    "footerTagline": "Der kostenlose Bio Generator von FindMyAI, die Suchmaschine für KI Tools.",
+    "footerHome": "Startseite",
+    "footerBlog": "Blog",
+    "footerFindTool": "KI Tool finden",
+    "fallback": { "name": "Diese Person", "job": "kreativer Profi", "interests": "vielen Dingen" },
+    "platforms": {
+      "linkedin": {
+        "tones": {
+          "professional": [
+            "{name}, {job}. Fokussiert auf konkrete Ergebnisse und nachhaltigen Mehrwert. Leidenschaftlich für {interests}, immer bereit für neue Herausforderungen mit echter Wirkung.",
+            "{name} ist {job}, mit einem starken Fokus auf Exzellenz und Zusammenarbeit. Zutiefst leidenschaftlich für {interests}, und engagiert für stetiges Wachstum in jedem Projekt.",
+            "Mit Erfahrung als {job} bringt {name} Engagement, Zuverlässigkeit und eine ergebnisorientierte Denkweise in jedes Projekt ein. Leidenschaftlich für {interests}, stets offen für neue berufliche Chancen."
+          ],
+          "creative": [
+            "{name} ist {job}, angetrieben von Fantasie und einer echten Leidenschaft für {interests}. Immer auf der Suche nach neuen Ideen und originellen Wegen, kreative Projekte zum Leben zu erwecken.",
+            "Kreativität trifft auf Sinn in der Arbeit von {name}, {job}. Eine ehrliche Leidenschaft für {interests} treibt jedes Projekt an, immer auf der Suche nach frischen Ideen.",
+            "{name}, {job}, glaubt, dass die besten Ideen aus Neugier und Mut entstehen. Ständig inspiriert von {interests}, immer auf der Suche nach dem nächsten kreativen Funken."
+          ],
+          "funny": [
+            "{name}, {job} von Beruf, professioneller Grübler von Natur aus. Leidenschaftlich für {interests}, Kaffee, und die Kunst, einen perfekt organisierten Kalender vorzutäuschen.",
+            "{job}. Denkt gerade wahrscheinlich an {interests}. {name} bringt eine gute Portion Humor in jedes Projekt, zusammen mit echtem Engagement.",
+            "{name} ist {job}, allergisch gegen endlose Meetings und großer Fan von {interests}. Ernsthaft bei der Arbeit, etwas weniger bei allem anderen."
+          ],
+          "inspiring": [
+            "{name}, {job}, glaubt, dass jede Herausforderung eine Chance zum Wachsen ist. Zutiefst leidenschaftlich für {interests}, und engagiert für positive Wirkung, Schritt für Schritt.",
+            "Von einem klaren Ziel geleitet, arbeitet {name} als {job} mit dem Wunsch, andere durch {interests} zu inspirieren. Jedes Projekt ist eine Chance zu lernen und echten Wandel zu schaffen.",
+            "{name} ist {job} mit der Mission, Leidenschaft in Sinn zu verwandeln. Angetrieben von {interests}, mit der Überzeugung, dass stetiger Einsatz zu echtem Wachstum führt."
+          ]
+        }
+      },
+      "twitter": {
+        "tones": {
+          "professional": [
+            "{job} 🚀 Ich baue Dinge, auf die ich stolz bin. Leidenschaftlich für {interests}.",
+            "{name} · {job}. Ich teile Gedanken zu {interests}, ein Post nach dem anderen.",
+            "{job} tagsüber, immer neugierig. Hier geht es um {interests} 👋"
+          ],
+          "creative": [
+            "{job} 🎨 jeden Tag neue Ideen rund um {interests}.",
+            "{name} · {job}. Ich verwandle {interests} in etwas, das sich zu teilen lohnt 🌈",
+            "Kreativer Kopf, {job} mit Herz. Begeistert von {interests} ✨"
+          ],
+          "funny": [
+            "{job} 😅 meistens hier wegen {interests} und Snacks.",
+            "{name} · {job}. Beruflich chaotisch, leidenschaftlich für {interests} 🙃",
+            "{job} auf dem Papier, {interests} Fan mit Herz. Schickt Memes."
+          ],
+          "inspiring": [
+            "{job} ✨ verwandelt {interests} Tag für Tag in eine echte Mission.",
+            "{name} · {job}. Hier, um durch {interests} zu inspirieren 🌱",
+            "{job} mit einer Mission, {interests} teilen, um anderen beim Wachsen zu helfen 💫"
+          ]
+        }
+      },
+      "instagram": {
+        "tones": {
+          "professional": [
+            "✨ {name}\n{job}\n💭 Leidenschaftlich für {interests}\n📍 Immer am Erschaffen von etwas Neuem",
+            "👋 Hallo, ich bin {name}\n{job}\n🌿 Leidenschaftlich für {interests}",
+            "{name} · {job} ✨\nIch teile meinen Weg und alles rund um {interests} 🌱"
+          ],
+          "creative": [
+            "🎨 {name}\n{job}\n🌈 Verliebt in {interests}\n✨ Jeden Tag etwas Neues erschaffen",
+            "✨ {job}\n🖌️ Erkunde {interests}\n💫 Willkommen in meiner Welt, ich bin {name}",
+            "{name} · kreative Seele 🎨\n{job} leidenschaftlich für {interests} 🌈"
+          ],
+          "funny": [
+            "😅 {name}\n{job}\nBesessen von {interests}\n🍕 Auch besessen von Snacks",
+            "{job} 🙃\nNur hier für {interests} und gute Laune\nHallo, ich bin {name} 👋",
+            "{name} · {job} von Beruf, Amateur Comedian 🎤\nGroßer Fan von {interests} 😄"
+          ],
+          "inspiring": [
+            "✨ {name}\n{job}\n🌱 Wachsend durch {interests}\n💫 Hier, um zu inspirieren und inspiriert zu werden",
+            "🌟 {job}\nAuf einer Reise durch {interests}\nWillkommen, ich bin {name} 💫",
+            "{name} · {job} ✨\nGlaube an Wachstum, angetrieben von {interests} 🌱"
+          ]
+        }
+      },
+      "tiktok": {
+        "tones": {
+          "professional": [
+            "{job} 🎬 total begeistert von {interests} 🔥",
+            "{name} hier 👋 {job} teilt alles rund um {interests} ✨",
+            "{job} tagsüber 🌞 immer Fan von {interests} 🎉"
+          ],
+          "creative": [
+            "{job} 🎨 lebt für {interests} ✨🔥",
+            "{name} erweckt {interests} zum Leben 🎬✨ nur {job} Vibes",
+            "Kreativer {job} 🌈 total begeistert von {interests} 💫"
+          ],
+          "funny": [
+            "{job} tagsüber 😂 totales Chaos nachts. Besessen von {interests} 🔥",
+            "{name} hier 👋 {job} redet viel zu viel über {interests} 😅",
+            "{job} 🙃 Warnung, ich kann stundenlang über {interests} reden 🎤"
+          ],
+          "inspiring": [
+            "{job} 🌟 hier, um durch {interests} zu inspirieren ✨",
+            "{name} auf Mission 💫 {job} teilt {interests}, um andere zu motivieren 🌱",
+            "{job} ✨ kleine Schritte, große Träume. Alles dreht sich um {interests} 🚀"
+          ]
+        }
+      }
+    }
+  }
+}
+
+    const LANGS = [
+      { code: 'en', flag: '🇬🇧', name: 'English' },
+      { code: 'fr', flag: '🇫🇷', name: 'Français' },
+      { code: 'es', flag: '🇪🇸', name: 'Español' },
+      { code: 'pt', flag: '🇵🇹', name: 'Português' },
+      { code: 'de', flag: '🇩🇪', name: 'Deutsch' }
+    ];
+
+    const PLATFORM_KEYS = ['linkedin', 'twitter', 'instagram', 'tiktok'];
+    const PLATFORM_ICONS = { linkedin: '💼', twitter: '🐦', instagram: '📸', tiktok: '🎵' };
+    const PLATFORM_LIMITS = { linkedin: 2600, twitter: 160, instagram: 150, tiktok: 80 };
+    const platformLabelKeyMap = { linkedin: 'platformLinkedin', twitter: 'platformTwitter', instagram: 'platformInstagram', tiktok: 'platformTiktok' };
+    const platformDescKeyMap = { linkedin: 'platformLinkedinDesc', twitter: 'platformTwitterDesc', instagram: 'platformInstagramDesc', tiktok: 'platformTiktokDesc' };
+    const TONE_KEYS = ['professional', 'creative', 'funny', 'inspiring'];
+    const toneLabelKeyMap = { professional: 'toneProfessional', creative: 'toneCreative', funny: 'toneFunny', inspiring: 'toneInspiring' };
+
+    let currentLang = 'en';
+    let selectedPlatform = null;
+    let selectedTone = 'professional';
+    let selectedVariant = 0;
+
+    function t(key) {
+      const dict = translations[currentLang] || translations.en;
+      if (dict && dict[key] !== undefined) return dict[key];
+      return translations.en[key] !== undefined ? translations.en[key] : key;
+    }
+
+    function getFallback(key) {
+      const dict = translations[currentLang] && translations[currentLang].fallback;
+      if (dict && dict[key]) return dict[key];
+      return translations.en.fallback[key];
+    }
+
+    function getVariants(platform, tone) {
+      const dict = translations[currentLang] && translations[currentLang].platforms &&
+        translations[currentLang].platforms[platform] && translations[currentLang].platforms[platform].tones[tone];
+      if (dict) return dict;
+      return translations.en.platforms[platform].tones[tone];
+    }
+
+    function toggleLangDropdown(event) {
+      event.stopPropagation();
+      document.getElementById('lang-dropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function () {
+      const dd = document.getElementById('lang-dropdown');
+      if (dd) dd.classList.remove('open');
+    });
+
+    function changeLanguage(lang) {
+      if (!translations[lang]) lang = 'en';
+      currentLang = lang;
+      try { localStorage.setItem('findmyai_lang', lang); } catch (e) { /* storage unavailable */ }
+
+      const meta = LANGS.find(function (l) { return l.code === lang; }) || LANGS[0];
+      document.getElementById('current-lang-flag').textContent = meta.flag;
+      document.getElementById('current-lang-name').textContent = meta.name;
+      document.querySelectorAll('.lang-option').forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === lang);
+      });
+
+      updateUITranslations();
+    }
+
+    function updateUITranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        el.innerHTML = t(el.getAttribute('data-i18n'));
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+      });
+
+      document.title = t('pageTitle');
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', t('metaDescription'));
+      document.documentElement.lang = currentLang;
+
+      renderPlatformGrid();
+      renderToneSelect();
+      renderBio();
+    }
+
+    /* =========================================================
+       PLATFORM GRID
+       ========================================================= */
+    function renderPlatformGrid() {
+      const grid = document.getElementById('platform-grid');
+      grid.innerHTML = PLATFORM_KEYS.map(function (key) {
+        const active = key === selectedPlatform ? ' active' : '';
+        return '<button type="button" class="platform-option' + active + '" data-platform="' + key + '" onclick="selectPlatform(\'' + key + '\')">' +
+          '<span class="platform-icon">' + PLATFORM_ICONS[key] + '</span>' +
+          '<span class="platform-label">' + t(platformLabelKeyMap[key]) + '</span>' +
+          '<span class="platform-desc">' + t(platformDescKeyMap[key]) + '</span>' +
+          '</button>';
+      }).join('');
+    }
+
+    function selectPlatform(key) {
+      selectedPlatform = key;
+      selectedVariant = 0;
+      document.querySelectorAll('.platform-option').forEach(function (el) {
+        el.classList.toggle('active', el.dataset.platform === key);
+      });
+      renderBio();
+    }
+
+    /* =========================================================
+       TONE SELECT
+       ========================================================= */
+    function renderToneSelect() {
+      const wrap = document.getElementById('tone-select');
+      wrap.innerHTML = TONE_KEYS.map(function (tone) {
+        const active = tone === selectedTone ? ' active' : '';
+        return '<button type="button" class="tone-option' + active + '" data-tone="' + tone + '" onclick="selectTone(\'' + tone + '\')">' + t(toneLabelKeyMap[tone]) + '</button>';
+      }).join('');
+    }
+
+    function selectTone(tone) {
+      selectedTone = tone;
+      selectedVariant = 0;
+      document.querySelectorAll('.tone-option').forEach(function (el) {
+        el.classList.toggle('active', el.dataset.tone === tone);
+      });
+      renderBio();
+    }
+
+    /* =========================================================
+       REPHRASE
+       Cycles through the pre-written variants for the current
+       platform and tone, giving a genuinely different formulation
+       without needing an external AI service.
+       ========================================================= */
+    function reformulate() {
+      if (!selectedPlatform) return;
+      const variants = getVariants(selectedPlatform, selectedTone);
+      selectedVariant = (selectedVariant + 1) % variants.length;
+      renderBio();
+    }
+
+    /* =========================================================
+       BIO ASSEMBLY
+       ========================================================= */
+    function resolveField(rawValue, fallbackKey) {
+      const value = (rawValue || '').trim();
+      return value || getFallback(fallbackKey);
+    }
+
+    function composeBio() {
+      const nameVal = resolveField(document.getElementById('name-input').value, 'name');
+      const jobVal = resolveField(document.getElementById('job-input').value, 'job');
+      const interestsVal = resolveField(document.getElementById('interests-input').value, 'interests');
+      const linkVal = document.getElementById('link-input').value.trim();
+
+      const variants = getVariants(selectedPlatform, selectedTone);
+      const idx = selectedVariant % variants.length;
+      let text = variants[idx]
+        .split('{name}').join(nameVal)
+        .split('{job}').join(jobVal)
+        .split('{interests}').join(interestsVal);
+
+      if (linkVal) {
+        text += '\n🔗 ' + linkVal;
+      }
+      return text;
+    }
+
+    function attachEditableHandlers(el) {
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      });
+      el.addEventListener('input', updateCharCount);
+    }
+
+    function renderBio() {
+      const card = document.getElementById('bio-card');
+      const copyBtn = document.getElementById('copy-btn');
+      const reformulateBtn = document.getElementById('reformulate-btn');
+      const counterWrap = document.getElementById('char-counter-wrap');
+
+      if (!selectedPlatform) {
+        card.innerHTML = '<div class="bio-empty-state">' + t('noPlatformNotice') + '</div>';
+        copyBtn.disabled = true;
+        reformulateBtn.disabled = true;
+        counterWrap.style.display = 'none';
+        return;
+      }
+
+      const text = composeBio();
+
+      card.innerHTML = '<div class="bio-text" id="bio-text" contenteditable="true" spellcheck="false"></div>';
+      const bioEl = document.getElementById('bio-text');
+      bioEl.textContent = text;
+      attachEditableHandlers(bioEl);
+
+      copyBtn.disabled = false;
+      reformulateBtn.disabled = false;
+      counterWrap.style.display = 'block';
+      updateCharCount();
+    }
+
+    function updateCharCount() {
+      const bioEl = document.getElementById('bio-text');
+      if (!bioEl || !selectedPlatform) return;
+
+      const len = bioEl.innerText.length;
+      const limit = PLATFORM_LIMITS[selectedPlatform];
+      const over = len > limit;
+
+      const countText = document.getElementById('char-count-text');
+      countText.innerHTML = '<span class="' + (over ? 'over' : '') + '">' +
+        t('charCounter').split('{count}').join(len).split('{limit}').join(limit) +
+        '</span>';
+
+      const warningEl = document.getElementById('char-warning');
+      if (over) {
+        warningEl.style.display = 'block';
+        warningEl.textContent = t('charOverLimit').split('{platform}').join(t(platformLabelKeyMap[selectedPlatform]));
+      } else {
+        warningEl.style.display = 'none';
+        warningEl.textContent = '';
+      }
+    }
+
+    /* =========================================================
+       COPY
+       Reads the live preview DOM (via innerText, which turns
+       visual line breaks back into \n) rather than a cached
+       string, so manual edits made directly in the preview are
+       included in what gets copied.
+       ========================================================= */
+    function copyBio(btn) {
+      const bioEl = document.getElementById('bio-text');
+      if (!bioEl) return;
+      const text = bioEl.innerText.trim();
+
+      const originalLabel = t('copyBtn');
+      const done = function () {
+        btn.textContent = t('copiedBtn');
+        setTimeout(function () { btn.textContent = originalLabel; }, 1800);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {
+          fallbackCopy(text, done);
+        });
+      } else {
+        fallbackCopy(text, done);
+      }
+    }
+
+    function fallbackCopy(text, done) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) { /* clipboard unavailable */ }
+      document.body.removeChild(ta);
+      done();
+    }
+
+    function resetForm() {
+      document.getElementById('name-input').value = '';
+      document.getElementById('job-input').value = '';
+      document.getElementById('interests-input').value = '';
+      document.getElementById('link-input').value = '';
+      selectedPlatform = null;
+      selectedTone = 'professional';
+      selectedVariant = 0;
+      renderPlatformGrid();
+      renderToneSelect();
+      renderBio();
+    }
+
+    /* =========================================================
+       INIT
+       ========================================================= */
+    (function init() {
+      let storedLang = null;
+      try { storedLang = localStorage.getItem('findmyai_lang'); } catch (e) { /* storage unavailable */ }
+      currentLang = translations[storedLang] ? storedLang : 'en';
+
+      const meta = LANGS.find(function (l) { return l.code === currentLang; }) || LANGS[0];
+      document.getElementById('current-lang-flag').textContent = meta.flag;
+      document.getElementById('current-lang-name').textContent = meta.name;
+      document.querySelectorAll('.lang-option').forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === currentLang);
+      });
+
+      updateUITranslations();
+    })();
+  </script>
+
+</body>
+</html>
