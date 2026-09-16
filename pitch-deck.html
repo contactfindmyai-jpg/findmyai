@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Pitch Deck Generator | FindMyAI</title>
+  <meta name="description" content="Generate a complete 10 slide pitch deck in seconds, directly in your browser. Edit, copy or export as PDF, no sign up, no data sent to a server." />
+  <meta name="keywords" content="free pitch deck generator, startup pitch deck template, pitch deck maker free, ai pitch deck generator, investor pitch deck" />
+  <link rel="canonical" href="https://findmyai.tech/pitch-deck.html" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- html2pdf.js (all versions up to 0.14.0) bundles an outdated html2canvas that
+       silently produces a blank canvas on current Chrome versions. We load html2canvas
+       and jsPDF directly instead and drive the capture ourselves (see downloadPitchPDF()). -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d0d14;
+      --surface: #13131f;
+      --border: #1e1e30;
+      --cyan: #00d4ff;
+      --violet: #a855f7;
+      --cyan-dim: rgba(0, 212, 255, 0.08);
+      --violet-dim: rgba(168, 85, 247, 0.08);
+      --text: #e8e8f0;
+      --muted: #7a7a9a;
+      --tag-bg: #1a1a2e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(13,13,20,0.92);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .wordmark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    nav a.back {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    nav a.back:hover { color: var(--cyan); }
+
+    /* LANGUAGE SWITCHER */
+    .lang-switcher { position: relative; }
+
+    .lang-select-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .lang-select-btn:hover { border-color: rgba(0, 212, 255, 0.35); }
+
+    .lang-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      min-width: 160px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+      z-index: 200;
+    }
+    .lang-dropdown.open { display: block; }
+
+    .lang-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .lang-option:hover { background: var(--cyan-dim); }
+    .lang-option.active { color: var(--cyan); font-weight: 600; }
+
+    /* HERO */
+    .hero {
+      max-width: 1200px;
+      margin: 56px auto 32px;
+      padding: 0 24px;
+    }
+
+    .eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: #b0b0c8;
+      font-size: 16px;
+      max-width: 640px;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet), transparent);
+      margin: 32px 0;
+      opacity: 0.3;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* LAYOUT */
+    .builder {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+      display: grid;
+      grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .builder { grid-template-columns: 1fr; }
+    }
+
+    /* PANEL */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 26px;
+    }
+
+    .panel + .panel { margin-top: 20px; }
+
+    .panel h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      padding-left: 12px;
+      border-left: 3px solid var(--cyan);
+    }
+
+    .panel .panel-hint {
+      color: var(--muted);
+      font-size: 12.5px;
+      margin: 6px 0 18px 15px;
+    }
+
+    /* FORM ELEMENTS */
+    label {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #9090b0;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .field { margin-bottom: 16px; }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: rgba(0, 212, 255, 0.45);
+    }
+
+    ::placeholder { color: #55556e; }
+
+    /* MODEL SELECT (reuses the tone-select pill pattern) */
+    .tone-select {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tone-option {
+      flex: 1;
+      min-width: 100px;
+      border: 1px solid var(--border);
+      background: var(--tag-bg);
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tone-option:hover { border-color: rgba(0, 212, 255, 0.3); }
+    .tone-option.active {
+      border-color: var(--cyan);
+      background: var(--cyan-dim);
+      color: var(--cyan);
+    }
+
+    /* ACTION BAR */
+    .action-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 26px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      color: #0d0d14;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      flex: 1;
+      min-width: 160px;
+    }
+    .cta-btn:hover { opacity: 0.85; }
+    .cta-btn:disabled { opacity: 0.6; cursor: default; }
+
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 13px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+      min-width: 130px;
+    }
+    .secondary-btn:hover {
+      border-color: rgba(0, 212, 255, 0.35);
+      color: var(--cyan);
+    }
+    .secondary-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .secondary-btn.small {
+      padding: 6px 14px;
+      font-size: 12px;
+      flex: none;
+      min-width: 0;
+    }
+
+    .privacy-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* SLIDES COLUMN */
+    .slides-col-head {
+      margin-bottom: 16px;
+    }
+
+    .slide-wrap { margin-bottom: 22px; }
+    .slide-wrap:last-child { margin-bottom: 0; }
+
+    .slide-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding: 0 2px;
+    }
+    .slide-index-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .slide-card {
+      background: #ffffff;
+      color: #1a1a2a;
+      border-radius: 12px;
+      padding: 34px 40px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.35);
+      position: relative;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-number-badge {
+      position: absolute;
+      top: 20px;
+      right: 22px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .slide-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(20px, 3vw, 27px);
+      font-weight: 700;
+      color: #141420;
+      margin-bottom: 10px;
+      max-width: 82%;
+    }
+    .slide-subtitle {
+      font-size: 15px;
+      color: #4a4a5e;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .slide-bullets {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #262636;
+      white-space: pre-wrap;
+    }
+
+    .slide-card [contenteditable="true"] {
+      cursor: text;
+      border-radius: 4px;
+      transition: box-shadow 0.15s;
+    }
+    .slide-card [contenteditable="true"]:hover {
+      box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.18);
+    }
+    .slide-card [contenteditable="true"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.55);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .footer-wordmark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(90deg, var(--cyan), var(--violet));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    footer p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .hero { margin: 40px auto 24px; }
+      .panel { padding: 18px 16px; }
+      .slide-card { padding: 26px 22px; }
+      .slide-title { max-width: 78%; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="wordmark">FindMyAI</a>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button type="button" class="lang-select-btn" onclick="toggleLangDropdown(event)">
+          <span id="current-lang-flag">🇬🇧</span> <span id="current-lang-name">English</span> ▾
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <button type="button" class="lang-option" data-lang="en" onclick="changeLanguage('en')">🇬🇧 English</button>
+          <button type="button" class="lang-option" data-lang="fr" onclick="changeLanguage('fr')">🇫🇷 Français</button>
+          <button type="button" class="lang-option" data-lang="es" onclick="changeLanguage('es')">🇪🇸 Español</button>
+          <button type="button" class="lang-option" data-lang="pt" onclick="changeLanguage('pt')">🇵🇹 Português</button>
+          <button type="button" class="lang-option" data-lang="de" onclick="changeLanguage('de')">🇩🇪 Deutsch</button>
+        </div>
+      </div>
+      <a href="https://findmyai.tech" class="back" data-i18n="nav_back">← Back to home</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="eyebrow" data-i18n="eyebrow">Free Tool / Pitch Deck Generator</div>
+    <h1 data-i18n="heroTitle">Build your pitch deck <span>in minutes</span></h1>
+    <p data-i18n="heroSubtitle">Fill in a few details about your project and get a complete 10 slide pitch deck, ready to edit, copy or export as PDF. Everything happens in your browser, no data is ever sent to a server.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="builder">
+
+    <!-- FORM COLUMN -->
+    <div class="form-col">
+
+      <div class="panel">
+        <h2 data-i18n="panelProjectTitle">1. Your project</h2>
+        <p class="panel-hint" data-i18n="panelProjectHint">Tell us about your project, every slide updates instantly.</p>
+
+        <div class="field">
+          <label data-i18n="labelProject">Project or startup name</label>
+          <input type="text" id="project-input" data-i18n-placeholder="phProject" placeholder="e.g. Nova" oninput="renderAllSlides()" />
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelSector">Sector or field</label>
+          <input type="text" id="sector-input" data-i18n-placeholder="phSector" placeholder="e.g. sustainable fashion" oninput="renderAllSlides()" />
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelProblem">The problem you solve</label>
+          <input type="text" id="problem-input" data-i18n-placeholder="phProblem" placeholder="e.g. Small brands struggle to find affordable, ethical manufacturers" oninput="renderAllSlides()" />
+        </div>
+
+        <div class="field">
+          <label data-i18n="labelSolution">Your solution in one sentence</label>
+          <input type="text" id="solution-input" data-i18n-placeholder="phSolution" placeholder="e.g. A marketplace connecting brands with vetted ethical factories" oninput="renderAllSlides()" />
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label data-i18n="labelAudience">Target audience</label>
+          <input type="text" id="audience-input" data-i18n-placeholder="phAudience" placeholder="e.g. independent fashion brands" oninput="renderAllSlides()" />
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 data-i18n="panelModelTitle">2. Business model</h2>
+        <p class="panel-hint" data-i18n="panelModelHint">Pick your primary revenue model.</p>
+        <div class="tone-select" id="model-select"></div>
+      </div>
+
+      <div class="panel">
+        <div class="action-bar">
+          <div class="action-buttons">
+            <button type="button" class="cta-btn" id="download-btn" data-i18n="downloadBtn" onclick="downloadPitchPDF(this)">⬇ Download as PDF</button>
+          </div>
+          <div class="action-buttons">
+            <button type="button" class="secondary-btn" id="copy-all-btn" data-i18n="copyAllBtn" onclick="copyAllPitch(this)">📋 Copy full pitch</button>
+            <button type="button" class="secondary-btn" data-i18n="resetBtn" onclick="resetForm()">Reset</button>
+          </div>
+          <p class="privacy-note" data-i18n="privacyNote">Your pitch deck is generated directly in your browser. No data is ever sent to or stored on a server.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SLIDES COLUMN -->
+    <div class="slides-col">
+      <div class="panel slides-col-head">
+        <h2 data-i18n="slidesColTitle">Your Pitch Deck</h2>
+        <p class="panel-hint" style="margin-bottom:0;" data-i18n="slidesColHint">Click directly in a slide to edit it. Use Rephrase for another version.</p>
+      </div>
+      <div id="slides-container"></div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="footer-wordmark">FindMyAI</span>
+    <p data-i18n="footerTagline">FindMyAI's free pitch deck generator, the search engine for AI tools.</p>
+    <div class="footer-links">
+      <a href="https://findmyai.tech" data-i18n="footerHome">Home</a>
+      <a href="https://findmyai.tech/blog/meilleurs-outils-ia-gratuits-2026.html" data-i18n="footerBlog">Blog</a>
+      <a href="https://findmyai.tech" data-i18n="footerFindTool">Find an AI tool</a>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================
+       TRANSLATIONS
+       Same key/value approach as the language system used across
+       the rest of the site (see cv-maker.html / bio-generator.html):
+       one flat object of strings per language, applied through
+       data-i18n / data-i18n-placeholder attributes. Each language
+       also carries fixed "slideTitles" per slide key and, for each
+       slide key, a "slides" array of 3 pre-written variants (a
+       subtitle plus 2 to 4 bullet templates), replaced with the
+       user's project details at render time.
+       ========================================================= */
+    const translations = {
+  "en": {
+    "pageTitle": "Free Pitch Deck Generator | FindMyAI",
+    "metaDescription": "Generate a complete 10 slide pitch deck in seconds, directly in your browser. Edit, copy or export as PDF, no sign up, no data sent to a server.",
+    "nav_back": "← Back to home",
+    "eyebrow": "Free Tool / Pitch Deck Generator",
+    "heroTitle": "Build your pitch deck <span>in minutes</span>",
+    "heroSubtitle": "Fill in a few details about your project and get a complete 10 slide pitch deck, ready to edit, copy or export as PDF. Everything happens in your browser, no data is ever sent to a server.",
+    "panelProjectTitle": "1. Your project",
+    "panelProjectHint": "Tell us about your project, every slide updates instantly.",
+    "labelProject": "Project or startup name",
+    "phProject": "e.g. Nova",
+    "labelSector": "Sector or field",
+    "phSector": "e.g. sustainable fashion",
+    "labelProblem": "The problem you solve",
+    "phProblem": "e.g. Small brands struggle to find affordable, ethical manufacturers",
+    "labelSolution": "Your solution in one sentence",
+    "phSolution": "e.g. A marketplace connecting brands with vetted ethical factories",
+    "labelAudience": "Target audience",
+    "phAudience": "e.g. independent fashion brands",
+    "panelModelTitle": "2. Business model",
+    "panelModelHint": "Pick your primary revenue model.",
+    "modelSubscription": "Subscription",
+    "modelAdvertising": "Advertising",
+    "modelCommission": "Commission",
+    "modelSale": "Direct sale",
+    "modelFreemium": "Freemium",
+    "slidesColTitle": "Your Pitch Deck",
+    "slidesColHint": "Click directly in a slide to edit it. Use Rephrase for another version.",
+    "slideReformulateBtn": "🔀 Rephrase",
+    "downloadBtn": "⬇ Download as PDF",
+    "downloadBtnLoading": "⏳ Generating...",
+    "pdfError": "Something went wrong while generating the PDF. Please try again.",
+    "copyAllBtn": "📋 Copy full pitch",
+    "copiedAllBtn": "✓ Copied!",
+    "resetBtn": "Reset",
+    "privacyNote": "Your pitch deck is generated directly in your browser. No data is ever sent to or stored on a server.",
+    "filenameBase": "Pitch_Deck",
+    "slideTitleCover": "Cover",
+    "slideTitleProblem": "Problem",
+    "slideTitleSolution": "Solution",
+    "slideTitleMarket": "Market",
+    "slideTitleProduct": "Product",
+    "slideTitleBusiness": "Business Model",
+    "slideTitleCompetition": "Competition",
+    "slideTitleTraction": "Traction",
+    "slideTitleTeam": "Team",
+    "slideTitleAsk": "Funding Ask & Contact",
+    "footerTagline": "FindMyAI's free pitch deck generator, the search engine for AI tools.",
+    "footerHome": "Home",
+    "footerBlog": "Blog",
+    "footerFindTool": "Find an AI tool",
+    "fallback": { "project": "This project", "sector": "a growing industry", "problem": "a real everyday problem", "solution": "a simple and effective solution", "audience": "a clearly defined audience" },
+    "slides": {
+      "cover": [
+        { "subtitle": "{project}, {solution}", "bullets": ["A bold new approach to {sector}.", "Presented by the {project} team.", "Contact: your email or website here."] },
+        { "subtitle": "{project} · {sector}", "bullets": ["{solution}", "Built for {audience}.", "Contact: your email or website here."] },
+        { "subtitle": "{project}: {solution}", "bullets": ["Reinventing {sector} for {audience}.", "{project}", "Contact: your email or website here."] }
+      ],
+      "problem": [
+        { "subtitle": "The problem {audience} face today.", "bullets": ["{problem}", "This issue costs time, money or energy every single day.", "Existing options fail to truly solve it for {audience}."] },
+        { "subtitle": "Why this matters right now.", "bullets": ["{audience} struggle with {problem}", "Current solutions are outdated, expensive or incomplete.", "The need for a better answer keeps growing."] },
+        { "subtitle": "A pain point too big to ignore.", "bullets": ["{problem}", "This is a daily frustration for {audience}", "Nobody has solved it well, until now."] }
+      ],
+      "solution": [
+        { "subtitle": "{solution}", "bullets": ["{project} directly addresses {problem}", "Designed specifically for {audience}.", "Simple, effective and easy to adopt."] },
+        { "subtitle": "Introducing {project}.", "bullets": ["{solution}", "A fresh approach built around {audience}", "Turns a real problem into a real opportunity."] },
+        { "subtitle": "How we solve it.", "bullets": ["{solution}", "Built from the ground up for {sector}", "Clear value, delivered from day one."] }
+      ],
+      "market": [
+        { "subtitle": "A growing opportunity in {sector}.", "bullets": ["{sector} is expanding fast, with more demand every year.", "{audience} represents a large and reachable market.", "Early movers in this space have real room to grow."] },
+        { "subtitle": "Why now, why {sector}.", "bullets": ["The {sector} market is bigger than ever.", "{audience} are actively looking for better options.", "Timing and demand are aligned for {project}."] },
+        { "subtitle": "The size of the opportunity.", "bullets": ["A large and growing market inside {sector}", "{audience} as our primary market segment.", "Room for significant growth in the coming years."] }
+      ],
+      "product": [
+        { "subtitle": "What {project} looks like in practice.", "bullets": ["{solution}", "Built with {audience} in mind, from the first click.", "Simple to use, easy to scale."] },
+        { "subtitle": "A closer look at the product.", "bullets": ["{project} delivers {solution}", "Designed for real, everyday use by {audience}", "Every feature is built around solving {problem}"] },
+        { "subtitle": "How it works.", "bullets": ["{solution}", "An intuitive experience for {audience}", "Ready to grow alongside our users."] }
+      ],
+      "business": [
+        { "subtitle": "How {project} generates revenue.", "bullets": ["Primary revenue model: {model}", "Pricing designed to stay accessible for {audience}", "A scalable model that grows with usage."] },
+        { "subtitle": "Our path to revenue.", "bullets": ["Revenue comes primarily from {model}", "Built for long term, sustainable growth.", "Aligned with the needs of {audience}"] },
+        { "subtitle": "Making {project} sustainable.", "bullets": ["{model} as our core revenue stream", "A clear and simple pricing structure.", "Designed to scale profitably over time."] }
+      ],
+      "competition": [
+        { "subtitle": "How {project} stands out.", "bullets": ["Most alternatives in {sector} fail to fully solve {problem}", "{project} offers a clearer, more focused solution.", "Our edge: built specifically for {audience}"] },
+        { "subtitle": "The competitive landscape.", "bullets": ["Existing players in {sector} only cover part of the need.", "{project} focuses on what {audience} actually want.", "A simpler, more direct alternative to the status quo."] },
+        { "subtitle": "Why we win.", "bullets": ["Competitors offer generic solutions, we offer {solution}", "Deep focus on {audience} sets us apart.", "A stronger, more relevant fit for {sector}"] }
+      ],
+      "traction": [
+        { "subtitle": "Early signs of momentum.", "bullets": ["Growing interest from {audience}", "Positive early feedback on {solution}", "Key milestones reached and more on the way."] },
+        { "subtitle": "Where we stand today.", "bullets": ["Strong early validation from {audience}", "Consistent progress since launch.", "Momentum building in {sector}"] },
+        { "subtitle": "Proof this is working.", "bullets": ["Real engagement from {audience}", "Early results that validate {solution}", "A clear trajectory of growth."] }
+      ],
+      "team": [
+        { "subtitle": "The people behind {project}.", "bullets": ["A team with real expertise in {sector}", "Driven by a shared mission to solve {problem}", "Add your name, role and background here."] },
+        { "subtitle": "Who is building this.", "bullets": ["Complementary skills across product, growth and {sector}", "United by a strong belief in {solution}", "Add your name, role and background here."] },
+        { "subtitle": "Meet the team.", "bullets": ["Experienced, motivated and focused on {audience}", "A team built to execute on {solution}", "Add your name, role and background here."] }
+      ],
+      "ask": [
+        { "subtitle": "Join us in building {project}.", "bullets": ["Raising funding to accelerate growth in {sector}", "Funds will fuel product, team and reach to {audience}", "Contact: your email, phone or website here."] },
+        { "subtitle": "Let's talk.", "bullets": ["Looking for partners and investors who believe in {solution}", "Your support helps us reach {audience} faster.", "Contact: your email, phone or website here."] },
+        { "subtitle": "What we're asking for.", "bullets": ["Seeking investment to scale {project} in {sector}", "Every contribution accelerates our mission.", "Contact: your email, phone or website here."] }
+      ]
+    }
+  },
+  "fr": {
+    "pageTitle": "Générateur de Pitch Deck Gratuit | FindMyAI",
+    "metaDescription": "Générez un pitch deck complet de 10 slides en quelques secondes, directement dans votre navigateur. Modifiez, copiez ou exportez en PDF, aucune inscription, aucune donnée envoyée à un serveur.",
+    "nav_back": "← Retour à l'accueil",
+    "eyebrow": "Outil gratuit / Générateur de pitch deck",
+    "heroTitle": "Créez votre pitch deck <span>en quelques minutes</span>",
+    "heroSubtitle": "Remplissez quelques informations sur votre projet et obtenez un pitch deck complet de 10 slides, prêt à modifier, copier ou exporter en PDF. Tout se passe dans votre navigateur, aucune donnée n'est jamais envoyée à un serveur.",
+    "panelProjectTitle": "1. Votre projet",
+    "panelProjectHint": "Décrivez votre projet, chaque slide se met à jour instantanément.",
+    "labelProject": "Nom du projet ou de la startup",
+    "phProject": "ex. Nova",
+    "labelSector": "Secteur ou domaine",
+    "phSector": "ex. mode durable",
+    "labelProblem": "Le problème que vous résolvez",
+    "phProblem": "ex. Les petites marques peinent à trouver des fabricants éthiques et abordables",
+    "labelSolution": "Votre solution en une phrase",
+    "phSolution": "ex. Une marketplace qui connecte les marques à des usines éthiques vérifiées",
+    "labelAudience": "Public cible",
+    "phAudience": "ex. marques de mode indépendantes",
+    "panelModelTitle": "2. Business model",
+    "panelModelHint": "Choisissez votre principal modèle de revenu.",
+    "modelSubscription": "Abonnement",
+    "modelAdvertising": "Publicité",
+    "modelCommission": "Commission",
+    "modelSale": "Vente directe",
+    "modelFreemium": "Freemium",
+    "slidesColTitle": "Votre pitch deck",
+    "slidesColHint": "Cliquez directement dans une slide pour la modifier. Utilisez Reformuler pour une autre version.",
+    "slideReformulateBtn": "🔀 Reformuler",
+    "downloadBtn": "⬇ Télécharger en PDF",
+    "downloadBtnLoading": "⏳ Génération...",
+    "pdfError": "Une erreur est survenue lors de la génération du PDF. Merci de réessayer.",
+    "copyAllBtn": "📋 Copier tout le pitch",
+    "copiedAllBtn": "✓ Copié !",
+    "resetBtn": "Réinitialiser",
+    "privacyNote": "Votre pitch deck est généré directement dans votre navigateur. Aucune donnée n'est jamais envoyée ni stockée sur un serveur.",
+    "filenameBase": "Pitch_Deck",
+    "slideTitleCover": "Couverture",
+    "slideTitleProblem": "Problème",
+    "slideTitleSolution": "Solution",
+    "slideTitleMarket": "Marché",
+    "slideTitleProduct": "Produit",
+    "slideTitleBusiness": "Business Model",
+    "slideTitleCompetition": "Concurrence",
+    "slideTitleTraction": "Traction",
+    "slideTitleTeam": "Équipe",
+    "slideTitleAsk": "Demande de financement et contact",
+    "footerTagline": "Le générateur de pitch deck gratuit de FindMyAI, le moteur de recherche des outils IA.",
+    "footerHome": "Accueil",
+    "footerBlog": "Blog",
+    "footerFindTool": "Trouver un outil IA",
+    "fallback": { "project": "Ce projet", "sector": "un secteur en croissance", "problem": "un vrai problème du quotidien", "solution": "une solution simple et efficace", "audience": "un public clairement défini" },
+    "slides": {
+      "cover": [
+        { "subtitle": "{project}, {solution}", "bullets": ["Une nouvelle approche audacieuse de {sector}.", "Présenté par l'équipe {project}.", "Contact : votre email ou site web ici."] },
+        { "subtitle": "{project} · {sector}", "bullets": ["{solution}", "Conçu pour {audience}.", "Contact : votre email ou site web ici."] },
+        { "subtitle": "{project} : {solution}", "bullets": ["Réinventer {sector} pour {audience}.", "{project}", "Contact : votre email ou site web ici."] }
+      ],
+      "problem": [
+        { "subtitle": "Le problème auquel {audience} fait face aujourd'hui.", "bullets": ["{problem}", "Ce problème coûte du temps, de l'argent ou de l'énergie chaque jour.", "Les solutions existantes ne le résolvent pas vraiment pour {audience}."] },
+        { "subtitle": "Pourquoi c'est important maintenant.", "bullets": ["{audience} rencontre des difficultés avec {problem}", "Les solutions actuelles sont dépassées, coûteuses ou incomplètes.", "Le besoin d'une meilleure réponse ne cesse de grandir."] },
+        { "subtitle": "Un point de friction trop important pour être ignoré.", "bullets": ["{problem}", "C'est une frustration quotidienne pour {audience}", "Personne n'a vraiment résolu ce problème, jusqu'à maintenant."] }
+      ],
+      "solution": [
+        { "subtitle": "{solution}", "bullets": ["{project} répond directement à {problem}", "Conçu spécifiquement pour {audience}", "Simple, efficace et facile à adopter."] },
+        { "subtitle": "Découvrez {project}.", "bullets": ["{solution}", "Une approche nouvelle pensée pour {audience}", "Transforme un vrai problème en vraie opportunité."] },
+        { "subtitle": "Comment nous le résolvons.", "bullets": ["{solution}", "Construit dès le départ pour {sector}", "Une valeur claire, dès le premier jour."] }
+      ],
+      "market": [
+        { "subtitle": "Une opportunité en pleine croissance dans {sector}.", "bullets": ["{sector} se développe rapidement, avec une demande croissante chaque année.", "{audience} représente un marché vaste et accessible.", "Les premiers acteurs sur ce marché ont une vraie marge de croissance."] },
+        { "subtitle": "Pourquoi maintenant, pourquoi {sector}.", "bullets": ["Le marché de {sector} n'a jamais été aussi important.", "{audience} recherche activement de meilleures solutions.", "Le timing et la demande sont parfaitement alignés pour {project}."] },
+        { "subtitle": "La taille de l'opportunité.", "bullets": ["Un marché vaste et en croissance au sein de {sector}", "{audience} comme segment de marché principal.", "Une marge de croissance importante dans les années à venir."] }
+      ],
+      "product": [
+        { "subtitle": "À quoi ressemble {project} concrètement.", "bullets": ["{solution}", "Pensé pour {audience} dès le premier clic.", "Simple à utiliser, facile à faire évoluer."] },
+        { "subtitle": "Un aperçu du produit.", "bullets": ["{project} propose {solution}", "Conçu pour un usage réel et quotidien par {audience}", "Chaque fonctionnalité répond directement à {problem}"] },
+        { "subtitle": "Comment ça fonctionne.", "bullets": ["{solution}", "Une expérience intuitive pour {audience}", "Prêt à évoluer avec nos utilisateurs."] }
+      ],
+      "business": [
+        { "subtitle": "Comment {project} génère des revenus.", "bullets": ["Modèle de revenu principal : {model}", "Une tarification pensée pour rester accessible à {audience}", "Un modèle évolutif qui grandit avec l'usage."] },
+        { "subtitle": "Notre chemin vers le revenu.", "bullets": ["Les revenus proviennent principalement de {model}", "Construit pour une croissance durable sur le long terme.", "Aligné avec les besoins de {audience}"] },
+        { "subtitle": "Rendre {project} durable.", "bullets": ["{model} comme principale source de revenus", "Une structure de tarification claire et simple.", "Conçu pour évoluer de façon rentable."] }
+      ],
+      "competition": [
+        { "subtitle": "Pourquoi {project} se distingue.", "bullets": ["La plupart des alternatives dans {sector} ne résolvent pas vraiment {problem}", "{project} propose une solution plus claire et plus ciblée.", "Notre avantage : conçu spécifiquement pour {audience}"] },
+        { "subtitle": "Le paysage concurrentiel.", "bullets": ["Les acteurs existants dans {sector} ne couvrent qu'une partie du besoin.", "{project} se concentre sur ce que {audience} recherche vraiment.", "Une alternative plus simple et plus directe à l'existant."] },
+        { "subtitle": "Pourquoi nous gagnons.", "bullets": ["Les concurrents proposent des solutions génériques, nous proposons {solution}", "Une attention forte portée à {audience} nous distingue.", "Une adéquation plus forte avec {sector}"] }
+      ],
+      "traction": [
+        { "subtitle": "Premiers signes de dynamique.", "bullets": ["Un intérêt croissant de la part de {audience}", "Des retours positifs sur {solution}", "Des étapes clés déjà atteintes, et d'autres à venir."] },
+        { "subtitle": "Où nous en sommes aujourd'hui.", "bullets": ["Une forte validation initiale de la part de {audience}", "Une progression constante depuis le lancement.", "Une dynamique qui se construit dans {sector}"] },
+        { "subtitle": "La preuve que ça fonctionne.", "bullets": ["Un engagement réel de la part de {audience}", "Des premiers résultats qui valident {solution}", "Une trajectoire de croissance claire."] }
+      ],
+      "team": [
+        { "subtitle": "Les personnes derrière {project}.", "bullets": ["Une équipe avec une vraie expertise dans {sector}", "Portée par une mission commune : résoudre {problem}", "Ajoutez ici votre nom, votre rôle et votre parcours."] },
+        { "subtitle": "Qui construit ce projet.", "bullets": ["Des compétences complémentaires en produit, croissance et {sector}", "Unis par une vraie conviction autour de {solution}", "Ajoutez ici votre nom, votre rôle et votre parcours."] },
+        { "subtitle": "Rencontrez l'équipe.", "bullets": ["Expérimentée, motivée et concentrée sur {audience}", "Une équipe construite pour exécuter {solution}", "Ajoutez ici votre nom, votre rôle et votre parcours."] }
+      ],
+      "ask": [
+        { "subtitle": "Construisons {project} ensemble.", "bullets": ["Levée de fonds pour accélérer la croissance dans {sector}", "Les fonds serviront au produit, à l'équipe et à l'accès à {audience}", "Contact : votre email, téléphone ou site web ici."] },
+        { "subtitle": "Discutons ensemble.", "bullets": ["À la recherche de partenaires et d'investisseurs qui croient en {solution}", "Votre soutien nous aide à atteindre {audience} plus rapidement.", "Contact : votre email, téléphone ou site web ici."] },
+        { "subtitle": "Ce que nous recherchons.", "bullets": ["Recherche d'investissement pour faire grandir {project} dans {sector}", "Chaque contribution accélère notre mission.", "Contact : votre email, téléphone ou site web ici."] }
+      ]
+    }
+  },
+  "es": {
+    "pageTitle": "Generador de Pitch Deck Gratis | FindMyAI",
+    "metaDescription": "Genera un pitch deck completo de 10 diapositivas en segundos, directamente en tu navegador. Edita, copia o exporta en PDF, sin registro, sin datos enviados a un servidor.",
+    "nav_back": "← Volver al inicio",
+    "eyebrow": "Herramienta gratuita / Generador de pitch deck",
+    "heroTitle": "Crea tu pitch deck <span>en minutos</span>",
+    "heroSubtitle": "Completa algunos datos sobre tu proyecto y obtén un pitch deck completo de 10 diapositivas, listo para editar, copiar o exportar en PDF. Todo ocurre en tu navegador, ningún dato se envía nunca a un servidor.",
+    "panelProjectTitle": "1. Tu proyecto",
+    "panelProjectHint": "Cuéntanos sobre tu proyecto, cada diapositiva se actualiza al instante.",
+    "labelProject": "Nombre del proyecto o startup",
+    "phProject": "ej. Nova",
+    "labelSector": "Sector o ámbito",
+    "phSector": "ej. moda sostenible",
+    "labelProblem": "El problema que resuelves",
+    "phProblem": "ej. Las marcas pequeñas tienen dificultades para encontrar fabricantes éticos y asequibles",
+    "labelSolution": "Tu solución en una frase",
+    "phSolution": "ej. Un marketplace que conecta marcas con fábricas éticas verificadas",
+    "labelAudience": "Público objetivo",
+    "phAudience": "ej. marcas de moda independientes",
+    "panelModelTitle": "2. Modelo de negocio",
+    "panelModelHint": "Elige tu principal modelo de ingresos.",
+    "modelSubscription": "Suscripción",
+    "modelAdvertising": "Publicidad",
+    "modelCommission": "Comisión",
+    "modelSale": "Venta directa",
+    "modelFreemium": "Freemium",
+    "slidesColTitle": "Tu pitch deck",
+    "slidesColHint": "Haz clic directamente en una diapositiva para editarla. Usa Reformular para otra versión.",
+    "slideReformulateBtn": "🔀 Reformular",
+    "downloadBtn": "⬇ Descargar en PDF",
+    "downloadBtnLoading": "⏳ Generando...",
+    "pdfError": "Se produjo un error al generar el PDF. Inténtalo de nuevo.",
+    "copyAllBtn": "📋 Copiar todo el pitch",
+    "copiedAllBtn": "✓ ¡Copiado!",
+    "resetBtn": "Reiniciar",
+    "privacyNote": "Tu pitch deck se genera directamente en tu navegador. Ningún dato se envía ni se almacena nunca en un servidor.",
+    "filenameBase": "Pitch_Deck",
+    "slideTitleCover": "Portada",
+    "slideTitleProblem": "Problema",
+    "slideTitleSolution": "Solución",
+    "slideTitleMarket": "Mercado",
+    "slideTitleProduct": "Producto",
+    "slideTitleBusiness": "Modelo de Negocio",
+    "slideTitleCompetition": "Competencia",
+    "slideTitleTraction": "Tracción",
+    "slideTitleTeam": "Equipo",
+    "slideTitleAsk": "Solicitud de Financiación y Contacto",
+    "footerTagline": "El generador de pitch deck gratis de FindMyAI, el buscador de herramientas de IA.",
+    "footerHome": "Inicio",
+    "footerBlog": "Blog",
+    "footerFindTool": "Buscar una herramienta de IA",
+    "fallback": { "project": "Este proyecto", "sector": "un sector en crecimiento", "problem": "un problema real del día a día", "solution": "una solución simple y eficaz", "audience": "un público claramente definido" },
+    "slides": {
+      "cover": [
+        { "subtitle": "{project}, {solution}", "bullets": ["Un enfoque audaz para {sector}.", "Presentado por el equipo de {project}.", "Contacto: tu email o sitio web aquí."] },
+        { "subtitle": "{project} · {sector}", "bullets": ["{solution}", "Diseñado para {audience}.", "Contacto: tu email o sitio web aquí."] },
+        { "subtitle": "{project}: {solution}", "bullets": ["Reinventando {sector} para {audience}.", "{project}", "Contacto: tu email o sitio web aquí."] }
+      ],
+      "problem": [
+        { "subtitle": "El problema al que se enfrenta {audience} hoy.", "bullets": ["{problem}", "Este problema cuesta tiempo, dinero o energía todos los días.", "Las soluciones actuales no lo resuelven realmente para {audience}."] },
+        { "subtitle": "Por qué esto importa ahora.", "bullets": ["{audience} enfrenta dificultades con {problem}", "Las soluciones actuales son anticuadas, caras o incompletas.", "La necesidad de una mejor respuesta sigue creciendo."] },
+        { "subtitle": "Un punto de dolor demasiado grande para ignorar.", "bullets": ["{problem}", "Es una frustración diaria para {audience}", "Nadie lo ha resuelto bien, hasta ahora."] }
+      ],
+      "solution": [
+        { "subtitle": "{solution}", "bullets": ["{project} responde directamente a {problem}", "Diseñado específicamente para {audience}", "Simple, eficaz y fácil de adoptar."] },
+        { "subtitle": "Presentamos {project}.", "bullets": ["{solution}", "Un enfoque fresco pensado para {audience}", "Convierte un problema real en una oportunidad real."] },
+        { "subtitle": "Cómo lo resolvemos.", "bullets": ["{solution}", "Construido desde el inicio para {sector}", "Valor claro desde el primer día."] }
+      ],
+      "market": [
+        { "subtitle": "Una oportunidad en crecimiento dentro de {sector}.", "bullets": ["{sector} crece rápidamente, con más demanda cada año.", "{audience} representa un mercado amplio y accesible.", "Los primeros en moverse en este espacio tienen mucho margen de crecimiento."] },
+        { "subtitle": "Por qué ahora, por qué {sector}.", "bullets": ["El mercado de {sector} nunca ha sido tan grande.", "{audience} busca activamente mejores opciones.", "El momento y la demanda están alineados para {project}."] },
+        { "subtitle": "El tamaño de la oportunidad.", "bullets": ["Un mercado amplio y en crecimiento dentro de {sector}", "{audience} como nuestro segmento de mercado principal.", "Espacio para un crecimiento importante en los próximos años."] }
+      ],
+      "product": [
+        { "subtitle": "Cómo es {project} en la práctica.", "bullets": ["{solution}", "Pensado para {audience} desde el primer clic.", "Fácil de usar, fácil de escalar."] },
+        { "subtitle": "Un vistazo más de cerca al producto.", "bullets": ["{project} ofrece {solution}", "Diseñado para el uso real y diario de {audience}", "Cada función está pensada para resolver {problem}"] },
+        { "subtitle": "Cómo funciona.", "bullets": ["{solution}", "Una experiencia intuitiva para {audience}", "Listo para crecer junto a nuestros usuarios."] }
+      ],
+      "business": [
+        { "subtitle": "Cómo genera ingresos {project}.", "bullets": ["Modelo de ingresos principal: {model}", "Precios pensados para seguir siendo accesibles para {audience}", "Un modelo escalable que crece con el uso."] },
+        { "subtitle": "Nuestro camino hacia los ingresos.", "bullets": ["Los ingresos provienen principalmente de {model}", "Construido para un crecimiento sostenible a largo plazo.", "Alineado con las necesidades de {audience}"] },
+        { "subtitle": "Haciendo sostenible a {project}.", "bullets": ["{model} como nuestra principal fuente de ingresos", "Una estructura de precios clara y simple.", "Diseñado para escalar de forma rentable."] }
+      ],
+      "competition": [
+        { "subtitle": "Por qué {project} destaca.", "bullets": ["La mayoría de las alternativas en {sector} no resuelven realmente {problem}", "{project} ofrece una solución más clara y enfocada.", "Nuestra ventaja: creado específicamente para {audience}"] },
+        { "subtitle": "El panorama competitivo.", "bullets": ["Los actores existentes en {sector} solo cubren parte de la necesidad.", "{project} se enfoca en lo que {audience} realmente quiere.", "Una alternativa más simple y directa a lo que ya existe."] },
+        { "subtitle": "Por qué ganamos.", "bullets": ["Los competidores ofrecen soluciones genéricas, nosotros ofrecemos {solution}", "El enfoque profundo en {audience} nos diferencia.", "Un mejor ajuste con {sector}"] }
+      ],
+      "traction": [
+        { "subtitle": "Primeras señales de impulso.", "bullets": ["Interés creciente por parte de {audience}", "Comentarios positivos sobre {solution}", "Hitos clave alcanzados, con más en camino."] },
+        { "subtitle": "Dónde estamos hoy.", "bullets": ["Fuerte validación inicial por parte de {audience}", "Progreso constante desde el lanzamiento.", "Impulso creciente dentro de {sector}"] },
+        { "subtitle": "La prueba de que funciona.", "bullets": ["Participación real por parte de {audience}", "Primeros resultados que validan {solution}", "Una trayectoria de crecimiento clara."] }
+      ],
+      "team": [
+        { "subtitle": "Las personas detrás de {project}.", "bullets": ["Un equipo con experiencia real en {sector}", "Impulsado por una misión compartida: resolver {problem}", "Añade aquí tu nombre, tu rol y tu experiencia."] },
+        { "subtitle": "Quién está construyendo esto.", "bullets": ["Habilidades complementarias en producto, crecimiento y {sector}", "Unidos por una fuerte creencia en {solution}", "Añade aquí tu nombre, tu rol y tu experiencia."] },
+        { "subtitle": "Conoce al equipo.", "bullets": ["Con experiencia, motivado y enfocado en {audience}", "Un equipo construido para ejecutar {solution}", "Añade aquí tu nombre, tu rol y tu experiencia."] }
+      ],
+      "ask": [
+        { "subtitle": "Construyamos {project} juntos.", "bullets": ["Buscando financiación para acelerar el crecimiento en {sector}", "Los fondos impulsarán el producto, el equipo y el alcance a {audience}", "Contacto: tu email, teléfono o sitio web aquí."] },
+        { "subtitle": "Hablemos.", "bullets": ["Buscando socios e inversores que crean en {solution}", "Tu apoyo nos ayuda a llegar a {audience} más rápido.", "Contacto: tu email, teléfono o sitio web aquí."] },
+        { "subtitle": "Lo que buscamos.", "bullets": ["Buscando inversión para hacer crecer a {project} en {sector}", "Cada aporte acelera nuestra misión.", "Contacto: tu email, teléfono o sitio web aquí."] }
+      ]
+    }
+  },
+  "pt": {
+    "pageTitle": "Gerador de Pitch Deck Grátis | FindMyAI",
+    "metaDescription": "Gere um pitch deck completo de 10 slides em segundos, direto no seu navegador. Edite, copie ou exporte em PDF, sem cadastro, sem dados enviados a um servidor.",
+    "nav_back": "← Voltar ao início",
+    "eyebrow": "Ferramenta gratuita / Gerador de pitch deck",
+    "heroTitle": "Crie seu pitch deck <span>em minutos</span>",
+    "heroSubtitle": "Preencha alguns dados sobre o seu projeto e obtenha um pitch deck completo de 10 slides, pronto para editar, copiar ou exportar em PDF. Tudo acontece no seu navegador, nenhum dado é enviado a um servidor.",
+    "panelProjectTitle": "1. Seu projeto",
+    "panelProjectHint": "Fale sobre o seu projeto, cada slide é atualizado instantaneamente.",
+    "labelProject": "Nome do projeto ou startup",
+    "phProject": "ex. Nova",
+    "labelSector": "Setor ou área",
+    "phSector": "ex. moda sustentável",
+    "labelProblem": "O problema que você resolve",
+    "phProblem": "ex. Pequenas marcas têm dificuldade em encontrar fabricantes éticos e acessíveis",
+    "labelSolution": "Sua solução em uma frase",
+    "phSolution": "ex. Um marketplace que conecta marcas a fábricas éticas verificadas",
+    "labelAudience": "Público principal",
+    "phAudience": "ex. marcas de moda independentes",
+    "panelModelTitle": "2. Modelo de negócio",
+    "panelModelHint": "Escolha seu principal modelo de receita.",
+    "modelSubscription": "Assinatura",
+    "modelAdvertising": "Publicidade",
+    "modelCommission": "Comissão",
+    "modelSale": "Venda direta",
+    "modelFreemium": "Freemium",
+    "slidesColTitle": "Seu pitch deck",
+    "slidesColHint": "Clique diretamente em um slide para editar. Use Reformular para outra versão.",
+    "slideReformulateBtn": "🔀 Reformular",
+    "downloadBtn": "⬇ Baixar em PDF",
+    "downloadBtnLoading": "⏳ Gerando...",
+    "pdfError": "Ocorreu um erro ao gerar o PDF. Tente novamente.",
+    "copyAllBtn": "📋 Copiar pitch completo",
+    "copiedAllBtn": "✓ Copiado!",
+    "resetBtn": "Redefinir",
+    "privacyNote": "Seu pitch deck é gerado diretamente no seu navegador. Nenhum dado é enviado ou armazenado em um servidor.",
+    "filenameBase": "Pitch_Deck",
+    "slideTitleCover": "Capa",
+    "slideTitleProblem": "Problema",
+    "slideTitleSolution": "Solução",
+    "slideTitleMarket": "Mercado",
+    "slideTitleProduct": "Produto",
+    "slideTitleBusiness": "Modelo de Negócio",
+    "slideTitleCompetition": "Concorrência",
+    "slideTitleTraction": "Tração",
+    "slideTitleTeam": "Equipe",
+    "slideTitleAsk": "Pedido de Investimento e Contato",
+    "footerTagline": "O gerador de pitch deck grátis da FindMyAI, o buscador de ferramentas de IA.",
+    "footerHome": "Início",
+    "footerBlog": "Blog",
+    "footerFindTool": "Encontrar uma ferramenta de IA",
+    "fallback": { "project": "Este projeto", "sector": "um setor em crescimento", "problem": "um problema real do dia a dia", "solution": "uma solução simples e eficaz", "audience": "um público claramente definido" },
+    "slides": {
+      "cover": [
+        { "subtitle": "{project}, {solution}", "bullets": ["Uma nova abordagem ousada para {sector}.", "Apresentado pela equipe do {project}.", "Contato: seu email ou site aqui."] },
+        { "subtitle": "{project} · {sector}", "bullets": ["{solution}", "Criado para {audience}.", "Contato: seu email ou site aqui."] },
+        { "subtitle": "{project}: {solution}", "bullets": ["Reinventando {sector} para {audience}.", "{project}", "Contato: seu email ou site aqui."] }
+      ],
+      "problem": [
+        { "subtitle": "O problema que {audience} enfrenta hoje.", "bullets": ["{problem}", "Esse problema custa tempo, dinheiro ou energia todos os dias.", "As soluções existentes não resolvem isso de verdade para {audience}."] },
+        { "subtitle": "Por que isso importa agora.", "bullets": ["{audience} enfrenta dificuldades com {problem}", "As soluções atuais são ultrapassadas, caras ou incompletas.", "A necessidade de uma resposta melhor só cresce."] },
+        { "subtitle": "Uma dor grande demais para ignorar.", "bullets": ["{problem}", "É uma frustração diária para {audience}", "Ninguém resolveu isso bem, até agora."] }
+      ],
+      "solution": [
+        { "subtitle": "{solution}", "bullets": ["{project} responde diretamente a {problem}", "Criado especificamente para {audience}", "Simples, eficaz e fácil de adotar."] },
+        { "subtitle": "Apresentando o {project}.", "bullets": ["{solution}", "Uma abordagem nova pensada para {audience}", "Transforma um problema real em uma oportunidade real."] },
+        { "subtitle": "Como resolvemos isso.", "bullets": ["{solution}", "Construído desde o início para {sector}", "Valor claro desde o primeiro dia."] }
+      ],
+      "market": [
+        { "subtitle": "Uma oportunidade em crescimento em {sector}.", "bullets": ["{sector} está crescendo rápido, com mais demanda a cada ano.", "{audience} representa um mercado amplo e acessível.", "Quem entra cedo nesse espaço tem bastante espaço para crescer."] },
+        { "subtitle": "Por que agora, por que {sector}.", "bullets": ["O mercado de {sector} nunca foi tão grande.", "{audience} está buscando ativamente opções melhores.", "O momento e a demanda estão alinhados para o {project}."] },
+        { "subtitle": "O tamanho da oportunidade.", "bullets": ["Um mercado amplo e em crescimento dentro de {sector}", "{audience} como nosso principal segmento de mercado.", "Espaço para um crescimento significativo nos próximos anos."] }
+      ],
+      "product": [
+        { "subtitle": "Como é o {project} na prática.", "bullets": ["{solution}", "Pensado para {audience} desde o primeiro clique.", "Fácil de usar, fácil de escalar."] },
+        { "subtitle": "Um olhar mais de perto sobre o produto.", "bullets": ["{project} entrega {solution}", "Criado para o uso real e diário de {audience}", "Cada funcionalidade resolve diretamente {problem}"] },
+        { "subtitle": "Como funciona.", "bullets": ["{solution}", "Uma experiência intuitiva para {audience}", "Pronto para crescer junto com nossos usuários."] }
+      ],
+      "business": [
+        { "subtitle": "Como o {project} gera receita.", "bullets": ["Modelo de receita principal: {model}", "Preços pensados para continuar acessíveis para {audience}", "Um modelo escalável que cresce com o uso."] },
+        { "subtitle": "Nosso caminho até a receita.", "bullets": ["A receita vem principalmente de {model}", "Construído para um crescimento sustentável a longo prazo.", "Alinhado com as necessidades de {audience}"] },
+        { "subtitle": "Tornando o {project} sustentável.", "bullets": ["{model} como nossa principal fonte de receita", "Uma estrutura de preços clara e simples.", "Criado para escalar de forma lucrativa."] }
+      ],
+      "competition": [
+        { "subtitle": "Por que o {project} se destaca.", "bullets": ["A maioria das alternativas em {sector} não resolve totalmente {problem}", "O {project} oferece uma solução mais clara e focada.", "Nossa vantagem: criado especificamente para {audience}"] },
+        { "subtitle": "O cenário competitivo.", "bullets": ["Os players existentes em {sector} cobrem apenas parte da necessidade.", "O {project} foca no que {audience} realmente quer.", "Uma alternativa mais simples e direta ao que já existe."] },
+        { "subtitle": "Por que vencemos.", "bullets": ["Concorrentes oferecem soluções genéricas, nós oferecemos {solution}", "O foco profundo em {audience} nos diferencia.", "Um encaixe mais forte com {sector}"] }
+      ],
+      "traction": [
+        { "subtitle": "Primeiros sinais de tração.", "bullets": ["Interesse crescente por parte de {audience}", "Feedback positivo sobre {solution}", "Marcos importantes alcançados, com mais a caminho."] },
+        { "subtitle": "Onde estamos hoje.", "bullets": ["Forte validação inicial por parte de {audience}", "Progresso constante desde o lançamento.", "Tração crescendo dentro de {sector}"] },
+        { "subtitle": "A prova de que está funcionando.", "bullets": ["Engajamento real por parte de {audience}", "Primeiros resultados que validam {solution}", "Uma trajetória de crescimento clara."] }
+      ],
+      "team": [
+        { "subtitle": "As pessoas por trás do {project}.", "bullets": ["Uma equipe com experiência real em {sector}", "Movida por uma missão em comum: resolver {problem}", "Adicione aqui seu nome, seu cargo e sua trajetória."] },
+        { "subtitle": "Quem está construindo isso.", "bullets": ["Habilidades complementares em produto, crescimento e {sector}", "Unidos por uma forte crença em {solution}", "Adicione aqui seu nome, seu cargo e sua trajetória."] },
+        { "subtitle": "Conheça a equipe.", "bullets": ["Experiente, motivada e focada em {audience}", "Uma equipe criada para executar {solution}", "Adicione aqui seu nome, seu cargo e sua trajetória."] }
+      ],
+      "ask": [
+        { "subtitle": "Vamos construir o {project} juntos.", "bullets": ["Buscando investimento para acelerar o crescimento em {sector}", "Os recursos vão impulsionar produto, equipe e alcance até {audience}", "Contato: seu email, telefone ou site aqui."] },
+        { "subtitle": "Vamos conversar.", "bullets": ["Buscando parceiros e investidores que acreditam em {solution}", "Seu apoio nos ajuda a alcançar {audience} mais rápido.", "Contato: seu email, telefone ou site aqui."] },
+        { "subtitle": "O que estamos buscando.", "bullets": ["Buscando investimento para fazer o {project} crescer em {sector}", "Cada contribuição acelera nossa missão.", "Contato: seu email, telefone ou site aqui."] }
+      ]
+    }
+  },
+  "de": {
+    "pageTitle": "Kostenloser Pitch Deck Generator | FindMyAI",
+    "metaDescription": "Erstellen Sie in Sekunden ein komplettes Pitch Deck mit 10 Folien, direkt in Ihrem Browser. Bearbeiten, kopieren oder als PDF exportieren, keine Anmeldung, keine Daten werden an einen Server gesendet.",
+    "nav_back": "← Zurück zur Startseite",
+    "eyebrow": "Kostenloses Tool / Pitch Deck Generator",
+    "heroTitle": "Erstellen Sie Ihr Pitch Deck <span>in Minuten</span>",
+    "heroSubtitle": "Füllen Sie ein paar Angaben zu Ihrem Projekt aus und erhalten Sie ein komplettes Pitch Deck mit 10 Folien, bereit zum Bearbeiten, Kopieren oder als PDF Export. Alles geschieht in Ihrem Browser, es werden nie Daten an einen Server gesendet.",
+    "panelProjectTitle": "1. Ihr Projekt",
+    "panelProjectHint": "Erzählen Sie uns von Ihrem Projekt, jede Folie wird sofort aktualisiert.",
+    "labelProject": "Name des Projekts oder Startups",
+    "phProject": "z. B. Nova",
+    "labelSector": "Branche oder Bereich",
+    "phSector": "z. B. nachhaltige Mode",
+    "labelProblem": "Das Problem, das Sie lösen",
+    "phProblem": "z. B. Kleine Marken finden schwer bezahlbare, ethische Hersteller",
+    "labelSolution": "Ihre Lösung in einem Satz",
+    "phSolution": "z. B. Ein Marktplatz, der Marken mit geprüften ethischen Fabriken verbindet",
+    "labelAudience": "Zielgruppe",
+    "phAudience": "z. B. unabhängige Modemarken",
+    "panelModelTitle": "2. Geschäftsmodell",
+    "panelModelHint": "Wählen Sie Ihr wichtigstes Umsatzmodell.",
+    "modelSubscription": "Abonnement",
+    "modelAdvertising": "Werbung",
+    "modelCommission": "Provision",
+    "modelSale": "Direktverkauf",
+    "modelFreemium": "Freemium",
+    "slidesColTitle": "Ihr Pitch Deck",
+    "slidesColHint": "Klicken Sie direkt in eine Folie, um sie zu bearbeiten. Nutzen Sie Umformulieren für eine andere Version.",
+    "slideReformulateBtn": "🔀 Umformulieren",
+    "downloadBtn": "⬇ Als PDF herunterladen",
+    "downloadBtnLoading": "⏳ Wird erstellt...",
+    "pdfError": "Beim Erstellen des PDFs ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
+    "copyAllBtn": "📋 Gesamtes Pitch kopieren",
+    "copiedAllBtn": "✓ Kopiert!",
+    "resetBtn": "Zurücksetzen",
+    "privacyNote": "Ihr Pitch Deck wird direkt in Ihrem Browser erstellt. Es werden nie Daten an einen Server gesendet oder dort gespeichert.",
+    "filenameBase": "Pitch_Deck",
+    "slideTitleCover": "Titelseite",
+    "slideTitleProblem": "Problem",
+    "slideTitleSolution": "Lösung",
+    "slideTitleMarket": "Markt",
+    "slideTitleProduct": "Produkt",
+    "slideTitleBusiness": "Geschäftsmodell",
+    "slideTitleCompetition": "Wettbewerb",
+    "slideTitleTraction": "Traktion",
+    "slideTitleTeam": "Team",
+    "slideTitleAsk": "Finanzierungsanfrage und Kontakt",
+    "footerTagline": "Der kostenlose Pitch Deck Generator von FindMyAI, die Suchmaschine für KI Tools.",
+    "footerHome": "Startseite",
+    "footerBlog": "Blog",
+    "footerFindTool": "KI Tool finden",
+    "fallback": { "project": "Dieses Projekt", "sector": "eine wachsende Branche", "problem": "ein echtes Alltagsproblem", "solution": "eine einfache und wirksame Lösung", "audience": "eine klar definierte Zielgruppe" },
+    "slides": {
+      "cover": [
+        { "subtitle": "{project}, {solution}", "bullets": ["Ein mutiger neuer Ansatz für {sector}.", "Vorgestellt vom Team von {project}.", "Kontakt: Ihre E Mail oder Website hier."] },
+        { "subtitle": "{project} · {sector}", "bullets": ["{solution}", "Entwickelt für {audience}.", "Kontakt: Ihre E Mail oder Website hier."] },
+        { "subtitle": "{project}: {solution}", "bullets": ["{sector} neu gedacht für {audience}.", "{project}", "Kontakt: Ihre E Mail oder Website hier."] }
+      ],
+      "problem": [
+        { "subtitle": "Das Problem, vor dem {audience} heute steht.", "bullets": ["{problem}", "Dieses Problem kostet jeden Tag Zeit, Geld oder Energie.", "Bestehende Lösungen lösen es für {audience} nicht wirklich."] },
+        { "subtitle": "Warum das gerade jetzt zählt.", "bullets": ["{audience} kämpft mit {problem}", "Aktuelle Lösungen sind veraltet, teuer oder unvollständig.", "Der Bedarf an einer besseren Antwort wächst stetig."] },
+        { "subtitle": "Ein Problem, das zu groß ist, um es zu ignorieren.", "bullets": ["{problem}", "Eine tägliche Frustration für {audience}", "Bisher hat niemand das wirklich gut gelöst."] }
+      ],
+      "solution": [
+        { "subtitle": "{solution}", "bullets": ["{project} löst {problem} direkt", "Speziell entwickelt für {audience}", "Einfach, wirksam und leicht einzuführen."] },
+        { "subtitle": "Wir stellen vor: {project}.", "bullets": ["{solution}", "Ein frischer Ansatz, gedacht für {audience}", "Verwandelt ein echtes Problem in eine echte Chance."] },
+        { "subtitle": "Wie wir es lösen.", "bullets": ["{solution}", "Von Grund auf entwickelt für {sector}", "Klarer Mehrwert vom ersten Tag an."] }
+      ],
+      "market": [
+        { "subtitle": "Eine wachsende Chance in {sector}.", "bullets": ["{sector} wächst schnell, mit steigender Nachfrage jedes Jahr.", "{audience} stellt einen großen und erreichbaren Markt dar.", "Wer früh in diesem Bereich startet, hat echten Wachstumsspielraum."] },
+        { "subtitle": "Warum jetzt, warum {sector}.", "bullets": ["Der Markt für {sector} war nie größer.", "{audience} sucht aktiv nach besseren Lösungen.", "Timing und Nachfrage passen perfekt für {project}."] },
+        { "subtitle": "Die Größe der Chance.", "bullets": ["Ein großer und wachsender Markt innerhalb von {sector}", "{audience} als unser wichtigstes Marktsegment.", "Raum für deutliches Wachstum in den kommenden Jahren."] }
+      ],
+      "product": [
+        { "subtitle": "So sieht {project} in der Praxis aus.", "bullets": ["{solution}", "Entwickelt mit {audience} im Blick, vom ersten Klick an.", "Einfach zu nutzen, leicht zu skalieren."] },
+        { "subtitle": "Ein genauerer Blick auf das Produkt.", "bullets": ["{project} liefert {solution}", "Für den echten, täglichen Gebrauch durch {audience} entwickelt", "Jede Funktion löst direkt {problem}"] },
+        { "subtitle": "So funktioniert es.", "bullets": ["{solution}", "Eine intuitive Erfahrung für {audience}", "Bereit, mit unseren Nutzern zu wachsen."] }
+      ],
+      "business": [
+        { "subtitle": "Wie {project} Umsatz generiert.", "bullets": ["Wichtigstes Umsatzmodell: {model}", "Preise, die für {audience} zugänglich bleiben.", "Ein skalierbares Modell, das mit der Nutzung wächst."] },
+        { "subtitle": "Unser Weg zum Umsatz.", "bullets": ["Der Umsatz stammt hauptsächlich aus {model}", "Für langfristiges, nachhaltiges Wachstum entwickelt.", "Ausgerichtet auf die Bedürfnisse von {audience}"] },
+        { "subtitle": "{project} nachhaltig machen.", "bullets": ["{model} als unsere wichtigste Einnahmequelle", "Eine klare und einfache Preisstruktur.", "Entwickelt, um profitabel zu skalieren."] }
+      ],
+      "competition": [
+        { "subtitle": "Warum {project} heraussticht.", "bullets": ["Die meisten Alternativen in {sector} lösen {problem} nicht vollständig", "{project} bietet eine klarere, fokussiertere Lösung.", "Unser Vorteil: speziell entwickelt für {audience}"] },
+        { "subtitle": "Die Wettbewerbslandschaft.", "bullets": ["Bestehende Anbieter in {sector} decken nur einen Teil des Bedarfs ab.", "{project} konzentriert sich auf das, was {audience} wirklich will.", "Eine einfachere, direktere Alternative zum Status quo."] },
+        { "subtitle": "Warum wir gewinnen.", "bullets": ["Wettbewerber bieten generische Lösungen, wir bieten {solution}", "Der starke Fokus auf {audience} hebt uns ab.", "Eine bessere Passung zu {sector}"] }
+      ],
+      "traction": [
+        { "subtitle": "Erste Anzeichen von Dynamik.", "bullets": ["Wachsendes Interesse von {audience}", "Positives frühes Feedback zu {solution}", "Wichtige Meilensteine erreicht, weitere folgen."] },
+        { "subtitle": "Wo wir heute stehen.", "bullets": ["Starke frühe Validierung durch {audience}", "Stetiger Fortschritt seit dem Start.", "Wachsende Dynamik in {sector}"] },
+        { "subtitle": "Der Beweis, dass es funktioniert.", "bullets": ["Echtes Engagement von {audience}", "Erste Ergebnisse, die {solution} bestätigen", "Ein klarer Wachstumskurs."] }
+      ],
+      "team": [
+        { "subtitle": "Die Menschen hinter {project}.", "bullets": ["Ein Team mit echter Erfahrung in {sector}", "Angetrieben von einer gemeinsamen Mission: {problem} lösen", "Fügen Sie hier Ihren Namen, Ihre Rolle und Ihren Hintergrund ein."] },
+        { "subtitle": "Wer das aufbaut.", "bullets": ["Sich ergänzende Fähigkeiten in Produkt, Wachstum und {sector}", "Vereint durch eine starke Überzeugung zu {solution}", "Fügen Sie hier Ihren Namen, Ihre Rolle und Ihren Hintergrund ein."] },
+        { "subtitle": "Lernen Sie das Team kennen.", "bullets": ["Erfahren, motiviert und fokussiert auf {audience}", "Ein Team, das {solution} umsetzen kann", "Fügen Sie hier Ihren Namen, Ihre Rolle und Ihren Hintergrund ein."] }
+      ],
+      "ask": [
+        { "subtitle": "Lassen Sie uns gemeinsam {project} aufbauen.", "bullets": ["Kapitalsuche, um das Wachstum in {sector} zu beschleunigen", "Die Mittel fließen in Produkt, Team und die Reichweite zu {audience}", "Kontakt: Ihre E Mail, Telefonnummer oder Website hier."] },
+        { "subtitle": "Lassen Sie uns sprechen.", "bullets": ["Auf der Suche nach Partnern und Investoren, die an {solution} glauben", "Ihre Unterstützung hilft uns, {audience} schneller zu erreichen.", "Kontakt: Ihre E Mail, Telefonnummer oder Website hier."] },
+        { "subtitle": "Worum wir bitten.", "bullets": ["Auf der Suche nach Investment, um {project} in {sector} wachsen zu lassen", "Jeder Beitrag beschleunigt unsere Mission.", "Kontakt: Ihre E Mail, Telefonnummer oder Website hier."] }
+      ]
+    }
+  }
+}
+
+    const LANGS = [
+      { code: 'en', flag: '🇬🇧', name: 'English' },
+      { code: 'fr', flag: '🇫🇷', name: 'Français' },
+      { code: 'es', flag: '🇪🇸', name: 'Español' },
+      { code: 'pt', flag: '🇵🇹', name: 'Português' },
+      { code: 'de', flag: '🇩🇪', name: 'Deutsch' }
+    ];
+
+    const SLIDE_KEYS = ['cover', 'problem', 'solution', 'market', 'product', 'business', 'competition', 'traction', 'team', 'ask'];
+    const slideTitleKeyMap = {
+      cover: 'slideTitleCover', problem: 'slideTitleProblem', solution: 'slideTitleSolution',
+      market: 'slideTitleMarket', product: 'slideTitleProduct', business: 'slideTitleBusiness',
+      competition: 'slideTitleCompetition', traction: 'slideTitleTraction', team: 'slideTitleTeam', ask: 'slideTitleAsk'
+    };
+    const MODEL_KEYS = ['subscription', 'advertising', 'commission', 'sale', 'freemium'];
+    const modelLabelKeyMap = {
+      subscription: 'modelSubscription', advertising: 'modelAdvertising', commission: 'modelCommission',
+      sale: 'modelSale', freemium: 'modelFreemium'
+    };
+
+    let currentLang = 'en';
+    let selectedModel = 'subscription';
+    let selectedVariants = new Array(SLIDE_KEYS.length).fill(0);
+
+    function t(key) {
+      const dict = translations[currentLang] || translations.en;
+      if (dict && dict[key] !== undefined) return dict[key];
+      return translations.en[key] !== undefined ? translations.en[key] : key;
+    }
+
+    function getFallback(key) {
+      const dict = translations[currentLang] && translations[currentLang].fallback;
+      if (dict && dict[key]) return dict[key];
+      return translations.en.fallback[key];
+    }
+
+    function getSlideVariants(key) {
+      const dict = translations[currentLang] && translations[currentLang].slides && translations[currentLang].slides[key];
+      return dict || translations.en.slides[key];
+    }
+
+    function toggleLangDropdown(event) {
+      event.stopPropagation();
+      document.getElementById('lang-dropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function () {
+      const dd = document.getElementById('lang-dropdown');
+      if (dd) dd.classList.remove('open');
+    });
+
+    function changeLanguage(lang) {
+      if (!translations[lang]) lang = 'en';
+      currentLang = lang;
+      try { localStorage.setItem('findmyai_lang', lang); } catch (e) { /* storage unavailable */ }
+
+      const meta = LANGS.find(function (l) { return l.code === lang; }) || LANGS[0];
+      document.getElementById('current-lang-flag').textContent = meta.flag;
+      document.getElementById('current-lang-name').textContent = meta.name;
+      document.querySelectorAll('.lang-option').forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === lang);
+      });
+
+      updateUITranslations();
+    }
+
+    function updateUITranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        el.innerHTML = t(el.getAttribute('data-i18n'));
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+      });
+
+      document.title = t('pageTitle');
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', t('metaDescription'));
+      document.documentElement.lang = currentLang;
+
+      renderModelSelect();
+      buildSlides();
+    }
+
+    /* =========================================================
+       BUSINESS MODEL SELECT
+       ========================================================= */
+    function renderModelSelect() {
+      const wrap = document.getElementById('model-select');
+      wrap.innerHTML = MODEL_KEYS.map(function (m) {
+        const active = m === selectedModel ? ' active' : '';
+        return '<button type="button" class="tone-option' + active + '" data-model="' + m + '" onclick="selectModel(\'' + m + '\')">' + t(modelLabelKeyMap[m]) + '</button>';
+      }).join('');
+    }
+
+    function selectModel(m) {
+      selectedModel = m;
+      document.querySelectorAll('#model-select .tone-option').forEach(function (el) {
+        el.classList.toggle('active', el.dataset.model === m);
+      });
+      renderAllSlides();
+    }
+
+    /* =========================================================
+       SLIDE BUILDING
+       The 10 slide cards are rendered once into #slides-container.
+       Field input and model changes only refresh each slide's
+       subtitle and bullets (renderAllSlides), leaving manually
+       edited titles untouched. Rephrase refreshes a single slide.
+       Language change and Reset rebuild the whole deck from
+       scratch, which also resets any manual edits, consistent
+       with the other tools on this site.
+       ========================================================= */
+    function buildSlides() {
+      const container = document.getElementById('slides-container');
+      container.innerHTML = SLIDE_KEYS.map(function (key, i) {
+        return '<div class="slide-wrap">' +
+          '<div class="slide-header-row">' +
+            '<span class="slide-index-label">' + (i + 1) + ' / ' + SLIDE_KEYS.length + '</span>' +
+            '<button type="button" class="secondary-btn small" onclick="reformulateSlide(' + i + ')">' + t('slideReformulateBtn') + '</button>' +
+          '</div>' +
+          '<div class="slide-card" id="slide-card-' + i + '">' +
+            '<div class="slide-number-badge">' + ('0' + (i + 1)).slice(-2) + '</div>' +
+            '<div class="slide-title" id="slide-title-' + i + '" contenteditable="true" spellcheck="false"></div>' +
+            '<div class="slide-subtitle" id="slide-subtitle-' + i + '" contenteditable="true" spellcheck="false"></div>' +
+            '<div class="slide-bullets" id="slide-bullets-' + i + '" contenteditable="true" spellcheck="false"></div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      SLIDE_KEYS.forEach(function (key, i) {
+        document.getElementById('slide-title-' + i).textContent = t(slideTitleKeyMap[key]);
+      });
+
+      container.querySelectorAll('[contenteditable="true"]').forEach(attachEditableHandlers);
+
+      renderAllSlides();
+    }
+
+    function attachEditableHandlers(el) {
+      el.addEventListener('paste', function (e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+        document.execCommand('insertText', false, text);
+      });
+    }
+
+    function buildPlaceholderMap() {
+      return {
+        project: resolveField('project-input', 'project'),
+        sector: resolveField('sector-input', 'sector'),
+        problem: resolveField('problem-input', 'problem'),
+        solution: resolveField('solution-input', 'solution'),
+        audience: resolveField('audience-input', 'audience'),
+        model: t(modelLabelKeyMap[selectedModel])
+      };
+    }
+
+    function resolveField(id, fallbackKey) {
+      const el = document.getElementById(id);
+      const value = el ? el.value.trim() : '';
+      return value || getFallback(fallbackKey);
+    }
+
+    function applyPlaceholders(str, map) {
+      return Object.keys(map).reduce(function (acc, key) {
+        return acc.split('{' + key + '}').join(map[key]);
+      }, str);
+    }
+
+    function refreshSlide(i) {
+      const key = SLIDE_KEYS[i];
+      const map = buildPlaceholderMap();
+      const variants = getSlideVariants(key);
+      const v = variants[selectedVariants[i] % variants.length];
+      const subtitle = applyPlaceholders(v.subtitle, map);
+      const bullets = v.bullets.map(function (b) { return '• ' + applyPlaceholders(b, map); }).join('\n');
+
+      const subtitleEl = document.getElementById('slide-subtitle-' + i);
+      const bulletsEl = document.getElementById('slide-bullets-' + i);
+      if (subtitleEl) subtitleEl.textContent = subtitle;
+      if (bulletsEl) bulletsEl.textContent = bullets;
+    }
+
+    function renderAllSlides() {
+      SLIDE_KEYS.forEach(function (key, i) { refreshSlide(i); });
+    }
+
+    /* =========================================================
+       REPHRASE
+       ========================================================= */
+    function reformulateSlide(i) {
+      const key = SLIDE_KEYS[i];
+      const variants = getSlideVariants(key);
+      selectedVariants[i] = (selectedVariants[i] + 1) % variants.length;
+      refreshSlide(i);
+    }
+
+    /* =========================================================
+       COPY FULL PITCH
+       Reads the live preview DOM (via innerText) rather than a
+       cached string, so manual edits made directly in any slide
+       are included in what gets copied.
+       ========================================================= */
+    function copyAllPitch(btn) {
+      const parts = SLIDE_KEYS.map(function (key, i) {
+        const title = document.getElementById('slide-title-' + i).innerText.trim();
+        const subtitle = document.getElementById('slide-subtitle-' + i).innerText.trim();
+        const bullets = document.getElementById('slide-bullets-' + i).innerText.trim();
+        return (i + 1) + '. ' + title + '\n' + subtitle + '\n' + bullets;
+      });
+      const text = parts.join('\n\n');
+
+      const originalLabel = t('copyAllBtn');
+      const done = function () {
+        btn.textContent = t('copiedAllBtn');
+        setTimeout(function () { btn.textContent = originalLabel; }, 1800);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () {
+          fallbackCopy(text, done);
+        });
+      } else {
+        fallbackCopy(text, done);
+      }
+    }
+
+    function fallbackCopy(text, done) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) { /* clipboard unavailable */ }
+      document.body.removeChild(ta);
+      done();
+    }
+
+    /* =========================================================
+       PDF EXPORT
+       Unlike the CV Maker (one long document sliced across pages),
+       each of the 10 slide cards here is captured individually
+       with html2canvas (scale 3, same fix as the CV Maker: we call
+       html2canvas + jsPDF directly rather than html2pdf.js, whose
+       bundled html2canvas silently produces a blank canvas on
+       current Chrome versions) and placed as its own page in a
+       landscape A4 jsPDF document, fitted and centered on the page
+       so nothing is stretched or cropped.
+       ========================================================= */
+    function downloadPitchPDF(btn) {
+      const cards = SLIDE_KEYS.map(function (key, i) { return document.getElementById('slide-card-' + i); });
+      const projectVal = document.getElementById('project-input').value.trim();
+      const filename = (projectVal ? projectVal.replace(/\s+/g, '_') : t('filenameBase')) + '_Pitch_FindMyAI.pdf';
+
+      const originalLabel = t('downloadBtn');
+      btn.innerHTML = t('downloadBtnLoading');
+      btn.disabled = true;
+
+      const PAGE_W = 297;
+      const PAGE_H = 210;
+
+      const restore = function () {
+        btn.innerHTML = originalLabel;
+        btn.disabled = false;
+      };
+
+      const runExport = function () {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+
+            let chain = Promise.resolve();
+            cards.forEach(function (card, i) {
+              chain = chain.then(function () {
+                return window.html2canvas(card, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(function (canvas) {
+                  const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                  const ratio = canvas.width / canvas.height;
+                  let imgW = PAGE_W;
+                  let imgH = imgW / ratio;
+                  if (imgH > PAGE_H) {
+                    imgH = PAGE_H;
+                    imgW = PAGE_H * ratio;
+                  }
+                  const x = (PAGE_W - imgW) / 2;
+                  const y = (PAGE_H - imgH) / 2;
+                  if (i > 0) pdf.addPage();
+                  pdf.addImage(imgData, 'JPEG', x, y, imgW, imgH);
+                });
+              });
+            });
+
+            chain.then(function () {
+              const blob = pdf.output('blob');
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = filename;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+              restore();
+            }).catch(function () {
+              restore();
+              alert(t('pdfError'));
+            });
+          });
+        });
+      };
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(runExport).catch(runExport);
+      } else {
+        runExport();
+      }
+    }
+
+    /* =========================================================
+       RESET
+       ========================================================= */
+    function resetForm() {
+      document.getElementById('project-input').value = '';
+      document.getElementById('sector-input').value = '';
+      document.getElementById('problem-input').value = '';
+      document.getElementById('solution-input').value = '';
+      document.getElementById('audience-input').value = '';
+      selectedModel = 'subscription';
+      selectedVariants = new Array(SLIDE_KEYS.length).fill(0);
+      renderModelSelect();
+      buildSlides();
+    }
+
+    /* =========================================================
+       INIT
+       ========================================================= */
+    (function init() {
+      let storedLang = null;
+      try { storedLang = localStorage.getItem('findmyai_lang'); } catch (e) { /* storage unavailable */ }
+      currentLang = translations[storedLang] ? storedLang : 'en';
+
+      const meta = LANGS.find(function (l) { return l.code === currentLang; }) || LANGS[0];
+      document.getElementById('current-lang-flag').textContent = meta.flag;
+      document.getElementById('current-lang-name').textContent = meta.name;
+      document.querySelectorAll('.lang-option').forEach(function (opt) {
+        opt.classList.toggle('active', opt.dataset.lang === currentLang);
+      });
+
+      updateUITranslations();
+    })();
+  </script>
+
+</body>
+</html>
